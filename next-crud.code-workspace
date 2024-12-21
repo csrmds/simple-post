@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../next-crud"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../react-redux"
+		},
+		{
+			"path": "../../todo-app"
+		}
+	],
+	"settings": {}
+}
