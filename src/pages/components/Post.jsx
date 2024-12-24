@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Comment from './Comment'
 import CommentEdit from './CommentEdit'
-
+import BotaoTeste from './ButtonTest'
 
 
 export default function post(props) {
@@ -76,6 +76,14 @@ export default function post(props) {
                         <Comment userName="Cesar Melo"></Comment>
                     </div>
                 </div>
+
+
+                <div className='flex justify-center mt-4'>
+                    <div className='w-96 rounded-lg'>
+                        <BotaoTeste></BotaoTeste>
+                    </div>
+                </div>
+                
                 
                 
                 
