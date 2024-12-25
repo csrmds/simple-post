@@ -1,20 +1,22 @@
-require('dotenv').config()
-const express = require('express')
-const connectDB = require('./config/database')
-const routes = require('./routes/routes')
-const allowCors= require('./config/cors')
+import dotenv from 'dotenv'
+import express from 'express'
+import connectDB from './config/database.js'
+import routes from './routes/routes.js'
+import postRoutes from './routes/postRoutes.js'
+import allowCors from './config/cors.js'
 
-
+dotenv.config()
 const app= express()
-app.use(express.json())
 
 connectDB()
 
+app.use(express.json())
 app.use(allowCors)
 app.use('/api', routes)
+app.use('/post', postRoutes)
 
 
-const PORT= 5000  //process.env.PORT
+const PORT= process.env.PORT
 
 app.listen(PORT, ()=> {
     console.log(`Server running on port: ${PORT}`)
