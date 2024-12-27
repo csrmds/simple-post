@@ -12,15 +12,8 @@ const postSchema = new Schema({
         required: true
     },
     userAccountId: String,
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
-})
+}, { timestamps: true }
+)
 
 const Post= model('Post', postSchema)
 export default Post

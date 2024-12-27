@@ -12,6 +12,20 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      width: {
+        '104': '26rem',
+        '120': '30rem',
+        '140': '35rem',
+        '144': '36rem', // 576px
+        '160': '40rem', // 640px
+        '192': '48rem', // 768px
+        '224': '56rem', // 896px
+        '256': '64rem', // 1024px
+        '288': '72rem', // 1152px
+        '320': '80rem', // 1280px
+        '384': '96rem', // 1536px
+        '480': '120rem', // 1920px
+      }
     },
   },
   plugins: [

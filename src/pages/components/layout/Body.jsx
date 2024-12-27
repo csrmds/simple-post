@@ -11,7 +11,7 @@ export default function body(props) {
             </div>
             <div className="divider"></div>
             
-            <div className='container p-4'>
+            <div className='container p-4 mx-auto'>
                 {props.children}
             </div>
             

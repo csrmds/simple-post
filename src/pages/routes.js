@@ -11,15 +11,18 @@ const useRoutes= () => {
 
     const rota= () => {
         console.log('segunda rota.. ', `${url}/api/rota`)
-        return (router.push(`${url}/api/rota`))
+        return (router.push(`${url}/api/rota`))   
+    }
 
-        
+    const admin = () => {
+        return (router.push('/admin'))
     }
 
 
     return {
         testeApi,
-        rota
+        rota,
+        admin
     }
 }
 

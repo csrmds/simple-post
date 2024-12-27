@@ -24,8 +24,9 @@ export default function post(props) {
 
     return (
         <>
-            <div className="container lg">
-                <div className="flex justify-center">
+            
+
+                {/* <div className="flex justify-center">
                     <div className="card card-compact bg-base-100 w-96 shadow-xl">
                         <div className="navbar bg-violet-200 rounded-t-xl flex justify-between">
                             <div className="avatar">
@@ -75,11 +76,11 @@ export default function post(props) {
                     <div className='w-96 rounded-lg'>
                         <Comment userName="Cesar Melo"></Comment>
                     </div>
-                </div>
+                </div> */}
 
 
                 <div className='flex justify-center mt-4'>
-                    <div className='w-96 rounded-lg'>
+                    <div className='w-256 rounded-lg'>
                         <BotaoTeste></BotaoTeste>
                     </div>
                 </div>
@@ -87,7 +88,7 @@ export default function post(props) {
                 
                 
                 
-            </div>
+            
 
             
         </>
