@@ -84,6 +84,7 @@ export default function botao(props) {
                 value={content} onChange={(e) => setContent(e.target.value)}
             ></textarea>
         </div>
+        
         <div className="mt-4 mb-4">
             <button className="btn btn-primary m-2" onClick={insertData} >Postar</button>
             <button className="btn btn-primary m-2" onClick={getPostById} >GetPost</button>
