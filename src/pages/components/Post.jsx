@@ -3,6 +3,7 @@ import Comment from './Comment'
 import CommentEdit from './CommentEdit'
 import BotaoTeste from './ButtonTest'
 import PostEdit from './PostEdit'
+import PostNew from './PostNew'
 
 
 export default function post(props) {
@@ -25,9 +26,11 @@ export default function post(props) {
 
     return (
         <>
-            <PostEdit></PostEdit>
+            <PostNew></PostNew>
             
-            {/* <div className="flex justify-center">
+            {/* <PostEdit></PostEdit> */}
+            
+            <div className="flex justify-center">
                 <div className="card card-compact bg-base-100 w-160 shadow-xl">
                     <div className="navbar bg-violet-200 rounded-t-xl flex justify-between">
                         <div className="avatar">
@@ -77,7 +80,7 @@ export default function post(props) {
                 <div className='w-96 rounded-lg'>
                     <Comment userName="Cesar Melo"></Comment>
                 </div>
-            </div> */}
+            </div>
 
 
             {/* <div className='flex justify-center mt-4'>

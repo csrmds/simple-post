@@ -7,6 +7,7 @@ const postImageSchema = new Schema({
     address: String,
     description: String,
     type: String,
+    mimeType: String,
     size: Number,
     width: Number,
     height: Number,

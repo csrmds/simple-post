@@ -8,9 +8,14 @@ export default function PostEdit() {
     const [content, setContent] = useState('')
     const [attachment, setAttachment] = useState([])
 
-
     const teste = () => {
         console.log('attachment: ', attachment)
+    }
+
+    const testeFile = async() => {
+        const response= await axios.post(`${url}/post/teste`)
+
+        console.log('response: ', response)
     }
 
     const insertPost = async(e) => {
@@ -22,14 +27,14 @@ export default function PostEdit() {
             formData.append('title', title)
             formData.append('content', content)
             Array.from(attachment).forEach((file)=> {
-                console.log('file array forEach: ', file)
+                //console.log('file array forEach: ', file)
                 formData.append('post-image', file)
             })
 
-            console.log('Form data antes de enviar: ')
-            formData.forEach((value, key) => {
-                console.log(`${key}: ${value}`)
-            })
+            // console.log('Form data antes de enviar: ')
+            // formData.forEach((value, key) => {
+            //     console.log(`${key}: ${value}`)
+            // })
 
             const response = await axios.post(`${url}/post/insert`, formData, {
                 headers: {'Content-Type': 'multipart/form-data',}
@@ -75,7 +80,7 @@ export default function PostEdit() {
 
                 <div>
                     <button className="btn btn-primary mx-2" onClick={insertPost}>Salvar</button>
-                    <button className="btn btn-primary mx-2" onClick={teste} >Teste</button>
+                    <button className="btn btn-primary mx-2" onClick={testeFile} >Teste</button>
                 </div>
 
             </form>

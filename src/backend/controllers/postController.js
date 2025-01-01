@@ -1,5 +1,7 @@
 import Post from "../models/post.js"
 import PostImage from "../models/postImage.js"
+import fs from 'fs/promises'
+import path from 'path'
 
 export const insertPost = async (req, res) => {
     try {
@@ -10,37 +12,34 @@ export const insertPost = async (req, res) => {
         const savedPost = await newPost.save()
         console.log("Post criado com sucesso: ", savedPost)
 
-        //console.log('req.files: ', files)
-        
-        const formData = req.files
-
-        formData.forEach((value, key) => {
-            console.log(`${key}: ${value}`)
-        })
 
         if (files) {
-            // try {
-            //     const newPostImage = new PostImage({
-            //         postId: savedPost._id,
-            //         address: files[0].path,
-            //         description: files[0].filename
-            //     })
-            //     const savedPostImage = await newPostImage.save()
-            //     console.log("Imagem salva: ", savedPostImage)
-            // } catch (error) {
-            //     console.log("Erro ao salvar imagem: ", error)
-            //     res.status(500).json({ message: "Erro ao salvar imagem" })
-            // }
+            //const pathImages= './src/backend/files/postImages/'
+            const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
             
+            // console.log('process path images: ', pathImages)
+            // console.log('files array: ')
+            // files.forEach((value, key) => {
+            //     console.log(`${key}: ${value}`)
+            // })
+
             try {
-                files.map(async (file) => {
+                files.map(async (file, i) => {
+                    
+                    const extension = path.extname(pathImages+file.filename)
+                    const newFileName= `${savedPost._id}_${i}${extension}`
+                    await fs.rename(pathImages+file.filename, pathImages+`${newFileName}`)
+
+
                     const newPostImage = new PostImage({
                         postId: savedPost._id,
-                        address: file.path,
-                        description: file.filename
+                        address: pathImages+newFileName,
+                        description: file.filename,
+                        mimetype: file.mimetype,
+                        size: file.size,
                     })
                     const savedPostImage = await newPostImage.save()
-                    console.log("Imagem salva: ", savedPostImage)
+                    console.log(`Imagem salva order[${i}]`, savedPostImage)
                 })
             } catch (error) {
                 console.log("Erro ao salvar imagem: ", error)
@@ -49,10 +48,10 @@ export const insertPost = async (req, res) => {
         }
         
 
-        res.status(200).json({ message: files })
+        res.status(200).json({error: false, message: "Post criado com sucesso.", postId: savedPost._id})
     } catch (error) {
         console.log("Erro ao criar post: ", error)
-        res.status(500).json({ message: "Erro ao criar post" })
+        res.status(500).json({ error: true, message: "Erro ao criar post" })
     }
 }
 
@@ -90,4 +89,19 @@ export const updatePost = async (req, res) => {
         res.status(500).json({ message: "Erro ao atualizar post" })
     }
 
+}
+
+export const testFile = async (req, res) => {
+    try {
+        const pathImages= './src/backend/files/postImages/'
+        const listFiles = await fs.readdir(pathImages)
+        const file = await fs.stat(pathImages + listFiles[0])
+        const response = await fs.rename(pathImages + listFiles[0], pathImages + 'renomeado.jpg')
+
+
+        res.status(200).json({ message: "Arquivo lido com sucesso", response})
+    } catch (error) {
+        console.log("Erro ao testar arquivo: ", error)
+        res.status(500).json({ message: "Erro ao testar arquivo" })
+    }
 }
