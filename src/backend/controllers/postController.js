@@ -8,7 +8,7 @@ export const insertPost = async (req, res) => {
         console.log("\n\n=======CONTROLLER insertPost=======\n")
         const files = req.files
         const newPost = new Post(req.body)
-        console.log('req.body: ', req.body, '\n')
+        //console.log('req.body: ', req.body, '\n')
         const savedPost = await newPost.save()
         console.log("Post criado com sucesso: ", savedPost)
 
@@ -65,10 +65,29 @@ export const getPosts = async (req, res) => {
     }
 }
 
+export const getPostsFilter = async (req, res) => {
+    try {
+        var order = req.body.order || 1
+        var limit = req.body.limit || 15
+
+        // console.log("\n\n***GetPostFilter body/params***\nBody:", req.body)
+        // console.log("params: ", req.params)
+        // console.log("order: ", order, "\nlimit: ", limit)
+
+        const posts = await Post.find()
+            .sort({createdAt: order})
+            .limit(limit)
+        res.status(200).json(posts)
+    } catch (error) {
+        console.log("Erro ao listar posts: ", error)
+        res.status(500).json({ message: "Erro ao listar posts" });
+    }
+}
+
 export const getPostById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id)
-        console.log("Post encontrado com sucesso: ", post)
+        //console.log("Post encontrado com sucesso: ", post)
         res.status(200).json(post)
     } catch (error) {
         console.log("Erro ao buscar post: ", error)
@@ -76,7 +95,31 @@ export const getPostById = async (req, res) => {
     }
 }
 
+export const getPostsAggregate = async (req, res) => {
+    try {
+        const posts = await Post.aggregate([
+            {
+                $lookup: {
+                    from: "postimages",
+                    localField: "_id",
+                    foreignField: "postId",
+                    as: "images"
+                }
+            },
+            { $sort: {createdAt: -1} },
+            { $limit: 5 }
+        ])
+        //console.log("Lista de posts...", posts)
+        res.status(200).json(posts)
+    } catch (error) {
+        console.log("Erro ao buscar post: ", error)
+        res.status(500).json({ message: "Erro ao buscar post" })
+    }
+}
+
 export const updatePost = async (req, res) => {
+
+    console.log("\n\nupdatePost body:\n", req.body)
 
     try {
         console.log('req body: ', req.body)

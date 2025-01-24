@@ -70,7 +70,7 @@ export default function PostNew() {
         <div className="flex justify-center mb-6">
             <div className="flex flex-col w-160">
 
-                <div className="collapse">
+                <div className="collapse bg-slate-800">
                     <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium">Postar algo...</div>
                     <div className="collapse-content">
@@ -78,10 +78,10 @@ export default function PostNew() {
                             
                             <form onSubmit={insertPost} method="POST" encType="multipart/form-data">
                                 <div className="card-body">
-                                    <input type="text" placeholder="Título" className="card-title input w-full" 
+                                    <input type="text" placeholder="Título" className="card-title input w-full input-ghost" 
                                         value={title} onChange={(e) => setTitle(e.target.value)}
                                     />
-                                    <textarea className="textarea" placeholder="Descrição..."
+                                    <textarea className="textarea input-ghost" placeholder="Descrição..."
                                         value={content} onChange={(e) => setContent(e.target.value)}>
                                     </textarea>
                                     <div className="card-actions justify-end">

@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 
 const postImageSchema = new Schema({
-    postId: String,
+    postId: Schema.Types.ObjectId,
     address: String,
     description: String,
     type: String,
