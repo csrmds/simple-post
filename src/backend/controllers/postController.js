@@ -104,6 +104,14 @@ export const getPostsAggregate = async (req, res) => {
                     localField: "_id",
                     foreignField: "postId",
                     as: "images"
+                },
+            },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "_id",
+                    foreignField: "postId",
+                    as: "comments"
                 }
             },
             { $sort: {createdAt: -1} },

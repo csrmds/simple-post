@@ -37,9 +37,9 @@ export default function Feed() {
         
         <div className="flex flex-col items-center mb-6">
             
-            <div className="my-4">
+            {/* <div className="my-4">
                 <button className="btn btn-primary" onClick={teste}>teste</button>
-            </div>
+            </div> */}
 
             <div className="flex flex-col w-192 overflow-x-auto">
                 {
@@ -51,6 +51,7 @@ export default function Feed() {
                                 title= {post.title}
                                 createdAt= {post.createdAt}
                                 images= {post.images}
+                                comments= {post.comments}
                             ></PostView>
                         </div>
 
@@ -59,37 +60,6 @@ export default function Feed() {
                 }
             </div>
             
-            {/* <div className="flex flex-col w-192 overflow-x-auto">
-
-                <table className="table table-zebra">
-                    <thead>
-                        <tr>
-                            <th>Post Id</th>
-                            <th>Title</th>
-                            <th>Content</th>
-                            <th>Data</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {
-                            //quero que os dados sejam renderizados aqui...
-                            postList.length > 0 && (
-                                postList.map((post) => (
-                                    <tr key={post._id}>
-                                        <td>{post._id}</td>
-                                        <td>{post.title}</td>
-                                        <td>{post.content}</td>
-                                        <td>{new Date(post.createdAt).toLocaleString()}</td>
-                                    </tr>
-                                ))
-                            ) 
-                        }
-                    </tbody>
-
-                </table>
-                
-            </div> */}
         </div>
         </>
     )

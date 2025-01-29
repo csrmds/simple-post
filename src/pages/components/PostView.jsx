@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Comment from './Comment'
 import CommentEdit from './CommentEdit'
+import CommentList from './CommentList'
 import path from 'path'
 import {format, compareAsc} from 'date-fns'
 
@@ -8,12 +9,12 @@ import {format, compareAsc} from 'date-fns'
 
 export default function postView(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
-    const [comment, setComment]= useState("")
+    const [comments, setComments]= useState(props.comments)
     const [isVisible, setIsVisible]= useState(false)
     const [title, setTitle]= useState("")
     const [content, setContent]= useState("")
     const [createdAt, setCreatedAt]= useState("")
-    const [images, setImages]= useState( props.images[0] )
+    const [images, setImages]= useState( props.images )
 
     const handleComment= (newValue)=> {
         setComment(newValue)
@@ -33,7 +34,11 @@ export default function postView(props) {
     }, [])
 
     const teste = () => {
-        console.log("Teste: ", props.images[0])
+        console.log("Teste images: ", props.images)
+    }
+
+    const testeComments = () => {
+        console.log("teste comments: ", props.comments)
     }
 
 
@@ -92,10 +97,8 @@ export default function postView(props) {
                 </div>
             </div>
             
-            <div className='flex justify-center mt-4'>
-                <div className='w-96 rounded-lg'>
-                    <Comment userName="Cesar Melo"></Comment>
-                </div>
+            <div className='flex justify-center mt-8'>
+                <CommentList comments={props.comments}></CommentList>
             </div>
 
             
