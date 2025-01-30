@@ -23,7 +23,7 @@ export default function commentEdit(props) {
     return (
         <>
             <div>
-                <textarea className="textarea textarea-bordered w-full" placeholder="Seu comentário..."
+                <textarea className="textarea bg-slate-800 text-sm/5 w-full py-1 px-4" placeholder="Seu comentário..."
                     onChange={e=> setText(e.target.value)}>
                     {text}
                 </textarea>

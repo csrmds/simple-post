@@ -41,7 +41,7 @@ export default function Feed() {
                 <button className="btn btn-primary" onClick={teste}>teste</button>
             </div> */}
 
-            <div className="flex flex-col w-192 overflow-x-auto">
+            <div className="flex flex-col w-192">
                 {
                     postList.map((post) => (
                         <div className="mb-8" key={post._id}>

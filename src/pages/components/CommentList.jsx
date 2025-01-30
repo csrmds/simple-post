@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import axios from "axios"
 
 
 export default function commentList(props) {
@@ -20,7 +19,7 @@ export default function commentList(props) {
             {
                 comments.length > 0 ? (
                     comments.map((comment, i) => (
-                        <div className="indicator my-3">
+                        <div className="indicator my-3" key={i}>
                             <div className="indicator-item indicator-top indicator-start ">
                                 <div className="">
                                     <img
@@ -30,7 +29,7 @@ export default function commentList(props) {
                                 </div>
 
                             </div>
-                            <div className="card border w-144">
+                            <div className="card border w-120">
                                 <div className="card-body p-4">
                                     <p>{comment.text}</p>
                                 </div>
