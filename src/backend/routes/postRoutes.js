@@ -1,6 +1,6 @@
-import express from 'express'
-import multer from 'multer'
-import { insertPost, getPosts, getPostById, getPostsFilter, getPostsAggregate, updatePost, testFile } from '../controllers/postController.js'
+const express= require('express')
+const multer= require('multer')
+const { insertPost, getPosts, getPostById, getPostsFilter, getPostsAggregate, updatePost, testFile }= require('../controllers/postController')
 
 const router = express.Router()
 
@@ -28,4 +28,4 @@ router.get('/:id', getPostById )
 router.post('/update', updatePost )
 
 
-export default router
+module.exports= router

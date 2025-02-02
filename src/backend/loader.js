@@ -1,16 +1,11 @@
-import dotenv from 'dotenv'
-import express from 'express'
-import connectDB from './config/database.js'
-import routes from './routes/routes.js'
-import postRoutes from './routes/postRoutes.js'
-import commentRoutes from './routes/commentRoutes.js'
-import allowCors from './config/cors.js'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-//adaptação para utilizar o __dirname no ES Module
-const __filename= fileURLToPath(import.meta.url)
-const __dirname= path.dirname(__filename)
+const dotenv= require('dotenv')
+const express= require('express')
+const connectDB= require('./config/database')
+const routes= require('./routes/routes')
+const postRoutes= require('./routes/postRoutes')
+const commentRoutes= require('./routes/commentRoutes')
+const allowCors= require('./config/cors')
+const path= require('path')
 
 dotenv.config()
 const app= express()

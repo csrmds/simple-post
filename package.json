@@ -2,7 +2,6 @@
   "name": "post",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -21,6 +20,7 @@
     "mongoose": "^8.9.2",
     "multer": "^1.4.5-lts.1",
     "next": "14.2.13",
+    "next-auth": "^4.24.11",
     "react": "^18",
     "react-dom": "^18"
   },

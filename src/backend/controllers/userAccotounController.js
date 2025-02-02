@@ -1,6 +1,6 @@
-import UserAccount from '../models/userAccount.js'
+const UserAccount= require('../models/userAccount')
 
-export const insertUserAccount = async (req, res) => {
+const insertUserAccount = async (req, res) => {
     try {
         console.log("\n\n=======CONTROLLER inserUserAccount=======\n")
         console.log(req.body)
@@ -16,7 +16,7 @@ export const insertUserAccount = async (req, res) => {
 
 }
 
-export const userLoginAttempt= async (req, res) => {
+const userLoginAttempt= async (req, res) => {
 
 
     try {
@@ -27,7 +27,7 @@ export const userLoginAttempt= async (req, res) => {
     }
 }
 
-export const getUserAccounts = async (req, res) => {
+const getUserAccounts = async (req, res) => {
     try {
         const userAccounts= UserAccount.find()
         res.status(200).json(userAccounts)
@@ -35,4 +35,11 @@ export const getUserAccounts = async (req, res) => {
         console.log("Erro ao inserir comentario: ", error)
         res.status(500).json({ message: "Erro ao inserir comentario" });
     }
+}
+
+
+module.exports= {
+    insertUserAccount,
+    userLoginAttempt,
+    getUserAccounts
 }

@@ -1,4 +1,5 @@
-import express from 'express'
+const express= require('express')
+
 const router = express.Router()
 
 router.get('/rota', (req, res)=> {
@@ -8,4 +9,4 @@ router.get('/rota', (req, res)=> {
 
 
 
-export default router
+module.exports= router

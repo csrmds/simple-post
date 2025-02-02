@@ -1,6 +1,6 @@
-import Comment from '../models/comment.js'
+const Comment= require('../models/comment')
 
-export const insertComment = async (req, res) => {
+const insertComment = async (req, res) => {
     try {
         console.log("\n\n=======CONTROLLER insertComment=======\n")
         console.log(req.body)
@@ -16,7 +16,7 @@ export const insertComment = async (req, res) => {
 
 }
 
-export const getComments = async (req, res) => {
+const getComments = async (req, res) => {
     try {
         const comments= Comment.find()
         res.status(200).json(comments)
@@ -24,4 +24,9 @@ export const getComments = async (req, res) => {
         console.log("Erro ao inserir comentario: ", error)
         res.status(500).json({ message: "Erro ao inserir comentario" });
     }
+}
+
+module.exports= {
+    insertComment,
+    getComments
 }

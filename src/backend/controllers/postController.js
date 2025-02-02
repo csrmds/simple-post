@@ -1,9 +1,10 @@
-import Post from "../models/post.js"
-import PostImage from "../models/postImage.js"
-import fs from 'fs/promises'
-import path from 'path'
+const Post= require('../models/post.js')
+const PostImage= require('../models/postImage.js')
+const fs= require('fs/promises')
+const path= require('path')
 
-export const insertPost = async (req, res) => {
+
+const insertPost = async (req, res) => {
     try {
         console.log("\n\n=======CONTROLLER insertPost=======\n")
         const files = req.files
@@ -55,7 +56,7 @@ export const insertPost = async (req, res) => {
     }
 }
 
-export const getPosts = async (req, res) => {
+const getPosts = async (req, res) => {
     try {
         const posts = await Post.find()
         res.status(200).json(posts)
@@ -65,14 +66,11 @@ export const getPosts = async (req, res) => {
     }
 }
 
-export const getPostsFilter = async (req, res) => {
+const getPostsFilter = async (req, res) => {
     try {
         var order = req.body.order || 1
         var limit = req.body.limit || 15
 
-        // console.log("\n\n***GetPostFilter body/params***\nBody:", req.body)
-        // console.log("params: ", req.params)
-        // console.log("order: ", order, "\nlimit: ", limit)
 
         const posts = await Post.find()
             .sort({createdAt: order})
@@ -84,7 +82,7 @@ export const getPostsFilter = async (req, res) => {
     }
 }
 
-export const getPostById = async (req, res) => {
+const getPostById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id)
         //console.log("Post encontrado com sucesso: ", post)
@@ -95,7 +93,7 @@ export const getPostById = async (req, res) => {
     }
 }
 
-export const getPostsAggregate = async (req, res) => {
+const getPostsAggregate = async (req, res) => {
     try {
         const posts = await Post.aggregate([
             {
@@ -125,7 +123,7 @@ export const getPostsAggregate = async (req, res) => {
     }
 }
 
-export const updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
 
     console.log("\n\nupdatePost body:\n", req.body)
 
@@ -142,7 +140,7 @@ export const updatePost = async (req, res) => {
 
 }
 
-export const testFile = async (req, res) => {
+const testFile = async (req, res) => {
     try {
         const pathImages= './src/backend/files/postImages/'
         const listFiles = await fs.readdir(pathImages)
@@ -155,4 +153,15 @@ export const testFile = async (req, res) => {
         console.log("Erro ao testar arquivo: ", error)
         res.status(500).json({ message: "Erro ao testar arquivo" })
     }
+}
+
+
+module.exports= {
+    insertPost, 
+    getPosts, 
+    getPostById, 
+    getPostsFilter, 
+    getPostsAggregate, 
+    updatePost, 
+    testFile
 }

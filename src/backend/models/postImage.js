@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose= require('mongoose')
 const { Schema, model } = mongoose;
 
 
@@ -17,4 +17,4 @@ const postImageSchema = new Schema({
 
 
 const PostImage= model('PostImage', postImageSchema)
-export default PostImage
+module.exports= PostImage

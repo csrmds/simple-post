@@ -1,6 +1,8 @@
-import express from 'express'
-import multer from 'multer'
-import { insertPost } from '../controllers/postController.js'
+const express= require('express')
+const multer= require('multer')
+const { insertPost }= require('../controllers/postController')
+
+
 
 const router = express.Router()
 
@@ -17,4 +19,4 @@ const upload = multer({ storage })
 
 router.post('/insert', upload.array('post-image', 10), insertPost )
 
-export default router
+module.exports= router
