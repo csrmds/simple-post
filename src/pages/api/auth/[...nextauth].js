@@ -1,7 +1,7 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import axios from 'axios';
+import NextAuth from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import axios from 'axios'
 import bcrypt from 'bcrypt'
 
 
@@ -26,32 +26,47 @@ export default NextAuth({
             },
             
             async authorize(credentials) {
-                const url = process.env.NEXT_PUBLIC_BACKEND_URL
-                
+                const url= process.env.NEXT_PUBLIC_BACKEND_URL
                 const user= await axios.post(`${url}/api/useraccount/one`, {email: credentials.email})
-                console.log("\n\nNextAuth: ", credentials)
-                console.log("\nNextAuth User: ", user.data)
-                
-                if (!user) {
-                    console.log("usuário não encontrado")
-                    throw new Error("User not found")
+                console.log('\n-----NextAuth-----\n', user.data)
+                if (!user.data.userAccount || Object.keys(user.data.userAccount).length== 0) {
+                    console.log("Error: ",user.data.resp.message)
+                    throw new Error(user.data.resp.message)
                 }
                 
-                const checkPassword = await bcrypt.compare(credentials.password, user.data.password);
-                console.log("\n\ncheckPassword: ", checkPassword)
+                //console.log("Dados senha: \n", credentials.password, "\n", user.data.userAccount.password)
+                const checkPassword= await bcrypt.compare(credentials.password, user.data.userAccount.password) 
                 if (!checkPassword) {
-                    console.log("senha não confere")
-                    throw new Error("senha não confere throw error")
+                    console.log("Error: Senha não confere")
+                    throw new Error("Error: Senha não confere")
                 }
 
-                return user
+                return {
+                    id: user.data.userAccount._id,
+                    name: user.data.userAccount.firstName,
+                    email: user.data.userAccount.email,
+                    type: user.data.userAccount.type
+                }
+
             }
+            
         })
     ],
-    // pages: {
-    //     signIn: '/auth/signin',
-    //     signOut: '/auth/signout',
-    //     error: '/auth/error'
-    // }
-    // Outras configurações do NextAuth
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id
+                token.type = user.type
+            }
+            return token
+        },
+        async session({ session, token }) {
+            if (token) {
+                session.user.id = token.id
+                session.user.type = token.type
+            }
+            return session
+        }
+    },
+    pages: { signIn: "/auth/signin" }
 });

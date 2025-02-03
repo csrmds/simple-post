@@ -18,11 +18,11 @@ const insertComment = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        const comments= Comment.find()
+        const comments= await Comment.find()
         res.status(200).json(comments)
     } catch (error) {
-        console.log("Erro ao inserir comentario: ", error)
-        res.status(500).json({ message: "Erro ao inserir comentario" });
+        console.log("Erro ao buscar comentarios: ", error)
+        res.status(500).json({ message: "Erro ao buscar comentarios" });
     }
 }
 

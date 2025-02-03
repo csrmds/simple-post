@@ -1,9 +1,10 @@
 const dotenv= require('dotenv')
 const express= require('express')
 const connectDB= require('./config/database')
-const routes= require('./routes/routes')
+//const routes= require('./routes/routes')
 const postRoutes= require('./routes/postRoutes')
 const commentRoutes= require('./routes/commentRoutes')
+const userAccountRoutes= require('./routes/userAccountRoutes')
 const allowCors= require('./config/cors')
 const path= require('path')
 
@@ -14,7 +15,7 @@ connectDB()
 
 app.use(express.json())
 app.use(allowCors)
-app.use('/api', routes)
+app.use('/api/useraccount', userAccountRoutes)
 app.use('/post', postRoutes)
 app.use("/images", express.static(path.join(__dirname, "files", "postImages")));
 app.use('/comment', commentRoutes)

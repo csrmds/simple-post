@@ -1,6 +1,7 @@
 import Footer from './Footer'
 import Top from './Top'
-
+import { useSession, signOut } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 export default function body(props) {
     return (

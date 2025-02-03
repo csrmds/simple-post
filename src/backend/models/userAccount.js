@@ -1,8 +1,9 @@
 const mongoose= require('mongoose')
+const bcrypt= require('bcrypt')
 const { Schema, model } = mongoose;
 
 
-const userAccountSchema = new Schema({
+const UserAccountSchema = new Schema({
     userName: { type: String, required: true },
     password: String,
     email: String,
@@ -13,5 +14,9 @@ const userAccountSchema = new Schema({
 }, { timestamps: true }
 )
 
-const UserAccount= model('UserAccount', commentSchema)
+UserAccountSchema.methods.validatePassword= async function(password) {
+    return await bcrypt.compare(password, this.password)
+}
+
+const UserAccount= model('UserAccount', UserAccountSchema)
 module.exports= UserAccount

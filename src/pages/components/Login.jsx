@@ -1,22 +1,33 @@
 import { useState } from "react"
-import axios from "axios"
+import { signIn } from 'next-auth/react'
 
 export default function login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
+    const [email, setEmail] = useState("pedro.santos@example.com")
+    const [password, setPassword] = useState("123456")
+    const [error, setError] = useState(false)
+    const [message, setMessage] = useState("")
+
+    const credentialLogin= async (e)=> {
+        e.preventDefault()
+
+        const res = await signIn("credentials", {
+            email: e.target.email.value,
+            password: e.target.password.value,
+            redirect: false
+        })
+        if (res.error || res.ok== false) {
+            setError(true)
+            setMessage(res.error)
+            console.log("erro signIn: ", res.error, "\nRes: ", res)
+        }  else {
+            setError(false)
+            setMessage("")
+            console.log('Validação teoricamenteo OK', res)
+        }
+    }
 
 
-
-
-    // const saveComment= async()=> {
-    //     //e.preventDefault()
-
-    //     try {
-    //         const response = await axios.post(`${url}/comment/insert`, {postId, text, type, responseId})
-    //         console.log(response.data)
-    //     } catch (error) {
-    //         console.log("Erro ao tentar salvar o comentario", error)
-    //     }
-    // }
 
     return (
         <>
@@ -30,29 +41,60 @@ export default function login() {
                 <div className="card-body">
                     <h2 className="card-title">Login Social Media</h2>
 
-                    <div className="h-full">
-                        <label className="input input-bordered flex items-center gap-2 my-2">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                                className="h-4 w-4 opacity-70">
-                                <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                                <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                            </svg>
-                            <input type="text" className="grow" placeholder="Email" />
-                        </label>
-                        <label className="input input-bordered flex items-center gap-2 my-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                                className="h-4 w-4 opacity-70">
-                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                            </svg>
-                            <input type="text" className="grow" placeholder="Username" />
-                        </label>
+                    <form onSubmit={credentialLogin}>
+                        <div className="h-full">
+                            <label className="input input-bordered flex items-center gap-2 my-2">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                    className="h-4 w-4 opacity-70">
+                                    <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                    <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                </svg>
+                                <input type="text" name="email" className="grow" placeholder="Email" onChange={(e)=>setEmail(e.target.value)} value={email}/>
+                            </label>
+                            <label className="input input-bordered flex items-center gap-2 my-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                    className="h-4 w-4 opacity-70">
+                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                                </svg>
+                                <input type="password" name="password" className="grow" onChange={(e)=>setPassword(e.target.value)} value={password} />
+                            </label>
 
-                        <div className="card-actions justify-between mt-8">
-                            <button className="btn btn-primary">Login</button>
-                            <button className="btn btn-primary">ñ sei</button>
+                            <div className="card-actions justify-between mt-6">
+                                <button className="btn btn-primary" type="submit">Login</button>
+                                <button className="btn btn-primary" onClick={() => signIn('google')}>Google</button>
+                            </div>
+
+                            {
+                                error && (
+                                    <div role="alert" className="alert alert-error mt-6">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            className="h-6 w-6 shrink-0 stroke-current"
+                                            fill="none"
+                                            viewBox="0 0 24 24">
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        <span>{message}</span>
+                                        <div>
+                                            <button className="" onClick={()=> setError(false)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            
+                            
                         </div>
-                    </div>
+                    </form>
+                    
                     
                 </div>
             </div>
