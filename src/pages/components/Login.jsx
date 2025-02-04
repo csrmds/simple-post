@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { signIn } from 'next-auth/react'
+import { useRouter } from "next/router"
 
 export default function login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
+    const router= useRouter()
     const [email, setEmail] = useState("pedro.santos@example.com")
     const [password, setPassword] = useState("123456")
     const [error, setError] = useState(false)
@@ -24,6 +26,7 @@ export default function login() {
             setError(false)
             setMessage("")
             console.log('Validação teoricamenteo OK', res)
+            router.push("/")
         }
     }
 
@@ -62,7 +65,7 @@ export default function login() {
 
                             <div className="card-actions justify-between mt-6">
                                 <button className="btn btn-primary" type="submit">Login</button>
-                                <button className="btn btn-primary" onClick={() => signIn('google')}>Google</button>
+                                <button className="btn btn-primary" onClick={(e) => signIn('google')}>Google</button>
                             </div>
 
                             {
@@ -95,6 +98,7 @@ export default function login() {
                         </div>
                     </form>
                     
+                    <button className="btn btn-primary" onClick={(e) => signIn('google')}>Google</button>
                     
                 </div>
             </div>

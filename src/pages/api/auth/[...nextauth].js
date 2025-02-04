@@ -41,32 +41,34 @@ export default NextAuth({
                     throw new Error("Error: Senha não confere")
                 }
 
-                return {
-                    id: user.data.userAccount._id,
-                    name: user.data.userAccount.firstName,
-                    email: user.data.userAccount.email,
-                    type: user.data.userAccount.type
-                }
+                return user.data
+
+                // return {
+                //     id: user.data.userAccount._id,
+                //     name: user.data.userAccount.firstName,
+                //     email: user.data.userAccount.email,
+                //     type: user.data.userAccount.type
+                // }
 
             }
             
         })
     ],
-    callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token.id = user.id
-                token.type = user.type
-            }
-            return token
-        },
-        async session({ session, token }) {
-            if (token) {
-                session.user.id = token.id
-                session.user.type = token.type
-            }
-            return session
-        }
-    },
-    pages: { signIn: "/auth/signin" }
+    // callbacks: {
+    //     async jwt({ token, user }) {
+    //         if (user) {
+    //             token.id = user.id
+    //             token.type = user.type
+    //         }
+    //         return token
+    //     },
+    //     async session({ session, token }) {
+    //         if (token) {
+    //             session.user.id = token.id
+    //             session.user.type = token.type
+    //         }
+    //         return session
+    //     }
+    // },
+    //pages: { signIn: "/auth/signin" }
 });
