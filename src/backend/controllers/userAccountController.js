@@ -78,11 +78,34 @@ const verifyCredentials = async (req, res) => {
     }
 }
 
+const verifyGoogleAccountRegister = async (req, res) => {
+    console.log('\n\n----CONTROLLER verifyGoogleAccountRegister----\n')
+
+    var googleAccount= {}
+    if (Object.keys(req.body).length > 0) var googleAccount= req.body
+
+    try {
+        const userAccount= await UserAccount.findOne({ googleId: googleAccount.id })
+        if (userAccount.length== 0) {
+            console.log("faça aqui um cadastro do usuario google, depois direcione para home page")
+        } else {
+            console.log("conta verificada, direcionar para home page")
+        }
+        res.status(200).json({message: "conta do google validada."})
+    } catch (error) {
+        console.log("Erro ao verificar a conta do google: ", error)
+        res.status(500).json({ message: "Erro ao verificar a conta do google." });
+    }
+
+
+}
+
 
 module.exports= {
     insertUserAccount,
     userLoginAttempt,
     getUserAccounts,
     getOneUserAccount,
-    verifyCredentials
+    verifyCredentials,
+    verifyGoogleAccountRegister
 }

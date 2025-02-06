@@ -10,7 +10,9 @@ const UserAccountSchema = new Schema({
     firstName: String,
     lastName: String,
     birthDate: Date,
+    avatarImage: String,
     type: String,
+    googleId: String,
 }, { timestamps: true }
 )
 

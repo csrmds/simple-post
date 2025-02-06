@@ -6,27 +6,35 @@ import { useEffect, useState } from 'react'
 export default function navbar() {
     const { data: session, status } = useSession()
     const router = useRouter()
+    const [user, setUser] = useState()
 
     useEffect(()=> {
         console.log("Session on navbar: ", session, "\nstatus: ", status)
+        if(session?.user) {
+            const userJson= JSON.parse(JSON.stringify(session?.user))
+            if (status== "authenticated") setUser(userJson)
+        } 
+
     }, [status])
+
+    const userView = ()=> {
+        console.log("Status: ",session)
+    }
 
     const logout = () => {
         signOut()
-        // setTimeout(()=>{
-        //     router.push("/login")
-        // }, 1200)
     }
 
     return (
         <>
-            <div className="navbar bg-violet-400">
+            <div className="navbar bg-cyan-700">
                 <div className="flex-1">
-                    <a className="btn btn-ghost text-xl">daisyUI</a>
+                    <a className="btn btn-ghost text-xl">PostApp</a>
                 </div>
                 <div className="flex-none gap-2">
                     <div className="form-control form-inline">
                         <div className='form-group'>
+                            <button className="btn btn-info" onClick={()=> userView()}>teste</button>
                             <input type="text" placeholder={status} className="input input-bordered w-24 md:w-auto" readOnly />
                             {
                                 status === "unauthenticated" ? ( <button className='btn btn-md' onClick={()=> router.push("/login")} >Login</button> ) : ( <span></span> )
@@ -35,14 +43,13 @@ export default function navbar() {
                     </div>
 
                     <div className="dropdown dropdown-end">
+
                         {
                             status === "authenticated" ? (
                                 <>
                                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                                         <div className="w-10 rounded-full">
-                                            <img
-                                                alt="Tailwind CSS Navbar component"
-                                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                                            <img alt="Tailwind CSS Navbar component" src={user?.image || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                                         </div>
                                     </div>
                                     <ul

@@ -11,12 +11,13 @@ export default function login() {
     const [message, setMessage] = useState("")
 
     const credentialLogin= async (e)=> {
+        console.log("credentialLogin prevent: ",e)
         e.preventDefault()
 
         const res = await signIn("credentials", {
             email: e.target.email.value,
             password: e.target.password.value,
-            redirect: false
+            redirect: false,
         })
         if (res.error || res.ok== false) {
             setError(true)
@@ -26,15 +27,21 @@ export default function login() {
             setError(false)
             setMessage("")
             console.log('Validação teoricamenteo OK', res)
-            router.push("/")
+            router.push('/')
         }
+    }
+
+    const googleLogin= async (e)=> {
+        e.preventDefault()
+        signIn('google', {callbackUrl: 'localhost:5000/api/useraccount/verifygoogleaccount'})
     }
 
 
 
     return (
         <>
-            <div className="card card-side bg-base-100 shadow-xl">
+            {/* <div className="card card-side bg-violet-950 shadow-xl"> */}
+            <div className="card card-side bg-gradient-to-tr from-sky-300 from-30% to-violet-950 to-95%  shadow-2xl">
                 <figure>
                     <img
                         className="w-96"
@@ -42,7 +49,7 @@ export default function login() {
                         alt="Login" />
                 </figure>
                 <div className="card-body">
-                    <h2 className="card-title">Login Social Media</h2>
+                    <h2 className="card-title text-gray-200">Login PostApp</h2>
 
                     <form onSubmit={credentialLogin}>
                         <div className="h-full">
@@ -64,8 +71,8 @@ export default function login() {
                             </label>
 
                             <div className="card-actions justify-between mt-6">
-                                <button className="btn btn-primary" type="submit">Login</button>
-                                <button className="btn btn-primary" onClick={(e) => signIn('google')}>Google</button>
+                                <button className="btn btn-primary w-24 shadow-md" type="submit">Login</button>
+                                <button className="btn btn-primary w-24 shadow-md" onClick={googleLogin}>Google</button>
                             </div>
 
                             {
@@ -97,8 +104,6 @@ export default function login() {
                             
                         </div>
                     </form>
-                    
-                    <button className="btn btn-primary" onClick={(e) => signIn('google')}>Google</button>
                     
                 </div>
             </div>

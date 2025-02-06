@@ -10,6 +10,7 @@ export default function Feed() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const [testeView, setTesteView] = useState()
+    const [userGoogle, setUserGoogle] = useState()
  
     useEffect(()=> {
         const info= {
@@ -28,14 +29,20 @@ export default function Feed() {
 
         if (status=== "loading") setTesteView("carregando...")
 
+        if (status === 'authenticated') setUserGoogle(session?.user)
+
         getPostList()
     }, [status])
 
 
     const teste = () => {
-        postList.map((post)=> {
-            console.log(post.images)
-        })   
+        // postList.map((post)=> {
+        //     console.log(post.images)
+        // })
+        console.log(session?.user)
+        // Object.keys(userGoogle).forEach((item)=> {
+        //     console.log(item," - ", item.)
+        // })
     }
 
     
@@ -53,10 +60,12 @@ export default function Feed() {
             </div> */}
 
             <div className="flex flex-col w-192">
-                <div className="container-fluid bg-amber-800 m-4 p-4">
+                {/* <div className="container-fluid bg-amber-800 m-4 p-4">
                     <p>{testeView}</p>
                     <p>{session?.user?.name}</p>
-                </div>
+                    <p>{typeof(userGoogle)}</p>
+                    <button className="btn btn-circle btn-primary" onClick={teste}>opa...</button>
+                </div> */}
 
                 {
                     postList.map((post) => (
