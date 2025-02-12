@@ -18,7 +18,18 @@ const insertComment = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        const comments= await Comment.find()
+        // const comments= await Comment.find()
+        const comments= await Comment.aggregate([
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "userAccountId",
+                    foreignField: "_id",
+                    as: "author"
+                }
+            }
+        ])
+
         res.status(200).json(comments)
     } catch (error) {
         console.log("Erro ao buscar comentarios: ", error)

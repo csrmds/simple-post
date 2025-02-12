@@ -45,6 +45,7 @@ export default NextAuth({
                     id: user.data.userAccount._id,
                     name: user.data.userAccount.firstName,
                     email: user.data.userAccount.email,
+                    image: user.data.userAccount.avatarImage,
                     type: "local"
                 }
 
@@ -55,14 +56,45 @@ export default NextAuth({
     callbacks: {
         async signIn({ account, profile }) {
             //cadastrar conta do google no banco se ainda ñ for cadastrada
-            console.log("\n\nCallback signIn")
-            console.log("account: ",account, "\nprofile: ", profile)
+            const url= process.env.NEXT_PUBLIC_BACKEND_URL
+            console.log("\n\n------Callback signIn------")
+            //console.log("account: ",account, "\nprofile: ", profile)
+            if (account.provider== "google") {
+                const googleAccount= {
+                    userName: profile.email,
+                    email: profile.email,
+                    googleId: profile.sub,
+                    avatarImage: profile.picture,
+                    firstName: profile.given_name,
+                    lastName: profile.family_name,
+                    type: "googleAccount"
+                }
+                
+                const verifyAccount= await axios.post(`${url}/api/useraccount/verifygoogleaccount`, googleAccount)
+                console.log("verifyAccount response: ", verifyAccount.data)
+                if (verifyAccount.data.error) {
+                    return false
+                } else {
+                    return true
+                }
+                
+            } else {
+                return true
+            }
             
-
-            return true
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
+            const url= process.env.NEXT_PUBLIC_BACKEND_URL
             if (user) {
+                console.log("------jwt------ \nAccount provider: ",account.provider)
+                if (account.provider=="google") {
+                    const response = await axios.post(`${url}/api/useraccount/one`, {googleId: user.id})
+                    //console.log("consulta conta google: ", response.data.userAccount)
+                    user.id= response.data.userAccount._id
+                    user.type= response.data.userAccount.type
+                } else {
+                    user.type= "local"
+                }
                 token.id = user.id
                 token.type = user.type
             }

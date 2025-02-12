@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react"
+import { useSession, signOut } from 'next-auth/react'
 import axios from "axios"
 
 
@@ -10,6 +11,7 @@ export default function PostNew() {
     const [responseError, setResponseError] = useState(false)
     const [responseMsg, setResponseMsg] = useState('')
     const [responseData, setResponseData] = useState([])
+    const { data: session } = useSession()
 
     const inputFileHide = useRef(null)
     const handleButtonFile = (e) => {
@@ -26,6 +28,7 @@ export default function PostNew() {
             const formPost= new FormData()
             formPost.append('title', title)
             formPost.append('content', content)
+            formPost.append('userAccountId', session?.user?.id)
             Array.from(postImage).forEach((file)=> {
                 formPost.append('post-image', file)
             })
@@ -106,17 +109,10 @@ export default function PostNew() {
                                                 <span>{responseMsg}</span>
                                                 <div className="flex justify-end w-full">
                                                     <button>
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                             className="h-6 w-6 shrink-0 stroke-current"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
                                                             onClick={teste}>
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth="2"
-                                                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                         </svg>
                                                     </button>
                                                 </div>

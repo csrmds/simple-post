@@ -6,6 +6,7 @@ const commentSchema = new Schema({
     postId: { type: Schema.Types.ObjectId, required: true },
     text: { type: String, required: true },
     type: {type: String, default: "comment"},
+    userAccountId: Schema.Types.ObjectId,
     responseId: Schema.Types.ObjectId,
 }, { timestamps: true }
 )

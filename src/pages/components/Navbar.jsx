@@ -9,7 +9,7 @@ export default function navbar() {
     const [user, setUser] = useState()
 
     useEffect(()=> {
-        console.log("Session on navbar: ", session, "\nstatus: ", status)
+        //console.log("Session on navbar: ", session, "\nstatus: ", status)
         if(session?.user) {
             const userJson= JSON.parse(JSON.stringify(session?.user))
             if (status== "authenticated") setUser(userJson)
@@ -18,7 +18,8 @@ export default function navbar() {
     }, [status])
 
     const userView = ()=> {
-        console.log("Status: ",session)
+        console.log("Session: ",session)
+        console.log("Status: ",status)
     }
 
     const logout = () => {

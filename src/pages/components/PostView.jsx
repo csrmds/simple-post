@@ -13,7 +13,6 @@ export default function postView(props) {
     const [viewCommentList, setViewCommentList]= useState(false)
     const [title, setTitle]= useState("")
     const [content, setContent]= useState("")
-    const [createdAt, setCreatedAt]= useState("")
     const [images, setImages]= useState( props.images )
 
     const handleComment= (newValue)=> {
@@ -34,7 +33,7 @@ export default function postView(props) {
     }
 
     useEffect(()=> {
-        //console.log("UseEffect: ", props.images[0])
+        //console.log("props: ", props)
     }, [])
 
     const teste = () => {
@@ -56,7 +55,7 @@ export default function postView(props) {
                             <div className="w-16 rounded-full">
                                 <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                             </div>
-                            <h1 className="pl-2 font-semibold">{props.postId}</h1>
+                            <h1 className="pl-2 font-semibold">{props.author?.firstName}</h1>
                         </div>
                         
                         <div className="flex-none">
@@ -72,7 +71,7 @@ export default function postView(props) {
                                         <img className='' src={url+"/images/"+path.basename(image.address)} alt={image.description} />
                                     </div>
                                 )) 
-                            ) : ( <p>carregando...</p> ) }
+                            ) : ( <p>Post sem imagem...</p> ) }
                         </div>
                     </figure>
 
@@ -97,14 +96,14 @@ export default function postView(props) {
                             </button>
                         </div>
                         
-                        <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center mt-4 opacity-100 scale-100 max-h-40" : "flex justify-center mt-4 opacity-0 scale-95 max-h-0"}`}>
+                        <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center mt-4 opacity-100 scale-100 max-h-40" : "flex justify-center mt-4 opacity-0 scale-80 max-h-0"}`}>
                             <div className='w-120'>
                                 <CommentEdit postId={props.postId} cancelar={newComment} ></CommentEdit>
                             </div>
                         </div>
 
-                        <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center mt-4 opacity-100 scale-100 max-h-192" : "flex justify-center mt-4 opacity-0 scale-95 max-h-0"}`}>
-                            <div className='w-120'>
+                        <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center mt-4 opacity-100 scale-100 max-h-192" : "flex justify-center mt-4 opacity-0 scale-80 max-h-0"}`}>
+                            <div className='w-140'>
                                 <CommentList comments={props.comments}></CommentList>
                             </div>
                         </div>

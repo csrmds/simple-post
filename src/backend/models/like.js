@@ -6,7 +6,7 @@ const likeSchema = new Schema({
     from: {type: String, required: true }, //post ou comment
     foreignId: { type: Schema.Types.ObjectId, required: true }, //id do post ou do comentario
     react: String,
-    userAccount: Schema.Types.ObjectId,
+    userAccountId: Schema.Types.ObjectId,
 }, { timestamps: true }
 )
 

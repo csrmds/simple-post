@@ -6,7 +6,7 @@ export default function login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const router= useRouter()
     const [email, setEmail] = useState("pedro.santos@example.com")
-    const [password, setPassword] = useState("123456")
+    const [password, setPassword] = useState()
     const [error, setError] = useState(false)
     const [message, setMessage] = useState("")
 
@@ -33,7 +33,7 @@ export default function login() {
 
     const googleLogin= async (e)=> {
         e.preventDefault()
-        signIn('google', {callbackUrl: 'localhost:5000/api/useraccount/verifygoogleaccount'})
+        signIn('google', {callbackUrl: 'localhost:3000'})
     }
 
 
@@ -78,16 +78,8 @@ export default function login() {
                             {
                                 error && (
                                     <div role="alert" className="alert alert-error mt-6">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 shrink-0 stroke-current"
-                                            fill="none"
-                                            viewBox="0 0 24 24">
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth="2"
-                                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                         </svg>
                                         <span>{message}</span>
                                         <div>

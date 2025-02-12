@@ -72,8 +72,8 @@ const verifyCredentials = async (req, res) => {
         //console.log(userAccount, "typeOf: ", typeof(userAccount))
 
         res.status(200).json({userAccount, check})
-    } catch (error) {
-        console.log("Erro ao validar a senha: ", error)
+    } catch (err) {
+        console.log("Erro ao validar a senha: ", err)
         res.status(500).json({ message: "Erro ao validar a senha: " });
     }
 }
@@ -83,17 +83,27 @@ const verifyGoogleAccountRegister = async (req, res) => {
 
     var googleAccount= {}
     if (Object.keys(req.body).length > 0) var googleAccount= req.body
+    console.log('req.body: ',req.body)
 
     try {
-        const userAccount= await UserAccount.findOne({ googleId: googleAccount.id })
-        if (userAccount.length== 0) {
+        const userAccount= await UserAccount.findOne({ googleId: googleAccount.googleId })
+        console.log("userAccountResult: ",userAccount)
+        if (!userAccount || userAccount.length== 0) {
             console.log("faça aqui um cadastro do usuario google, depois direcione para home page")
+            try {
+                const newUserAccount= new UserAccount(googleAccount)
+                const savedUserAccount= await newUserAccount.save()
+                res.status(200).json({savedUserAccount, error: false})
+            } catch (err) {
+                res.status(500).json({error: true, info: err})
+            }
+ 
         } else {
             console.log("conta verificada, direcionar para home page")
         }
         res.status(200).json({message: "conta do google validada."})
-    } catch (error) {
-        console.log("Erro ao verificar a conta do google: ", error)
+    } catch (err) {
+        console.log("Erro ao verificar a conta do google: ", err)
         res.status(500).json({ message: "Erro ao verificar a conta do google." });
     }
 

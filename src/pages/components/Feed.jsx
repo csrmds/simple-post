@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import axios from "axios"
 import PostView from '../components/PostView'
@@ -21,6 +21,7 @@ export default function Feed() {
         const getPostList = async() => {
             const response = await axios.post(`${url}/post/aggregate`, info)
             setPostList(response.data)
+            //console.log("getPostList: ", response.data)
         }
 
         if (status === 'unauthenticated') {
@@ -39,7 +40,7 @@ export default function Feed() {
         // postList.map((post)=> {
         //     console.log(post.images)
         // })
-        console.log(session?.user)
+        //console.log(session?.user)
         // Object.keys(userGoogle).forEach((item)=> {
         //     console.log(item," - ", item.)
         // })
@@ -77,6 +78,7 @@ export default function Feed() {
                                 createdAt= {post.createdAt}
                                 images= {post.images}
                                 comments= {post.comments}
+                                author= {post.author[0]}
                             ></PostView>
                         </div>
 

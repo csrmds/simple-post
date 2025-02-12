@@ -112,6 +112,36 @@ const getPostsAggregate = async (req, res) => {
                     as: "comments"
                 }
             },
+            {
+                $unwind: {  path: "$comments", preserveNullAndEmptyArrays: true  }
+            },
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "comments.userAccountId",
+                    foreignField: "_id",
+                    as: "comments.author"
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    title: { $first: "$title" },
+                    content: { $first: "$content" },
+                    images: { $first: "$images" },
+                    comments: { $push: "$comments" },
+                    userAccountId: { $first: "$userAccountId" },
+                    createdAt: { $first: "$createdAt" },
+                }
+            },
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "userAccountId",
+                    foreignField: "_id",
+                    as: "author"
+                }
+            },
             { $sort: {createdAt: -1} },
             { $limit: 5 }
         ])
