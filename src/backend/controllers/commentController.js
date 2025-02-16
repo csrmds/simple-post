@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose')
 const Comment= require('../models/comment')
 
 const insertComment = async (req, res) => {
@@ -18,8 +19,12 @@ const insertComment = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        // const comments= await Comment.find()
+        const postId= new mongoose.Types.ObjectId(req.body.postId) 
+        console.log("\n\n--------GetComments Controller--------\nPostId: ", postId)
         const comments= await Comment.aggregate([
+            {
+                $match: { postId: new mongoose.Types.ObjectId(postId) }
+            },
             {
                 $lookup: {
                     from: "useraccounts",
@@ -32,7 +37,7 @@ const getComments = async (req, res) => {
 
         res.status(200).json(comments)
     } catch (error) {
-        console.log("Erro ao buscar comentarios: ", error)
+        console.log("\nErro ao buscar comentarios: ", error)
         res.status(500).json({ message: "Erro ao buscar comentarios" });
     }
 }

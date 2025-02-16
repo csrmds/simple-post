@@ -14,7 +14,9 @@ export default function commentEdit(props) {
     const [errorVisible, setErrorVisible] = useState("")
     const [infoMessage, setInfoMessage] = useState("")
     const [infoVisible, setInfoVisible] = useState(false)
-
+    const callRefreshComments= props.refreshComments
+    
+    
     useEffect(()=> {
         
     })
@@ -36,6 +38,7 @@ export default function commentEdit(props) {
             setInfoVisible(true)
             setTimeout(() => setInfoVisible(false), 2000);
             cleanFields()
+            callRefreshComments()
         } catch (error) {
             console.log("Erro ao tentar salvar o comentario", error)
             setErrorMessage(error)

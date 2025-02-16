@@ -5,6 +5,6 @@ const { insertComment, getComments }= require('../controllers/commentController'
 const router= express.Router()
 
 router.post('/insert', insertComment)
-router.get('/', getComments)
+router.post('/', getComments)
 
 module.exports= router 

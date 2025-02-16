@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import path from 'path'
 
 
 export default function commentList(props) {
@@ -6,9 +7,10 @@ export default function commentList(props) {
     const [comments, setComments] = useState(props.comments)
 
     useEffect(()=> {
-        console.log("comment list component useEffect: ")
-        console.log(comments[0].author[0])
-    }, [])
+        // console.log("comment list component useEffect: ")
+        // console.log(comments[0].author[0])
+        setComments(props.comments)
+    }, [props.comments])
 
     const teste = () => {
         console.log("botao teste: ", comments)
@@ -26,7 +28,7 @@ export default function commentList(props) {
                                     <img
                                         className="h-12 w-12 rounded-full"
                                         alt="Tailwind CSS examples"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                                        src={comment.author[0]?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                                 </span>
                                 <div className="card border w-120">
                                     <div className="card-body p-4 ">

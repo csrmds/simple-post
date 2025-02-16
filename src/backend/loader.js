@@ -5,6 +5,7 @@ const connectDB= require('./config/database')
 const postRoutes= require('./routes/postRoutes')
 const commentRoutes= require('./routes/commentRoutes')
 const userAccountRoutes= require('./routes/userAccountRoutes')
+const likeRoutes= require('./routes/likeRoutes')
 const allowCors= require('./config/cors')
 const path= require('path')
 
@@ -18,7 +19,9 @@ app.use(allowCors)
 app.use('/api/useraccount', userAccountRoutes)
 app.use('/post', postRoutes)
 app.use("/images", express.static(path.join(__dirname, "files", "postImages")));
+app.use("/images/avatar", express.static(path.join(__dirname, "files", "userAvatar")));
 app.use('/comment', commentRoutes)
+app.use('/like', likeRoutes)
 
 
 const PORT= process.env.PORT

@@ -79,6 +79,7 @@ export default function Feed() {
                                 images= {post.images}
                                 comments= {post.comments}
                                 author= {post.author[0]}
+                                likes= {post.likes}
                             ></PostView>
                         </div>
 

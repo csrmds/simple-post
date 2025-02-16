@@ -11,7 +11,7 @@ export default function login() {
     const [message, setMessage] = useState("")
 
     const credentialLogin= async (e)=> {
-        console.log("credentialLogin prevent: ",e)
+        //console.log("credentialLogin prevent: ",e)
         e.preventDefault()
 
         const res = await signIn("credentials", {
@@ -26,7 +26,7 @@ export default function login() {
         }  else {
             setError(false)
             setMessage("")
-            console.log('Validação teoricamenteo OK', res)
+            //console.log('Validação teoricamenteo OK', res)
             router.push('/')
         }
     }

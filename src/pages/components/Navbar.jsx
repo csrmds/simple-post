@@ -35,8 +35,7 @@ export default function navbar() {
                 <div className="flex-none gap-2">
                     <div className="form-control form-inline">
                         <div className='form-group'>
-                            <button className="btn btn-info" onClick={()=> userView()}>teste</button>
-                            <input type="text" placeholder={status} className="input input-bordered w-24 md:w-auto" readOnly />
+                            <input type="text" placeholder="" className="input input-bordered w-24 md:w-auto" readOnly />
                             {
                                 status === "unauthenticated" ? ( <button className='btn btn-md' onClick={()=> router.push("/login")} >Login</button> ) : ( <span></span> )
                             }
