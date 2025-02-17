@@ -53,6 +53,14 @@ const config: Config = {
         '320': '80rem', // 1280px
         '384': '96rem', // 1536px
         '480': '120rem', // 1920px
+      },
+      scrollbar: {
+        DEFAULT: {
+          width: '8px',
+          track: '#1e293b',
+          thumb: '#64748b',
+          'thumb-hover': '#475569',
+        }
       }
     },
   },

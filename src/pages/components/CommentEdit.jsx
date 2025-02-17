@@ -38,7 +38,7 @@ export default function commentEdit(props) {
             setInfoVisible(true)
             setTimeout(() => setInfoVisible(false), 2000);
             cleanFields()
-            callRefreshComments()
+            setTimeout(() => callRefreshComments(), 1000)
         } catch (error) {
             console.log("Erro ao tentar salvar o comentario", error)
             setErrorMessage(error)

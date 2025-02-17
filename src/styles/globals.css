@@ -2,20 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-
-}
+:root {}
 
 @media (prefers-color-scheme: class) {
-  :root {
-
-  }
+    :root {}
 }
 
-body {
-
-}
+body {}
 
 @layer utilities {
+    /* .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+    }
 
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #1e293b; // Cor do fundo da barra
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #64748b; // Cor do "trilho"
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #475569; //Cor ao passar o mouse
+    } */
 }

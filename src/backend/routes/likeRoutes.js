@@ -12,7 +12,7 @@ const router= express.Router()
 router.post('/insert', insertLike)
 router.post('/check', checkLike)
 router.post('/remove', removeLike)
-router.post('/post', listLikesByPost)
+router.use('/post', listLikesByPost)
 router.post('/comment', listLikesByComment)
 
 module.exports= router 

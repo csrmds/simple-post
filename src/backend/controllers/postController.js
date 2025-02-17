@@ -126,6 +126,14 @@ const getPostsAggregate = async (req, res) => {
             {
                 $lookup: {
                     from: "likes",
+                    localField: "comments._id",
+                    foreignField: "foreignId",
+                    as: "comments.likes"
+                }
+            },
+            {
+                $lookup: {
+                    from: "likes",
                     localField: "_id",
                     foreignField: "foreignId",
                     as: "likes"
@@ -152,7 +160,7 @@ const getPostsAggregate = async (req, res) => {
                 }
             },
             { $sort: {createdAt: -1} },
-            { $limit: 6 }
+            { $limit: 5 }
         ])
         //console.log("Lista de posts...", posts)
         res.status(200).json(posts)

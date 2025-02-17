@@ -19,7 +19,8 @@ const insertComment = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        const postId= new mongoose.Types.ObjectId(req.body.postId) 
+        const postId= new mongoose.Types.ObjectId(req.body.postId)
+        //const postId= new mongoose.Types.ObjectId("67afadedb021ea28886d7ae2")
         console.log("\n\n--------GetComments Controller--------\nPostId: ", postId)
         const comments= await Comment.aggregate([
             {
@@ -32,7 +33,27 @@ const getComments = async (req, res) => {
                     foreignField: "_id",
                     as: "author"
                 }
-            }
+            },
+            {
+                $lookup: {
+                    from: "likes",
+                    localField: "_id",
+                    foreignField: "foreignId",
+                    as: "likes"
+                }
+            },
+            {
+                $unwind: {  path: "$likes", preserveNullAndEmptyArrays: true  }
+            },
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "likes.userAccountId",
+                    foreignField: "_id",
+                    as: "likes.user"
+                }
+            },
+
         ])
 
         res.status(200).json(comments)
