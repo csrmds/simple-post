@@ -5,7 +5,7 @@ import { useRouter } from "next/router"
 export default function login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const router= useRouter()
-    const [email, setEmail] = useState("pedro.santos@example.com")
+    const [email, setEmail] = useState("janaina.alves@example.com")
     const [password, setPassword] = useState()
     const [error, setError] = useState(false)
     const [message, setMessage] = useState("")

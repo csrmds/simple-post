@@ -1,11 +1,17 @@
+import React from "react";
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import mongoose from 'mongoose'
+import Slider from "react-slick";
 import CommentEdit from './CommentEdit'
 import CommentList from './CommentList'
 import path from 'path'
 import {format, compareAsc} from 'date-fns'
 import axios from 'axios'
+
+
+
+
 
 
 
@@ -19,11 +25,22 @@ export default function postView(props) {
     const [likes, setLikes]= useState( props.likes )
     const [liked, setLiked] = useState()
 
+    const sliderSettins = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        //adaptiveHeight: true,
+        //centerMode: true,
+        centerPadding: '0px'
+    }
+
 
     useEffect(()=> {
         checkLike()
-        console.log("useEffect comments: ", comments)
-        console.log("likes: ", likes)
+        console.log("useEffect images: ", images)
+        console.log("lenght: ", images.length)
     }, [])
 
     const refreshLikes= async ()=> {
@@ -139,22 +156,38 @@ export default function postView(props) {
                         </div>
                     </div>
 
-                    <figure className='bg-slate-800'>
-                        <div className='carousel carousel-center max-h-144'>
-                            { images.length > 0 ? (
-                                images.map((image, i) => (
-                                    <div className='carousel-item w-full flex justify-center' key={i} id={`${image.postId}_${i}`} >
-                                        <img src={url+"/images/"+path.basename(image.address)} alt={image.description} />
-                                        {/* <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-                                            <a href={`#${image.postId}_${i-1}`} className="btn btn-circle">❮</a>
-                                            <a href={`#${image.postId}_${i+1}`} className="btn btn-circle">❯</a>
-                                        </div> */}
-                                    </div>
-                                )) 
-                            ) : ( <p>Post sem imagem...</p> ) }
-                        </div>
-                    </figure>
-
+                    
+                        
+                    
+                    { images.length > 1 ? (
+                        <>
+                            <Slider {...sliderSettins} className='bg-slate-700 max-h-160'>
+                                {
+                                    images.map((image, i) => (
+                                        <figure key={i} className='flex-none grid content-center h-160'>
+                                            <img
+                                                src={url + "/images/" + path.basename(image.address)}
+                                                alt={image.description}
+                                                className="w-full h-auto max-h-160 object-contain"
+                                            />
+                                        </figure>
+                                    ))      
+                                }
+                            </Slider>
+                        </>
+                    ) : images.length == 1 && (
+                        <>
+                            <figure className='flex-none grid content-center h-160'>
+                                <img
+                                    src={url + "/images/" + path.basename(images[0].address)}
+                                    alt={images[0].description}
+                                    className="w-full h-auto max-h-160 object-contain"
+                                />
+                            </figure>
+                        </>
+                        
+                    )}   
+                    
                     <div className="card-body">
                         <h2 className="card-title">{ props.title }</h2>
                         <p className='mb-2'>{props.content}</p>
