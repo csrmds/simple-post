@@ -5,7 +5,7 @@ import axios from "axios"
 export default function commentEdit(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const {data: session} = useSession()
-    const postId = props.postId
+    const foreignId = props.postId
     const type = "post"
     const userAccountId = session.user?.id
     const responseId = props.commentId
@@ -32,7 +32,7 @@ export default function commentEdit(props) {
     const saveComment= async()=> {
 
         try {
-            const response = await axios.post(`${url}/comment/insert`, {postId, text, type, responseId, userAccountId})
+            const response = await axios.post(`${url}/comment/insert`, {foreignId, text, type, responseId, userAccountId})
             console.log(response.data)
             setInfoMessage("Comentario salvo com sucesso!")
             setInfoVisible(true)

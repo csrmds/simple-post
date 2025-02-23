@@ -26,7 +26,7 @@ const checkLike= async (req, res) => {
     const {from, foreignId, userAccountId} = req.body.like
 
     try {
-        console.log("\n\n=======LIKE CONTROLLER check=======\n")
+        //console.log("\n\n=======LIKE CONTROLLER check=======\n")
         //console.log('req.body: ', req.body)
         //console.log('from, foreignId, userAccountId: ', from, foreignId, userAccountId)
         const response= await Like.findOne({
@@ -35,7 +35,7 @@ const checkLike= async (req, res) => {
             userAccountId: new mongoose.Types.ObjectId(userAccountId)
         })
 
-        console.log("response: ", response)
+        //console.log("response: ", response)
         //return !!response
         //return response ? true : false
         res.status(200).json(response)

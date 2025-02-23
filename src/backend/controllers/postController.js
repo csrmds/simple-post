@@ -1,5 +1,8 @@
+const { default: mongoose } = require('mongoose')
 const Post= require('../models/post.js')
 const PostImage= require('../models/postImage.js')
+const Like = require('../models/like.js')
+const Comment = require ('../models/comment.js')
 const fs= require('fs/promises')
 const path= require('path')
 
@@ -94,6 +97,11 @@ const getPostById = async (req, res) => {
 }
 
 const getPostsAggregate = async (req, res) => {
+    console.log("\n\n------Controller getPostsAggregate------")
+    //console.log('req.body: ', req.body)
+    const order= req.body.order || -1
+    const limit= req.body.limit || 5
+
     try {
         const posts = await Post.aggregate([
             {
@@ -108,7 +116,7 @@ const getPostsAggregate = async (req, res) => {
                 $lookup: {
                     from: "comments",
                     localField: "_id",
-                    foreignField: "postId",
+                    foreignField: "foreignId",
                     as: "comments"
                 }
             },
@@ -159,8 +167,8 @@ const getPostsAggregate = async (req, res) => {
                     as: "author"
                 }
             },
-            { $sort: {createdAt: -1} },
-            { $limit: 5 }
+            { $sort: {createdAt: order} },
+            { $limit: limit }
         ])
         //console.log("Lista de posts...", posts)
         res.status(200).json(posts)
@@ -183,6 +191,50 @@ const updatePost = async (req, res) => {
     } catch (error) {
         console.log("Erro ao atualizar post: ", error)
         res.status(500).json({ message: "Erro ao atualizar post" })
+    }
+
+}
+
+const deletePost = async (req, res) => {
+    console.log("\n\n------Controller Delete Post------\nPostId: ",req.body.postId)
+    const postId = new mongoose.Types.ObjectId(req.body.postId)
+    let deletedLikes= ""
+
+    try {
+        //const deletedLikes = await Like.deleteMany({ foreignId: postId })
+        const comments = await Comment.find({ foreignId: postId })
+        console.log("\nDeletedLikes: ")
+        comments.map( async (comment)=> {
+            deletedLikes = await Like.deleteMany({ foreignId: comment._id })
+            console.log(deletedLikes)
+        })
+
+        const deletedComments = await Comment.deleteMany({ foreignId: postId })
+        console.log("deletedComments: ", deletedComments)
+
+        const deletedLikesPost = await Like.deleteMany({ foreignId: postId })
+        console.log("\n\nDeleted Likes Post:", deletedLikesPost)
+
+        console.log("\n\nDeletando imagens do post:")
+        const postImages = await PostImage.find({ postId: postId })
+        postImages.map((image)=> {
+            //console.log(image.address)
+            try {
+                fs.unlink(image.address)
+            } catch (err) {
+                console.log("erro ao deletar arquivo: ", image.address, "\n", err)
+            }
+        })
+        const deletedImages = await PostImage.deleteMany({ postId: postId }) 
+        console.log("deletedImagesDB: ", deletedImages)
+
+        const deletedPost = await Post.findByIdAndDelete(postId)
+        console.log("\n\nDeleted post:", deletedPost)
+        //console.log("post deletado: ", response)
+        res.status(200).json({ deletedLikes, deletedComments, deletedLikesPost, deletedImages, deletedPost })
+    } catch(err) {
+        console.log("Erro ao deletar post: ", err)
+        res.status(500).json({ message: "Erro ao deletar post" })
     }
 
 }
@@ -210,5 +262,6 @@ module.exports= {
     getPostsFilter, 
     getPostsAggregate, 
     updatePost, 
-    testFile
+    testFile,
+    deletePost
 }

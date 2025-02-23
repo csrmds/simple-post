@@ -13,6 +13,8 @@ export default function navbar() {
         if(session?.user) {
             const userJson= JSON.parse(JSON.stringify(session?.user))
             if (status== "authenticated") setUser(userJson)
+            console.log("USer: ", user)
+
         } 
 
     }, [status])
@@ -33,20 +35,21 @@ export default function navbar() {
                     <a className="btn btn-ghost text-xl">PostApp</a>
                 </div>
                 <div className="flex-none gap-2">
-                    <div className="form-control form-inline">
+                    {/* <div className="form-control form-inline">
                         <div className='form-group'>
                             <input type="text" placeholder="" className="input input-bordered w-24 md:w-auto" readOnly />
                             {
                                 status === "unauthenticated" ? ( <button className='btn btn-md' onClick={()=> router.push("/login")} >Login</button> ) : ( <span></span> )
                             }
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="dropdown dropdown-end">
 
                         {
                             status === "authenticated" ? (
                                 <>
+                                    
                                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                                         <div className="w-10 rounded-full">
                                             <img alt="Tailwind CSS Navbar component" src={user?.image || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
