@@ -151,16 +151,18 @@ export default function postView(props) {
             
             <div className="flex justify-center">
                 <div className="card card-compact bg-base-100 w-160 shadow-xl">
-                    <div className="navbar bg-violet-800 rounded-t-xl flex justify-between">
+                    <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6">
                         <div className="avatar">
                             <div className="w-16 rounded-full">
                                 <img src={author?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
                         </div>
+
+                        <h2 className="card-title">{ props.title }</h2>
                         
                         <div className="flex-none">
-                            { format(props.createdAt, "dd/MM/yyyy - HH:mm")  }
+                            { format(props.createdAt, "dd/MM/yy - HH:mm")  }
                         </div>
                     </div>
 
@@ -196,8 +198,7 @@ export default function postView(props) {
                     )}   
                     
                     <div className="card-body">
-                        <h2 className="card-title">{ props.title }</h2>
-                        <p className='mb-2'>{props.content}</p>
+                        <p className='my-2'>{props.content}</p>
                         <div className="card-actions justify-between">
                             <div>
                                 <div className='indicator'>

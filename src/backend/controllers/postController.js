@@ -12,7 +12,7 @@ const insertPost = async (req, res) => {
         console.log("\n\n=======CONTROLLER insertPost=======\n")
         const files = req.files
         const newPost = new Post(req.body)
-        //console.log('req.body: ', req.body, '\n')
+        console.log('req.files: ', req.files, '\n')
         const savedPost = await newPost.save()
         console.log("Post criado com sucesso: ", savedPost)
 
@@ -21,11 +21,11 @@ const insertPost = async (req, res) => {
             //const pathImages= './src/backend/files/postImages/'
             const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
             
-            // console.log('process path images: ', pathImages)
-            // console.log('files array: ')
-            // files.forEach((value, key) => {
-            //     console.log(`${key}: ${value}`)
-            // })
+            console.log('process path images: ', pathImages)
+            console.log('files array: ')
+            files.forEach((value, key) => {
+                console.log(`${key}: ${value}`)
+            })
 
             try {
                 files.map(async (file, i) => {
