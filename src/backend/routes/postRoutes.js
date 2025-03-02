@@ -1,6 +1,6 @@
 const express= require('express')
 const multer= require('multer')
-const { insertPost, getPosts, getPostById, getPostsFilter, getPostsAggregate, updatePost, testFile, deletePost }= require('../controllers/postController')
+const { insertPost, getPosts, getPostById, getPostsFilter, getPostsPaginate, getPostsAggregate, updatePost, testFile, deletePost }= require('../controllers/postController')
 
 const router = express.Router()
 
@@ -23,6 +23,7 @@ router.post('/teste', testFile)
 router.post('/insert', upload.array('post-image'), insertPost )
 router.post('/', getPostsFilter )
 router.use('/aggregate', getPostsAggregate)
+router.use('/list', getPostsPaginate)
 //router.get('/', getPosts )
 router.get('/:id', getPostById )
 router.post('/update', updatePost )

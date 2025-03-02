@@ -19,7 +19,6 @@ export default function home(props) {
                 {
                     status== "authenticated" ? (
                         <>
-                            <PostNew></PostNew>
                             <Feed></Feed>
                         </>
                     ) : (

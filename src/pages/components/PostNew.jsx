@@ -3,7 +3,7 @@ import { useSession, signOut } from 'next-auth/react'
 import axios from "axios"
 
 
-export default function PostNew() {
+export default function PostNew(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
@@ -13,6 +13,7 @@ export default function PostNew() {
     const [responseMsg, setResponseMsg] = useState('')
     const [responseData, setResponseData] = useState([])
     const { data: session } = useSession()
+    const callRefreshPostList = props.refreshPostList
     
     //função para criar previews das imanges anexadas
     const handleFileChange = (e) => {
@@ -60,7 +61,9 @@ export default function PostNew() {
                 setResponseError(response.data.error)
                 setResponseData(response.data.postId)
                 setResponseMsg(response.data.message)
-            })     
+                setTimeout(() => callRefreshPostList(), 1000)
+                setTimeout(() => cleanPostForm(), 1000)
+            })
             
         } catch (error) {
             setResponseError(true)
@@ -70,10 +73,11 @@ export default function PostNew() {
     }
 
     const cleanPostForm = (e) => {
-        e.preventDefault()
+        e?.preventDefault()
         setTitle('')
         setContent('')
         setPostImage([])
+        setSelectedFiles([])
         setResponseError(false)
         setResponseData([])
         setResponseMsg(false)
@@ -137,7 +141,7 @@ export default function PostNew() {
                                         ref={inputFileHide}
                                         style={{ display: "none" }}
                                         onChange={(e) => handleFileChange(e) } />
-                                    <button className="btn btn-primary" onClick={cleanPostForm}>Cancelar</button>
+                                    <button className="btn btn-primary" onClick={(e)=> cleanPostForm(e)}>Cancelar</button>
                                     <button className="btn btn-success" onClick={insertPost}>Postar</button>
                                 </div>
                         </form>

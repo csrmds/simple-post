@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import Slider from "react-slick";
 import CommentEdit from './CommentEdit'
@@ -21,6 +21,9 @@ export default function postView(props) {
     const [likes, setLikes]= useState( props.likes )
     const [liked, setLiked] = useState()
     const author = props.author
+    const callRefreshPostList = props.refreshPostList
+    const observerRef = useRef(null);
+    const [itemView, setItemView] = useState(false)
 
     const sliderSettins = {
         dots: true,
@@ -39,6 +42,27 @@ export default function postView(props) {
         setComments(props.comments)
         // console.log("useEffect images: ", images)
         // console.log("lenght: ", images.length)
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setTimeout(()=> setItemView(true), 500)
+                }
+            },
+            { threshold: 1.0 }
+        )
+
+        if (observerRef.current) {
+            observer.observe(observerRef.current)
+        }
+
+        return () => {
+            if (observerRef.current) {
+                observer.observe(observerRef.current)
+            }
+        }
+
+
+
     }, [])
 
     const refreshLikes= async ()=> {
@@ -120,6 +144,7 @@ export default function postView(props) {
         try {
             const response = await axios.post(`${url}/post/delete`, { postId: props.postId })
             console.log(response.data)
+            setTimeout(()=> callRefreshPostList(), 1000)
         } catch(err) {
             console.log("erro ao deletar o post", err)
         }
@@ -151,7 +176,7 @@ export default function postView(props) {
             
             <div className="flex justify-center">
                 <div className="card card-compact bg-base-100 w-160 shadow-xl">
-                    <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6">
+                    <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6 shadow-xl shadow-black">
                         <div className="avatar">
                             <div className="w-16 rounded-full">
                                 <img src={author?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
@@ -171,7 +196,7 @@ export default function postView(props) {
                     
                     { images.length > 1 ? (
                         <>
-                            <Slider {...sliderSettins} className='bg-slate-800 max-h-160'>
+                            <Slider {...sliderSettins} className='bg-slate-700 max-h-160'>
                                 {
                                     images.map((image, i) => (
                                         <figure key={i} className='flex-none grid content-center h-160'>
@@ -230,10 +255,26 @@ export default function postView(props) {
                                 </div>
 
                                 
-                                <button className="btn btn-sm" onClick={newComment}>
+                                <button className="btn btn-sm" onClick={newComment} >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                                     </svg>
+                                </button>
+
+                                <button className="btn btn-sm" ref={observerRef}>
+                                    {
+                                        itemView ? (
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            </svg>
+                                        ) : (
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                                            </svg>
+                                        )
+                                    }
+                                    
                                 </button>
                             </div>
 

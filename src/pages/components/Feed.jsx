@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import axios from "axios"
 import PostView from '../components/PostView'
+import PostNew from '../components/PostNew'
 
 export default function Feed() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -11,18 +12,27 @@ export default function Feed() {
     const router = useRouter()
     const [testeView, setTesteView] = useState()
     const [userGoogle, setUserGoogle] = useState()
+    const [registro, setRegistro] = useState()
+
+    const info= {
+        order: -1,
+        limit: 30
+    }
+
+    const getPostList = async() => {
+        console.log("chamou getPostList..")
+        const response = await axios.post(`${url}/post/aggregate`, info)
+        setPostList(response.data)
+        //console.log("getPostList: ", response.data)
+    }
+
+    const postsList = async() => {
+        const response = await axios.post(`${url}/post/list`, info)
+        setRegistro(response.data)
+        console.log(response.data)
+    }
  
     useEffect(()=> {
-        const info= {
-            order: -1,
-            limit: 5
-        }
-
-        const getPostList = async() => {
-            const response = await axios.post(`${url}/post/aggregate`, info)
-            setPostList(response.data)
-            //console.log("getPostList: ", response.data)
-        }
 
         if (status === 'unauthenticated') {
             setTesteView("usuario não autenticado...")
@@ -53,20 +63,36 @@ export default function Feed() {
 
     return (
         <>
+        <div>
+            <button className="btn btn-default" onClick={postsList}>postList</button>
+        </div>
+        
+        <div className="flex flex-col items-center mb-6 overflow-x-auto">
+            <table className="table">
+                <tbody>
+                    {
+                        registro?.docs.length > 0 && (
+                            registro.docs.map((reg, i) => (
+                                <tr key={i}>
+                                    <td>{ reg._id }</td>
+                                    <td>{ reg.title }</td>
+                                    <td>{ reg.content }</td>
+                                </tr>
+                            ))
+                            
+                        )
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+
+        
+
+        <PostNew refreshPostList={getPostList} />
         
         <div className="flex flex-col items-center mb-6">
-            
-            {/* <div className="my-4">
-                <button className="btn btn-primary" onClick={teste}>teste</button>
-            </div> */}
-
             <div className="flex flex-col w-192">
-                {/* <div className="container-fluid bg-amber-800 m-4 p-4">
-                    <p>{testeView}</p>
-                    <p>{session?.user?.name}</p>
-                    <p>{typeof(userGoogle)}</p>
-                    <button className="btn btn-circle btn-primary" onClick={teste}>opa...</button>
-                </div> */}
 
                 {
                     postList.map((post) => (
@@ -80,7 +106,8 @@ export default function Feed() {
                                 comments= {post.comments}
                                 author= {post.author[0]}
                                 likes= {post.likes}
-                            ></PostView>
+                                refreshPostList={getPostList}
+                            />
                         </div>
 
                         

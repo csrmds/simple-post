@@ -96,11 +96,206 @@ const getPostById = async (req, res) => {
     }
 }
 
+const getPostsPaginate = async (req, res) => {
+    // console.log("\n\n------Controller getPostsAggregate------")
+    // console.log('req: ', "body: ",req.body.limit, "\nQuery: ", req.query.limit, "\nParams:", req.params.limit)
+    const order= parseInt(req.body.order || req.query.order || req.params.order || -1) 
+    const limit= parseInt(req.body.limit || req.query.limit || req.params.limit || 10) 
+    const page= parseInt(req.body.page || req.query.page || req.params.page || 1)
+
+    try {
+        const pipeLine = [
+            { $match: {} },
+            //lookup para imagens do post
+            { 
+                $lookup: {
+                    from: "postimages",
+                    localField: "_id",
+                    foreignField: "postId",
+                    as: "images"
+                },
+            },
+            
+            //lookup para comentarios do post
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "_id",
+                    foreignField: "foreignId",
+                    as: "comments"
+                },    
+            },
+            
+            //lookup para autor dos comentarios
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "comments.userAccountId",
+                    foreignField: "_id",
+                    as: "commentUser"
+                }
+            },
+
+            //lookup para likes dos comentários
+            {
+                $lookup: {
+                    from: "likes",
+                    localField: "comments._id",
+                    foreignField: "foreignId",
+                    as: "commentLikes"
+                }
+            },
+
+            //lookup para usuario dos likes dos comentarios
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "commentLikes.userAccountId",
+                    foreignField: "_id",
+                    as: "commentLikeUser"
+                }
+            },
+
+            //lookup para usuario do post
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "userAccountId",
+                    foreignField: "_id",
+                    as: "author"
+                }
+            },
+
+            //lookup para likes do post
+            {
+                $lookup: {
+                    from: "likes",
+                    localField: "_id",
+                    foreignField: "foreignId",
+                    as: "likes"
+                }
+            },
+
+            //lookup para usuarios dos likes do post
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "likes.userAccountId",
+                    foreignField: "_id",
+                    as: "postLikeUser"
+                }
+            },
+
+            //adicionando autor e os likes dos comenatarios
+            {
+                $addFields: {
+                    comments: {
+                        $map: {
+                            input: "$comments",
+                            as: "comment",
+                            in: {
+                                _id: "$$comment._id",
+                                text: "$$comment.text",
+                                userAccountId: "$$comment.userAccountId",
+                                createdAt: "$$comment.createdAt",
+                                updatedAt: "$$comment.updatedAt",
+                                user: {
+                                    $arrayElemAt: [
+                                        //arrayElemAt -> tranforma o array em um objeto. user: [{...}] > user: {...}
+                                        {
+                                            $filter: {
+                                                input: "$commentUser",
+                                                as: "user",
+                                                cond: { $eq: ["$$user._id", "$$comment.userAccountId"] }
+                                            }
+                                        }, 0
+                                    ]
+                                },
+                                likes: {
+                                    $map: {
+                                        input: "$commentLikes",
+                                        as: "likes",
+                                        // cond: { $eq: ["$likes.foreignId", "$comment._id"] }, -> pq eu precisei desfazer essa condição??
+                                        in: {
+                                            _id: "$$likes._id",
+                                            userAccountId: "$$likes.userAccountId",
+                                            foreignId: "$$likes.foreignId",
+                                            user: {
+                                                $arrayElemAt: [{
+                                                    $filter: {
+                                                        input: "$commentLikeUser",
+                                                        as: "user",
+                                                        cond: { $eq: ["$$user._id", "$$likes.userAccountId"] }
+                                                    }
+                                                },0]
+                                            }
+                                        }
+                                        
+                                    },
+                                },
+                            }
+                        }
+                    },
+
+                    likes: {
+                        $map: {
+                            input: "$likes",
+                            as: "likes",
+                            in: {
+                                _id: "$$likes._id",
+                                updatedAt: "$$likes.createdAt",
+                                user: {
+                                    $arrayElemAt: [{
+                                        $filter: {
+                                            input: "$postLikeUser",
+                                            as: "user",
+                                            cond: { $eq: ["$$user._id", "$$likes.userAccountId"] }
+                                        }
+                                    }, 0]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            
+            //retorna apenas os campos desejados
+            { 
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    content: 1,
+                    images: { address: 1, description: 1 },
+                    comments: {
+                        _id: 1,
+                        text: 1,
+                        createdAt: 1,
+                        updatedAt: 1,
+                        user: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
+                        likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
+                    },
+                    author: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
+                    likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
+                } 
+            },
+            { $sort: { createdAt: -1 } },
+        ]
+
+        const options = { page, limit }
+        const posts = await Post.aggregatePaginate(Post.aggregate(pipeLine), options)
+        res.status(200).json(posts)
+    } catch (error) {
+        console.log("Erro ao buscar post: ", error)
+        res.status(500).json({ message: "Erro ao buscar post" })
+    }
+}
+
 const getPostsAggregate = async (req, res) => {
-    console.log("\n\n------Controller getPostsAggregate------")
-    //console.log('req.body: ', req.body)
-    const order= req.body.order || -1
-    const limit= req.body.limit || 5
+    // console.log("\n\n------Controller getPostsAggregate------")
+    // console.log('req: ', "body: ",req.body.limit, "\nQuery: ", req.query.limit, "\nParams:", req.params.limit)
+    const order= parseInt(req.body.order || req.query.order || req.params.order || -1) 
+    const limit= parseInt(req.body.limit || req.query.limit || req.params.limit || 10) 
+    const page= 1
 
     try {
         const posts = await Post.aggregate([
@@ -259,7 +454,8 @@ module.exports= {
     insertPost, 
     getPosts, 
     getPostById, 
-    getPostsFilter, 
+    getPostsFilter,
+    getPostsPaginate,
     getPostsAggregate, 
     updatePost, 
     testFile,
