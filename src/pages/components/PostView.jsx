@@ -40,7 +40,7 @@ export default function postView(props) {
     useEffect(()=> {
         checkLike()
         setComments(props.comments)
-        // console.log("useEffect images: ", images)
+        //console.log("useEffect images: ", images)
         // console.log("lenght: ", images.length)
         const observer = new IntersectionObserver(
             (entries) => {
@@ -57,12 +57,9 @@ export default function postView(props) {
 
         return () => {
             if (observerRef.current) {
-                observer.observe(observerRef.current)
+                observer.unobserve(observerRef.current)
             }
         }
-
-
-
     }, [])
 
     const refreshLikes= async ()=> {
@@ -82,8 +79,8 @@ export default function postView(props) {
         const postId= props.postId
         try {
             const response = await axios.post(`${url}/comment`, {postId})
-            setComments(response.data)
             console.log("getCommentsByPostId: ", response.data)
+            setComments(response.data)
         } catch (err) {
             console.log("\nErro ao buscar comentarios: ", err)
         }
@@ -199,9 +196,12 @@ export default function postView(props) {
                             <Slider {...sliderSettins} className='bg-slate-700 max-h-160'>
                                 {
                                     images.map((image, i) => (
-                                        <figure key={i} className='flex-none grid content-center h-160'>
+                                        <figure key={i} className='flex-none grid content-center max-h-160'>
                                             <img
-                                                src={url + "/images/" + path.basename(image.address)}
+                                                src={
+                                                    image.source== "local" ? ( url + "/images/" + path.basename(image.address))
+                                                    : ( image.address )
+                                                }
                                                 alt={image.description}
                                                 className="w-full h-auto max-h-160 object-contain"
                                             />
@@ -212,9 +212,12 @@ export default function postView(props) {
                         </>
                     ) : images.length == 1 && (
                         <>
-                            <figure className='flex-none grid content-center h-160 bg-slate-800'>
+                            <figure className='flex-none grid content-center max-h-160 bg-slate-800'>
                                 <img
-                                    src={url + "/images/" + path.basename(images[0].address)}
+                                    src={
+                                        images[0].source== "local" ? ( url + "/images/" + path.basename(images[0].address) )
+                                        : ( images[0].address )
+                                    }
                                     alt={images[0].description}
                                     className="w-full h-auto max-h-160 object-contain"
                                 />

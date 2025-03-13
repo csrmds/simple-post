@@ -41,6 +41,7 @@ const insertPost = async (req, res) => {
                         description: file.filename,
                         mimetype: file.mimetype,
                         size: file.size,
+                        source: "local"
                     })
                     const savedPostImage = await newPostImage.save()
                     console.log(`Imagem salva order[${i}]`, savedPostImage)
@@ -97,8 +98,8 @@ const getPostById = async (req, res) => {
 }
 
 const getPostsPaginate = async (req, res) => {
-    // console.log("\n\n------Controller getPostsAggregate------")
-    // console.log('req: ', "body: ",req.body.limit, "\nQuery: ", req.query.limit, "\nParams:", req.params.limit)
+    console.log("\n\n------Controller getPostsAggregate------")
+    console.log('req: ', "body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
     const order= parseInt(req.body.order || req.query.order || req.params.order || -1) 
     const limit= parseInt(req.body.limit || req.query.limit || req.params.limit || 10) 
     const page= parseInt(req.body.page || req.query.page || req.params.page || 1)
@@ -265,7 +266,7 @@ const getPostsPaginate = async (req, res) => {
                     _id: 1,
                     title: 1,
                     content: 1,
-                    images: { address: 1, description: 1 },
+                    images: { address: 1, description: 1, source: 1 },
                     comments: {
                         _id: 1,
                         text: 1,
@@ -276,9 +277,10 @@ const getPostsPaginate = async (req, res) => {
                     },
                     author: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
                     likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
+                    createdAt: 1,
                 } 
             },
-            { $sort: { createdAt: -1 } },
+            { $sort: { createdAt: order } },
         ]
 
         const options = { page, limit }

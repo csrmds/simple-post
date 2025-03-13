@@ -5,6 +5,9 @@
         },
         {
             "path": "../../nextjs_auth"
+        },
+        {
+            "path": "../react-redux"
         }
     ]
 }

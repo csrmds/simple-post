@@ -12,6 +12,7 @@ const postImageSchema = new Schema({
     width: Number,
     height: Number,
     order: Number,
+    source: String,
 }, { timestamps: true }
 )
 

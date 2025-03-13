@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { useSession, signOut } from 'next-auth/react'
 import axios from "axios"
 
@@ -14,6 +14,13 @@ export default function PostNew(props) {
     const [responseData, setResponseData] = useState([])
     const { data: session } = useSession()
     const callRefreshPostList = props.refreshPostList
+    const callUpdatePayload = props.updatePayload
+
+
+    useEffect(()=> {
+        //console.log("useEffect postNew refreshPostList: ", callRefreshPostList)
+        //console.log("useEffect postNew refreshPostList: ", callRefreshPostList)
+    }, [])
     
     //função para criar previews das imanges anexadas
     const handleFileChange = (e) => {
@@ -47,11 +54,6 @@ export default function PostNew(props) {
                 formPost.append('post-image', file)
             })
 
-            //console.log("try post formPost: ", formPost)
-
-            //return
-
-
             //ENVIA REQUISIÇÃO
             const response = await axios.post(`${url}/post/insert`, formPost, {
                 headers: {'Content-Type': 'multipart/form-data'}
@@ -61,9 +63,13 @@ export default function PostNew(props) {
                 setResponseError(response.data.error)
                 setResponseData(response.data.postId)
                 setResponseMsg(response.data.message)
+                callUpdatePayload((e)=> e.preventDefault())
+            }).finally(()=> {
                 setTimeout(() => callRefreshPostList(), 1000)
                 setTimeout(() => cleanPostForm(), 1000)
-            })
+            }) 
+                
+            
             
         } catch (error) {
             setResponseError(true)
@@ -143,6 +149,7 @@ export default function PostNew(props) {
                                         onChange={(e) => handleFileChange(e) } />
                                     <button className="btn btn-primary" onClick={(e)=> cleanPostForm(e)}>Cancelar</button>
                                     <button className="btn btn-success" onClick={insertPost}>Postar</button>
+                                    <button className="btn btn-success" onClick={(e)=> callUpdatePayload(e)}>teste</button>
                                 </div>
                         </form>
                     </div>

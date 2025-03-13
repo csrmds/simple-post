@@ -13,7 +13,7 @@ export default function navbar() {
         if(session?.user) {
             const userJson= JSON.parse(JSON.stringify(session?.user))
             if (status== "authenticated") setUser(userJson)
-            console.log("USer: ", user)
+            //console.log("User: ", user)
 
         } 
 

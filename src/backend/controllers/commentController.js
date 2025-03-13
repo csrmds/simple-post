@@ -49,7 +49,7 @@ const getComments = async (req, res) => {
                     from: "useraccounts",
                     localField: "userAccountId",
                     foreignField: "_id",
-                    as: "author"
+                    as: "user"
                 }
             },
             {
