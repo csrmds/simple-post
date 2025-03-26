@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import { useSession, signOut } from 'next-auth/react'
+import { useDispatch, useSelector } from "react-redux"
 import axios from "axios"
 
 
@@ -13,8 +14,8 @@ export default function PostNew(props) {
     const [responseMsg, setResponseMsg] = useState('')
     const [responseData, setResponseData] = useState([])
     const { data: session } = useSession()
-    const callRefreshPostList = props.refreshPostList
-    const callUpdatePayload = props.updatePayload
+    const callRefreshPostList = props.getPostList
+    const callUpdatePaginateOptions = props.updatePaginateOptions
 
 
     useEffect(()=> {
@@ -63,7 +64,7 @@ export default function PostNew(props) {
                 setResponseError(response.data.error)
                 setResponseData(response.data.postId)
                 setResponseMsg(response.data.message)
-                callUpdatePayload((e)=> e.preventDefault())
+                callUpdatePaginateOptions((e)=> e.preventDefault())
             }).finally(()=> {
                 setTimeout(() => callRefreshPostList(), 1000)
                 setTimeout(() => cleanPostForm(), 1000)

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { signIn } from 'next-auth/react'
 import { useRouter } from "next/router"
 
@@ -6,9 +6,23 @@ export default function login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const router= useRouter()
     const [email, setEmail] = useState("janaina.alves@example.com")
-    const [password, setPassword] = useState("")
+    const [password, setPassword] = useState("123456")
     const [error, setError] = useState(false)
     const [message, setMessage] = useState("")
+
+    const userEmail= [ 
+        "joao.silva@example.com", 
+        "maria.oliveira@example.com", 
+        "pedro.santos@example.com",
+        "janaina.alves@example.com",
+    ]
+
+    const randomEmail = Math.floor(Math.random() * userEmail.length)
+
+    useEffect(()=> {
+        //console.log(userEmail[randomEmail])
+        setEmail(userEmail[randomEmail])
+    }, [randomEmail])
 
     const credentialLogin= async (e)=> {
         //console.log("credentialLogin prevent: ",e)

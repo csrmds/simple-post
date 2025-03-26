@@ -45,7 +45,7 @@ export default function postView(props) {
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    setTimeout(()=> setItemView(true), 500)
+                    setTimeout(()=> setItemView(true), 1000)
                 }
             },
             { threshold: 1.0 }

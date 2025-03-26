@@ -102,15 +102,15 @@ export default function commentList(props) {
                                     <img
                                         className="h-12 w-12 rounded-full"
                                         alt="Tailwind CSS examples"
-                                        src={comment.user[0]?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
+                                        src={comment.user?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                                 </span>
                                 <div className="card border w-120 bg-slate-800">
                                     <div className="card-body p-4 ">
                                         <p className="pl-4">{comment.text}</p>
                                     </div>
                                     <div className="card-actions justify-end pr-4 pb-2">
-                                        <p className="pl-8">{comment.user[0]?.firstName}</p>
-                                        <p className="pl-8">{comment._id}</p>
+                                        <p className="pl-8">{comment.user?.firstName}</p>
+                                        {/* <p className="pl-8">{comment._id}</p> */}
                                         
                                         <div className='indicator'>
                                             { comment.likes?.length > 0 && (
