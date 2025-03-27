@@ -35,16 +35,30 @@ const deleteComment = async (req, res) => {
 }
 
 const getComments = async (req, res) => {
+
+    let pipeLine= []
+    let foreignId= null
+    let order= parseInt(req.body.order || req.query.order || req.params.order || 1) 
+
+    if (req.body.postId || req.query.postId || req.params.postId) {
+        foreignId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
+        pipeLine.push({
+            $match: {foreignId: foreignId}
+        })
+    }
+
+    //const foreignId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
+    //const postId= new mongoose.Types.ObjectId("67afadedb021ea28886d7ae2")
+    console.log("\n\n--------GetComments Controller--------\nforeignId: ", foreignId)
+    console.log("req.body: ", req.body)
+    console.log("req.query: ", req.query)
+    console.log("req.params: ", req.params)
+
+
     try {
-        const foreignId= new mongoose.Types.ObjectId(req.body.postId)
-        //const postId= new mongoose.Types.ObjectId("67afadedb021ea28886d7ae2")
-        console.log("\n\n--------GetComments Controller--------\nforeignId: ", foreignId)
-        console.log("req.body: ", req.body)
-        const comments= await Comment.aggregate([
-            {
-                $match: { foreignId: new mongoose.Types.ObjectId(foreignId) }
-            },
-            {
+        
+        pipeLine.push(
+            { //lookup para usuário do comentário
                 $lookup: {
                     from: "useraccounts",
                     localField: "userAccountId",
@@ -52,7 +66,7 @@ const getComments = async (req, res) => {
                     as: "user"
                 }
             },
-            {
+            { //lookup para likes do comentário
                 $lookup: {
                     from: "likes",
                     localField: "_id",
@@ -60,19 +74,72 @@ const getComments = async (req, res) => {
                     as: "likes"
                 }
             },
-            {
-                $unwind: {  path: "$likes", preserveNullAndEmptyArrays: true  }
-            },
-            {
+            { //lookup para usuários dos likes
                 $lookup: {
                     from: "useraccounts",
                     localField: "likes.userAccountId",
                     foreignField: "_id",
-                    as: "likes.user"
+                    as: "likeUser"
                 }
             },
 
-        ])
+            {
+                $addFields: {
+                    likes: {
+                        $map: {
+                            input: "$likes",
+                            as: "likes",
+                            in: {
+                                _id: "$$likes._id",
+                                foreignId: "$$likes.foreignId",
+                                userAccountId: "$$likes.userAccountId",
+                                createdAt: "$$likes.createdAt",
+                                user: {
+                                    $arrayElemAt: [{
+                                        $filter: {
+                                            input: "$likeUser",
+                                            as: "user",
+                                            cond: { $eq: ["$$user._id", "$$likes.userAccountId"] },
+                                        }
+                                    },0]
+                                }
+                            }
+                        }
+                    },
+                }
+            },
+
+            {
+                $project: {
+                    _id: 1,
+                    foreignId: 1,
+                    text: 1,
+                    type: 1,
+                    user: {
+                        _id: 1,
+                        userName: 1,
+                        email: 1,
+                        avatarImage: 1,
+                    },
+                    likes: {
+                        _id: 1,
+                        user: {
+                            _id: 1,
+                            userName: 1,
+                            email: 1,
+                            avatarImage: 1,
+                        },
+                        createdAt: 1
+                    },
+                    createdAt: 1,
+                    updatedAt: 1,
+                }
+            },
+            { $sort: { createdAt: order } },
+        )
+
+
+        const comments = await Comment.aggregate(pipeLine)
         console.log("comments response: ",comments)
         res.status(200).json(comments)
     } catch (error) {

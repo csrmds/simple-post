@@ -15,7 +15,19 @@ const app= express()
 connectDB()
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 app.use(allowCors)
+
+//LOG PARA VERIFICAR OQ ESTÁ SENDO ENVIADO
+// app.use((req, res, next) => {
+//     console.log("Middleware LOG:");
+//     console.log("Headers:", req.headers);
+//     console.log("Body:", req.body);
+//     console.log("Query:", req.query);
+//     console.log("Params:", req.params);
+//     next();
+// });
+
 app.use('/api/useraccount', userAccountRoutes)
 app.use('/post', postRoutes)
 app.use("/images", express.static(path.join(__dirname, "files", "postImages")));

@@ -5,7 +5,7 @@ const { Schema, model } = mongoose;
 const commentSchema = new Schema({
     foreignId: { type: Schema.Types.ObjectId, required: true },
     text: { type: String, required: true },
-    type: {type: String, default: "comment"},
+    type: {type: String, default: "post"},
     userAccountId: Schema.Types.ObjectId,
     responseId: Schema.Types.ObjectId,
 }, { timestamps: true }

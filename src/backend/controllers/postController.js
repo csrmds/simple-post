@@ -99,14 +99,24 @@ const getPostById = async (req, res) => {
 
 const getPostsPaginate = async (req, res) => {
     console.log("\n\n------Controller getPostsAggregate------")
-    console.log('req: ', "body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
+    console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
+    let pipeLine= []
+    let postId= null
+
+    if (req.body.postId || req.query.postId || req.params.postId) {
+        postId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
+        pipeLine.push({
+            $match: { _id: postId }
+        })
+    }
+
     const order= parseInt(req.body.order || req.query.order || req.params.order || -1) 
     const limit= parseInt(req.body.limit || req.query.limit || req.params.limit || 10) 
     const page= parseInt(req.body.page || req.query.page || req.params.page || 1)
+    //const postId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
 
     try {
-        const pipeLine = [
-            { $match: {} },
+        pipeLine.push(
             //lookup para imagens do post
             { 
                 $lookup: {
@@ -127,7 +137,7 @@ const getPostsPaginate = async (req, res) => {
                 },    
             },
             
-            //lookup para autor dos comentarios
+            //lookup para usuário dos comentarios
             {
                 $lookup: {
                     from: "useraccounts",
@@ -214,13 +224,18 @@ const getPostsPaginate = async (req, res) => {
                                 },
                                 likes: {
                                     $map: {
-                                        input: "$commentLikes",
+                                        input: {
+                                            $filter: {
+                                                input: "$commentLikes",
+                                                as: "likes",
+                                                cond: { $eq: ["$$likes.foreignId", "$$comment._id"] }
+                                            }
+                                        },
                                         as: "likes",
-                                        // cond: { $eq: ["$likes.foreignId", "$comment._id"] }, -> pq eu precisei desfazer essa condição??
                                         in: {
                                             _id: "$$likes._id",
-                                            userAccountId: "$$likes.userAccountId",
                                             foreignId: "$$likes.foreignId",
+                                            userAccountId: "$$likes.userAccountId",
                                             user: {
                                                 $arrayElemAt: [{
                                                     $filter: {
@@ -230,10 +245,10 @@ const getPostsPaginate = async (req, res) => {
                                                     }
                                                 },0]
                                             }
-                                        }
+                                        },
                                         
-                                    },
-                                },
+                                    }
+                                }
                             }
                         }
                     },
@@ -267,13 +282,29 @@ const getPostsPaginate = async (req, res) => {
                     title: 1,
                     content: 1,
                     images: { address: 1, description: 1, source: 1 },
-                    comments: {
-                        _id: 1,
+                    // comments: {
+                    //     _id: 1,
+                    //     text: 1,
+                    //     createdAt: 1,
+                    //     updatedAt: 1,
+                    //     user: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
+                    //     //likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
+                    //     likes: 1,
+                    // },
+                    comments: { 
+                        _id: 1, 
                         text: 1,
                         createdAt: 1,
                         updatedAt: 1,
+                        likes: { 
+                            _id: 1,
+                            foreignId: 1,
+                            user: {
+                                _id: 1,
+                                userName: 1
+                            }
+                        },
                         user: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
-                        likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
                     },
                     author: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
                     likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
@@ -281,7 +312,7 @@ const getPostsPaginate = async (req, res) => {
                 } 
             },
             { $sort: { createdAt: order } },
-        ]
+        )
 
         const options = { page, limit }
         const posts = await Post.aggregatePaginate(Post.aggregate(pipeLine), options)
