@@ -27,11 +27,11 @@ export default function Feed() {
     
 
     const getPostList =  useCallback(async () => {
-        console.log("chamou getPostList..")
+        //console.log("chamou getPostList..")
         try {
             const response = await axios.post(`${url}/post/list`, paginateOptions)
             // console.log('paginateOptions: ', paginateOptions)
-            console.log('response.data: ', response.data)
+            //console.log('response.data: ', response.data)
             dispatch({
                 type: "postList/get", 
                 payload: response.data 
@@ -68,7 +68,7 @@ export default function Feed() {
         if (status === 'authenticated') setUserGoogle(session?.user)
         
         getPostList()
-        console.log("useEffect currentpostList: ", currentPostList)
+        //console.log("useEffect currentpostList: ", currentPostList)
 
         // setPaginateOptions({
         //     order: currentPostList.order,
@@ -144,7 +144,7 @@ export default function Feed() {
             <div className="flex flex-col w-192">
 
                 {
-                    currentPostList.docs.map((post) => (
+                    currentPostList.docs?.map((post) => (
                         <div className="mb-8" key={post._id}>
                             <PostView
                                 postId= {post._id}

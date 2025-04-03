@@ -12,9 +12,11 @@ const initialState = {
     }
 }
 
-const commentListReducer = (state = initialState, action) => {
+const postCommentListReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'commentList/get':
+            return {...state, currentCommentList: action.payload}
+        case 'commentList/set':
             return {...state, currentCommentList: action.payload}
         default: 
             return state
@@ -22,4 +24,4 @@ const commentListReducer = (state = initialState, action) => {
 }
 
 
-export default commentListReducer
+export default postCommentListReducer

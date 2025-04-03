@@ -206,7 +206,9 @@ const getPostsPaginate = async (req, res) => {
                             as: "comment",
                             in: {
                                 _id: "$$comment._id",
+                                foreignId: "$$comment.foreignId",
                                 text: "$$comment.text",
+                                type: "$$comment.type",
                                 userAccountId: "$$comment.userAccountId",
                                 createdAt: "$$comment.createdAt",
                                 updatedAt: "$$comment.updatedAt",
@@ -236,6 +238,7 @@ const getPostsPaginate = async (req, res) => {
                                             _id: "$$likes._id",
                                             foreignId: "$$likes.foreignId",
                                             userAccountId: "$$likes.userAccountId",
+                                            createdAt: "$$likes.createdAt",
                                             user: {
                                                 $arrayElemAt: [{
                                                     $filter: {
@@ -282,29 +285,28 @@ const getPostsPaginate = async (req, res) => {
                     title: 1,
                     content: 1,
                     images: { address: 1, description: 1, source: 1 },
-                    // comments: {
-                    //     _id: 1,
-                    //     text: 1,
-                    //     createdAt: 1,
-                    //     updatedAt: 1,
-                    //     user: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
-                    //     //likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
-                    //     likes: 1,
-                    // },
                     comments: { 
-                        _id: 1, 
+                        _id: 1,
+                        foreignId: 1,
                         text: 1,
-                        createdAt: 1,
-                        updatedAt: 1,
+                        type: 1,
                         likes: { 
                             _id: 1,
                             foreignId: 1,
                             user: {
                                 _id: 1,
-                                userName: 1
+                                userName: 1,
+                                email: 1,
                             }
                         },
-                        user: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
+                        user: { 
+                            _id: 1, 
+                            avatarImage: 1, 
+                            firstName: 1, 
+                            lastName: 1 
+                        },
+                        createdAt: 1,
+                        updatedAt: 1,
                     },
                     author: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
                     likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },

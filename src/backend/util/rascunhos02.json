@@ -1,0 +1,264 @@
+post do joão
+ID: "67e198e1c4859e84e6620454"
+vamos de qq coisa pra ver se atualiza o feed.. 
+
+comentario01 ID: "67e198eec4859e84e6620460"
+comentario02 ID: "67e48cd6bb96e480f57edc63"
+
+
+
+
+[
+    {
+        "_id": "67e198eec4859e84e6620460",
+        "foreignId": "67e198e1c4859e84e6620454",
+        "text": "deu certo também!!!",
+        "type": "post",
+        "userAccountId": "679aed368f982150237a6f3b",
+        "createdAt": "2025-03-24T17:39:58.024Z",
+        "updatedAt": "2025-03-24T17:39:58.024Z",
+        "__v": 0,
+        "user": [
+            {
+                "_id": "679aed368f982150237a6f3b",
+                "userName": "joaodasilva",
+                "password": "$2a$10$xoXdjoons5tWQcLOtIqy0OQJdDDamzaedSV5jI.wBM2uQGnMIRrDy",
+                "email": "joao.silva@example.com",
+                "firstName": "João",
+                "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f3b.png",
+                "lastName": "da Silva",
+                "birthDate": "1990-05-15T00:00:00.000Z",
+                "type": "local",
+                "createdAt": "2025-01-30T03:08:38.494Z",
+                "updatedAt": "2025-01-30T03:08:38.494Z",
+                "__v": 0
+            }
+        ],
+        "likes": [
+            {
+                "_id": "67e32d18d8c1701c68a905bd",
+                "from": "comment",
+                "foreignId": "67e198eec4859e84e6620460",
+                "userAccountId": "679aed368f982150237a6f3f",
+                "createdAt": "2025-03-25T22:24:24.517Z",
+                "updatedAt": "2025-03-25T22:24:24.517Z",
+                "__v": 0
+            },
+            {
+                "_id": "67e48ac0099d278f60404ece",
+                "from": "comment",
+                "foreignId": "67e198eec4859e84e6620460",
+                "userAccountId": "679aed368f982150237a6f3d",
+                "createdAt": "2025-03-26T23:16:16.213Z",
+                "updatedAt": "2025-03-26T23:16:16.213Z",
+                "__v": 0
+            }
+        ],
+        "likeUser": [
+            {
+                "_id": "679aed368f982150237a6f3d",
+                "userName": "maria.oliveira",
+                "password": "$2a$10$nH8/cyFHzGScPeAPYrziQeIyRJ852pQsuIACgFfH3F/ztgFKvCkry",
+                "email": "maria.oliveira@example.com",
+                "firstName": "Maria",
+                "lastName": "Oliveira",
+                "birthDate": "1995-09-25T00:00:00.000Z",
+                "type": "local",
+                "createdAt": "2025-01-30T03:08:38.617Z",
+                "updatedAt": "2025-01-30T03:08:38.617Z",
+                "__v": 0,
+                "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f3d.png"
+            },
+            {
+                "_id": "679aed368f982150237a6f3f",
+                "userName": "pedro.santos",
+                "password": "$2a$10$DFabPfA7Cgu8McVmVdMzwOaKbaeg1bLuyORk122pDMJ59kaVf8LBC",
+                "email": "pedro.santos@example.com",
+                "firstName": "Pedro",
+                "lastName": "Santos",
+                "birthDate": "1988-11-03T00:00:00.000Z",
+                "type": "local",
+                "createdAt": "2025-01-30T03:08:38.689Z",
+                "updatedAt": "2025-01-30T03:08:38.689Z",
+                "__v": 0,
+                "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f3f.png"
+            }
+        ]
+    },
+    {
+        "_id": "67e48cd6bb96e480f57edc63",
+        "foreignId": "67e198e1c4859e84e6620454",
+        "text": "segundo comentario nesse post do João..\n\"vamos de qq coisa pra ver se atualiza o feed\"",
+        "type": "post",
+        "userAccountId": "679aed368f982150237a6f3d",
+        "createdAt": "2025-03-26T23:25:10.466Z",
+        "updatedAt": "2025-03-26T23:25:10.466Z",
+        "__v": 0,
+        "user": [
+            {
+                "_id": "679aed368f982150237a6f3d",
+                "userName": "maria.oliveira",
+                "password": "$2a$10$nH8/cyFHzGScPeAPYrziQeIyRJ852pQsuIACgFfH3F/ztgFKvCkry",
+                "email": "maria.oliveira@example.com",
+                "firstName": "Maria",
+                "lastName": "Oliveira",
+                "birthDate": "1995-09-25T00:00:00.000Z",
+                "type": "local",
+                "createdAt": "2025-01-30T03:08:38.617Z",
+                "updatedAt": "2025-01-30T03:08:38.617Z",
+                "__v": 0,
+                "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f3d.png"
+            }
+        ],
+        "likes": [
+            {
+                "_id": "67e4b36f028dea87d8cca265",
+                "from": "comment",
+                "foreignId": "67e48cd6bb96e480f57edc63",
+                "userAccountId": "679aed368f982150237a6f41",
+                "createdAt": "2025-03-27T02:09:51.062Z",
+                "updatedAt": "2025-03-27T02:09:51.062Z",
+                "__v": 0
+            }
+        ],
+        "likeUser": [
+            {
+                "_id": "679aed368f982150237a6f41",
+                "userName": "janaina.alves",
+                "password": "$2a$10$q7gwlYvfiWO3okXHHnqJ1uaD/hmHCGZdNsJgpnowls1nbA.ffd10m",
+                "email": "janaina.alves@example.com",
+                "firstName": "Janaina",
+                "lastName": "Alves",
+                "birthDate": "1988-11-03T00:00:00.000Z",
+                "type": "local",
+                "createdAt": "2025-01-30T03:08:38.761Z",
+                "updatedAt": "2025-01-30T03:08:38.761Z",
+                "__v": 0,
+                "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f41.png"
+            }
+        ]
+    }
+]
+
+
+posts: [
+    { 
+        id: 1, 
+        content: "Conteúdo 1"
+        comments: [
+            {
+                id: 10,
+                text: "xyz"
+            },
+            {
+                id: 11,
+                text: "xyz"
+            },
+            {
+                id: 12,
+                text: "xyz"
+            },
+        ]
+    },
+    { 
+        id: 2, 
+        content: "Conteúdo 2",
+        comments: [
+            {
+                id: 13,
+                text: "xyz"
+            },
+        ]
+
+    },
+    { 
+        id: 3, 
+        content: "Conteúdo 3",
+        comments: [
+            {
+                id: 14,
+                text: "xyz"
+            },
+            {
+                id: 15,
+                text: "xyz"
+            },
+            {
+                id: 16,
+                text: "xyz"
+            },
+        ]
+    }
+]
+
+
+
+
+
+
+
+
+
+{
+    "docs": [
+        {
+            "_id": "67eae0eb8d85a72baefca1bd",
+            "title": "post teste",
+            "content": "post para testes de reatividade...",
+            "createdAt": "2025-03-31T18:37:31.598Z",
+            "images": [
+                {
+                    "address": "./src/backend/files/postImages/67eae0eb8d85a72baefca1bd_0.png",
+                    "description": "1743446251583_annie-spratt-unsplash.png",
+                    "source": "local"
+                }
+            ],
+            "comments": [
+                {
+                    "_id": "67eae1018d85a72baefca1c3",
+                    "text": "primeiro comentário dessa flor.",
+                    "createdAt": "2025-03-31T18:37:53.298Z",
+                    "updatedAt": "2025-03-31T18:37:53.298Z",
+                    "user": {
+                        "_id": "679aed368f982150237a6f41",
+                        "firstName": "Janaina",
+                        "lastName": "Alves",
+                        "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f41.png"
+                    },
+                    "likes": []
+                }
+            ],
+            "author": [
+                {
+                    "_id": "679aed368f982150237a6f41",
+                    "firstName": "Janaina",
+                    "lastName": "Alves",
+                    "avatarImage": "http://localhost:5000/images/avatar/679aed368f982150237a6f41.png"
+                }
+            ],
+            "likes": []
+        },
+    ],
+    "totalDocs": 27,
+    "limit": 5,
+    "page": 1,
+    "totalPages": 6,
+    "pagingCounter": 1,
+    "hasPrevPage": false,
+    "hasNextPage": true,
+    "prevPage": null,
+    "nextPage": 2
+}
+
+
+
+
+
+chat, na utilização do axios.. tem alguns métodos para serem chamados após o .get, .post, certo?
+os métodos, than, catch, finally... 
+
+estou fazendo uma chamada assincrona, onde preciso esperar a resposta da chamada para continuar a execução do código.. 
+const response = await axios.post(`${url}/like/insert`, {like})
+
+oq eu gostaria de fazer.. após concluir essa chamada, eu preciso chamar uma outra função para atualizar/reeinderizar na tela a contagem dos likes.
+então, eu poderia utilizar o finally nessa chamada axios para chamar outra função? 

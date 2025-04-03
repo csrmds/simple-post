@@ -37,6 +37,7 @@ const deleteComment = async (req, res) => {
 const getComments = async (req, res) => {
 
     let pipeLine= []
+    let commentId= null
     let foreignId= null
     let order= parseInt(req.body.order || req.query.order || req.params.order || 1) 
 
@@ -44,6 +45,13 @@ const getComments = async (req, res) => {
         foreignId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
         pipeLine.push({
             $match: {foreignId: foreignId}
+        })
+    }
+
+    if (req.body.commentId || req.query.commentId || req.params.commentId) {
+        commentId= new mongoose.Types.ObjectId(req.body.commentId || req.query.commentId || req.params.commentId)
+        pipeLine.push({
+            $match: { _id: commentId }
         })
     }
 
@@ -106,6 +114,15 @@ const getComments = async (req, res) => {
                             }
                         }
                     },
+                    user: {
+                        $arrayElemAt: [{
+                            $filter: {
+                                input: "$user",
+                                as: "user",
+                                cond: { $eq: ["$$user._id", "$userAccountId"] }
+                            }
+                        },0]
+                    }
                 }
             },
 
@@ -115,21 +132,23 @@ const getComments = async (req, res) => {
                     foreignId: 1,
                     text: 1,
                     type: 1,
-                    user: {
-                        _id: 1,
-                        userName: 1,
-                        email: 1,
-                        avatarImage: 1,
-                    },
                     likes: {
                         _id: 1,
+                        foreignId: 1,
                         user: {
                             _id: 1,
                             userName: 1,
                             email: 1,
                             avatarImage: 1,
                         },
-                        createdAt: 1
+                    },
+                    user: {
+                        _id: 1,
+                        firstName: 1,
+                        lastName: 1,
+                        userName: 1,
+                        email: 1,
+                        avatarImage: 1,
                     },
                     createdAt: 1,
                     updatedAt: 1,

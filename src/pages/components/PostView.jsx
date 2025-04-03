@@ -1,9 +1,11 @@
 import React from "react";
 import { useEffect, useState, useRef } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { useSession } from 'next-auth/react'
 import Slider from "react-slick";
 import CommentEdit from './CommentEdit'
 import CommentList from './CommentList'
+import CommentListNew from './CommentListNew'
 import path from 'path'
 import {format, compareAsc} from 'date-fns'
 import axios from 'axios'
@@ -36,12 +38,17 @@ export default function postView(props) {
         //centerPadding: '50px'
     }
 
+    // const dispatch = useDispatch()
+    // const postCommentList = useSelector((state) => state.postCommentListReducer.currentCommentList)
+
 
     useEffect(()=> {
         checkLike()
-        setComments(props.comments)
+        //setComments(props.comments)
         //console.log("useEffect images: ", images)
         // console.log("lenght: ", images.length)
+
+
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
@@ -300,15 +307,16 @@ export default function postView(props) {
                             
                         </div>
                         
-                        <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center mt-4 opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
+                        <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
                             <div className='w-120'>
                                 <CommentEdit postId={props.postId} cancelar={newComment} refreshComments={refreshComments} ></CommentEdit>
                             </div>
                         </div>
 
-                        <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center mt-4 opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
+                        <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
                             <div className='w-140'>
-                                <CommentList comments={comments} refreshComments={refreshComments}></CommentList>
+                                {/* <CommentList comments={comments} refreshComments={refreshComments}></CommentList> */}
+                                <CommentListNew comments={comments} postId={props.postId}></CommentListNew>
                             </div>
                         </div>
                     </div>

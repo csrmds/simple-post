@@ -48,9 +48,9 @@ const checkLike= async (req, res) => {
 
 const removeLike= async (req, res) => {
     console.log("\n\n=======LIKE CONTROLLER remove=======\n")
-    console.log("req.body: ", req.body)
+    //console.log("req.body: ", req.body)
     const likeId= new mongoose.Types.ObjectId(req.body.likeId)
-    console.log("likeID obj: ", likeId)
+    //console.log("likeID obj: ", likeId)
     
     try {
         const response= await Like.findByIdAndDelete(req.body.likeId)

@@ -29,11 +29,63 @@ const postListReducer = (state = initialState, action) => {
                     nextPage: action.payload.nextPage
                 }
             }
+        case 'postList/setComment':
+            return {
+                ...state,
+                currentPostList: {
+                    ...state.currentPostList.docs.map(post => ({
+                        ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId
+                            ? { ...comment, text: action.payload.newText }
+                            : comment
+                        )
+                    }))
+                }
+            }
+        case 'postList/teste':
+            return {
+                ...state,
+                currentPostList: {
+                    ...state.currentPostList,
+                    docs: [
+                        ...state.currentPostList.docs.map(post => ({
+                            ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId ? {...comment, text: "TEXTO ATUALIZADO"} : comment )
+                        }))
+                    ]
+                }
+            }
+        case 'postList/updateCommentById':
+            return {
+                ...state,
+                currentPostList: {
+                    ...state.currentPostList,
+                    docs: [
+                        ...state.currentPostList.docs.map(post => ({
+                            ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId ? action.payload.comment : comment)
+                        }))
+                    ]
+                }
+            }
         default:
             return state
     }
 
 }
+
+// ...state.currentPostList.docs.map(post => ({
+//     ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId
+//         ? {
+//             ...comment,
+//             text: action.payload.comment.text,
+//             updatedAt: action.payload.comment.updatedAt,
+//             likes: action.payload.comment.likes
+//         } : {
+//             comment
+//         }
+//     )
+// })),
+// novoCampo: "novo valor onde???",
+// docs: action.payload.postCorrecao,
+// hasNextPage: false
 
 
 export default postListReducer
