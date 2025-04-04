@@ -19,10 +19,17 @@ const insertComment = async (req, res) => {
 }
 
 const deleteComment = async (req, res) => {
-    const commentId= new mongoose.Types.ObjectId(req.body.commentId)
+
+    let commentId = null
+
+    if (req.body.commentId || req.query.commentId || req.params.commentId) {
+        commentId = new mongoose.Types.ObjectId(req.body.commentId || req.query.commentId || req.params.commentId)
+    }
+    
     try {
         console.log("\n\n=======CONTROLLER Delete Comment=======\n")
         console.log(commentId)
+        console.log('requisição: ', req.body.commentId, req.query.commentId, req.params.commentId)
 
         const responseLike = await Like.deleteMany( { foreignId: commentId })
 
@@ -35,6 +42,7 @@ const deleteComment = async (req, res) => {
 }
 
 const getComments = async (req, res) => {
+    
 
     let pipeLine= []
     let commentId= null
@@ -55,12 +63,7 @@ const getComments = async (req, res) => {
         })
     }
 
-    //const foreignId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
-    //const postId= new mongoose.Types.ObjectId("67afadedb021ea28886d7ae2")
     console.log("\n\n--------GetComments Controller--------\nforeignId: ", foreignId)
-    console.log("req.body: ", req.body)
-    console.log("req.query: ", req.query)
-    console.log("req.params: ", req.params)
 
 
     try {
@@ -163,7 +166,7 @@ const getComments = async (req, res) => {
         res.status(200).json(comments)
     } catch (error) {
         console.log("\nErro ao buscar comentarios: ", error)
-        res.status(500).json({ message: "Erro ao buscar comentarios" });
+        res.status(500).json({ message: "Erro ao buscar comentarios", error });
     }
 }
 

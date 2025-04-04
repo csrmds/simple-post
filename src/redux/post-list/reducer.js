@@ -34,23 +34,11 @@ const postListReducer = (state = initialState, action) => {
                 ...state,
                 currentPostList: {
                     ...state.currentPostList.docs.map(post => ({
-                        ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId
+                        ...post, comments: post.comments.map(comment => comment._id === action.payload.commentId
                             ? { ...comment, text: action.payload.newText }
                             : comment
                         )
                     }))
-                }
-            }
-        case 'postList/teste':
-            return {
-                ...state,
-                currentPostList: {
-                    ...state.currentPostList,
-                    docs: [
-                        ...state.currentPostList.docs.map(post => ({
-                            ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId ? {...comment, text: "TEXTO ATUALIZADO"} : comment )
-                        }))
-                    ]
                 }
             }
         case 'postList/updateCommentById':
@@ -60,8 +48,37 @@ const postListReducer = (state = initialState, action) => {
                     ...state.currentPostList,
                     docs: [
                         ...state.currentPostList.docs.map(post => ({
-                            ...post, comments: post.comments.map(comment => comment._id == action.payload.commentId ? action.payload.comment : comment)
+                            ...post, comments: post.comments.map(comment => comment._id === action.payload.commentId 
+                                ? action.payload.comment 
+                                : comment
+                            )
                         }))
+                    ]
+                }
+            }
+        case 'postList/updatePostLikes':
+            return {
+                ...state,
+                currentPostList: {
+                    ...state.currentPostList,
+                    docs: [
+                        ...state.currentPostList.docs.map(post => post._id === action.payload.postId 
+                            ? { ...post, likes: action.payload.likes } 
+                            : post
+                        )
+                    ]
+                }
+            }
+        case 'postList/updatePostComments':
+            return {
+                ...state,
+                currentPostList: {
+                    ...state.currentPostList,
+                    docs: [
+                        ...state.currentPostList.docs.map(post => post._id === action.payload.postId
+                            ? { ...post, comments: action.payload.comments }
+                            : post
+                        )
                     ]
                 }
             }

@@ -262,7 +262,7 @@ const getPostsPaginate = async (req, res) => {
                             as: "likes",
                             in: {
                                 _id: "$$likes._id",
-                                updatedAt: "$$likes.createdAt",
+                                createdAt: "$$likes.createdAt",
                                 user: {
                                     $arrayElemAt: [{
                                         $filter: {
@@ -309,7 +309,16 @@ const getPostsPaginate = async (req, res) => {
                         updatedAt: 1,
                     },
                     author: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
-                    likes: { _id: 1, "user.avatarImage": 1, "user.firstName": 1, "user.lastName": 1, "createdAt": 1 },
+                    likes: { 
+                        _id: 1,
+                        foreignId: 1,
+                        user: {
+                            _id: 1,
+                            avatarImage: 1, 
+                            firstName: 1, 
+                            lastName: 1,
+                        },
+                        createdAt: 1 },
                     createdAt: 1,
                 } 
             },

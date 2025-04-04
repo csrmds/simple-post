@@ -16,11 +16,11 @@ import axios from 'axios'
 export default function postView(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const {data: session} = useSession()
-    const [comments, setComments]= useState(props.comments)
+    //const [comments, setComments]= useState(props.comments)
     const [newCommentVisible, setNewCommentVisible]= useState(false)
     const [viewCommentList, setViewCommentList]= useState(false)
     const [images, setImages]= useState( props.images )
-    const [likes, setLikes]= useState( props.likes )
+    //const [likes, setLikes]= useState( props.likes )
     const [liked, setLiked] = useState()
     const author = props.author
     const callRefreshPostList = props.refreshPostList
@@ -38,9 +38,18 @@ export default function postView(props) {
         //centerPadding: '50px'
     }
 
-    // const dispatch = useDispatch()
+    const dispatch = useDispatch()
     // const postCommentList = useSelector((state) => state.postCommentListReducer.currentCommentList)
 
+    const likes = useSelector((state) => {
+        const post = state.postListReducer.currentPostList.docs.find(post => post._id === props.postId)
+        return post ? post.likes : []
+    })
+
+    const comments = useSelector((state) => {
+        const post = state.postListReducer.currentPostList.docs.find(post => post._id === props.postId)
+        return post ? post.comments : []
+    })
 
     useEffect(()=> {
         checkLike()
@@ -69,16 +78,24 @@ export default function postView(props) {
         }
     }, [])
 
-    const refreshLikes= async ()=> {
+
+    const refreshLikes = async () => {
         console.log("\n----RefreshLikes----\n")
+
         try {
-            const response = await axios.post(`${url}/like/post`, { postId: props.postId})
-            setLikes(response.data)
-            checkLike()
-            //console.log("Likes: ", likes)
+            const response = await axios.post(`${url}/like/post`, {postId: props.postId})
+            console.log("response: ", response.data)
+            dispatch({
+                type: 'postList/updatePostLikes',
+                payload: {likes: response.data, postId: props.postId}
+            })
         } catch (err) {
-            console.log("\nErro ao buscar comentarios: ", err)
+            console.error("\nErro ao buscar comentarios: ", err)
         }
+    }
+
+    const postComments = () => {
+        console.log("PostComments: ", commentsState)
     }
 
     const refreshComments= async ()=> {
@@ -86,8 +103,12 @@ export default function postView(props) {
         const postId= props.postId
         try {
             const response = await axios.post(`${url}/comment`, {postId})
-            console.log("getCommentsByPostId: ", response.data)
-            setComments(response.data)
+            console.log(response.data)
+            dispatch({
+                type: 'postList/updatePostComments',
+                payload: { comments: response.data, postId }
+            })
+            //setComments(response.data)
         } catch (err) {
             console.log("\nErro ao buscar comentarios: ", err)
         }
@@ -102,18 +123,18 @@ export default function postView(props) {
         }
 
         try {
-            console.log("\ntry/catch - like: ", like)
+            //console.log("\ntry/catch - like: ", like)
             const response = await axios.post(`${url}/like/insert`, {like})
-            console.log(response)
+            console.log(response.data)
             refreshLikes()
         } catch (err) {
             console.log("\nErro ao inserir Like: ", err)
         }
     }
 
-    const unLike = async () => {
+    const unLike = async (like) => {
         console.log("\n------unLike------\n")
-        const likeId= liked._id
+        const likeId= like._id
 
         try {
             const response = await axios.post(`${url}/like/remove`, {likeId})
@@ -239,8 +260,8 @@ export default function postView(props) {
                                 <div className='indicator'>
                                     <div className="indicator-item badge badge-default badge-sm">{likes[0]?._id && likes.length}</div>
                                     {
-                                        liked != null ? (
-                                            <button className="btn btn-sm" onClick={unLike}>
+                                        likes.length > 0 && likes.find(like => like.user?._id == session?.user?.id) ? (
+                                            <button className="btn btn-sm" onClick={()=> unLike(likes.find(like => like.user?._id == session?.user?.id))}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                                     <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                                                 </svg>
@@ -286,6 +307,9 @@ export default function postView(props) {
                                     }
                                     
                                 </button>
+
+                                <button className="btn btn-sm" onClick={refreshComments}>RefreshComments</button>
+                                <button className="btn btn-sm" onClick={postComments}>postComments</button>
                             </div>
 
                             {
@@ -300,8 +324,6 @@ export default function postView(props) {
                                 )
                             } 
                             
-
-                            {/* <button className="btn btn-sm" onClick={checkLike}>CheckLike</button> */}
                             
                             
                             
@@ -316,7 +338,7 @@ export default function postView(props) {
                         <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
                             <div className='w-140'>
                                 {/* <CommentList comments={comments} refreshComments={refreshComments}></CommentList> */}
-                                <CommentListNew comments={comments} postId={props.postId}></CommentListNew>
+                                <CommentListNew comments={comments} postId={props.postId} refreshComments={refreshComments}></CommentListNew>
                             </div>
                         </div>
                     </div>
