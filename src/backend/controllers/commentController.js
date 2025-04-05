@@ -41,6 +41,26 @@ const deleteComment = async (req, res) => {
     }
 }
 
+const updateComment = async (req, res) => {
+    console.log("----updateComment Controller----")
+    let commentId = null
+    let options= {
+        returnDocument: 'after'
+    }
+
+    if (req.body.comment._id) commentId = new mongoose.Types.ObjectId(req.body.comment._id)
+    console.log("req.body.comment: ", req.body.comment)
+
+    try {
+        const response = await Comment.findByIdAndUpdate(commentId, req.body.comment, options)
+        res.status(200).json(response) 
+    } catch (err) {
+        console.log("Erro ao atualizar comentario: ", err)
+        res.status(500).json({ message: "Erro ao atualizar comentario" });
+    }
+
+}
+
 const getComments = async (req, res) => {
     
 
@@ -173,5 +193,6 @@ const getComments = async (req, res) => {
 module.exports= {
     insertComment,
     deleteComment,
+    updateComment,
     getComments
 }

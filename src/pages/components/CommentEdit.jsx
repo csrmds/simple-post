@@ -1,89 +1,69 @@
 import { useEffect, useState } from "react"
-import { useSession } from 'next-auth/react'
 import axios from "axios"
 
-export default function commentEdit(props) {
+
+export default function commetnEdit(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
-    const {data: session} = useSession()
-    const foreignId = props.postId
-    const type = "post"
-    const userAccountId = session.user?.id
-    const responseId = props.commentId
-    const [text, setText] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
-    const [errorVisible, setErrorVisible] = useState("")
-    const [infoMessage, setInfoMessage] = useState("")
-    const [infoVisible, setInfoVisible] = useState(false)
-    const callRefreshComments= props.refreshComments
-    
-    
+    const [comment, setComment] = useState(props.comment)
+    const callRefreshComments = props.refreshComments
+    const isVisible = props.isVisible
+
+
     useEffect(()=> {
-        
-    })
+        //console.log("useEffect CommentEdit\nProps.Comment: ", props.comment )
+        //setText(comment.text || '')
+        setComment(props.comment)
+    },[props.comment])
 
-    function cleanFields() {
-        setText("")
-        setTimeout(() => {
-            props.cancelar(false)    
-        }, 2000);
-    }
-
-
-    const saveComment= async()=> {
-
+    const updateComment = async() => {
+        console.log("----updateComment----")
+        setComment({...comment, text: text})
+        console.log("comment antes do update: ", comment)
         try {
-            const response = await axios.post(`${url}/comment/insert`, {foreignId, text, type, responseId, userAccountId})
-            console.log(response.data)
-            setInfoMessage("Comentario salvo com sucesso!")
-            setInfoVisible(true)
-            setTimeout(() => setInfoVisible(false), 2000);
-            cleanFields()
-            setTimeout(() => callRefreshComments(), 1000)
-        } catch (error) {
-            console.log("Erro ao tentar salvar o comentario", error)
-            setErrorMessage(error)
-            setErrorVisible(true)
+            const response = await axios.post(`${url}/comment/update`, {comment})
+                .finally(setTimeout(()=> {
+                    callRefreshComments(),
+                    isVisible()
+                }, 500))
+            //console.log(response.data)
+        } catch(err) {
+            console.log("Erro ao atualizar o comentário: ", err)
         }
     }
 
+
     return (
         <>
-            <div>
+        <div className="w-140">
+            <label className="textarea flex flex-col items-center gap-2 p-0 bg-neutral">
                 <textarea 
-                    className="textarea bg-slate-800 text-sm/5 w-full py-1 px-4" 
-                    placeholder="Seu comentário..."
-                    onChange={(e)=> setText(e.target.value)} 
-                    value={text} 
-                />
-            </div>
-            
-            <div className="flex justify-evenly mt-1">
-                <button className="btn btn-sm btn-outline" onClick={saveComment}>Comentar</button>
-                <button className="btn btn-sm btn-outline btn-error" onClick={()=> props.cancelar(false)} >Cancelar</button>
-                {/* <button className="btn btn-sm btn-outline" onClick={()=> setText("")}>teste</button> */}
-            </div>
-
-            <div className={`transition-all duration-300 ease-in-out transform ${errorVisible ? "opacity-100 scale-100 max-h-40 my-2" : "opacity-0 scale-95 max-h-0 my-2"}`}>
-                <div className="alert alert-error" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 shrink-0 stroke-current">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{errorMessage}</span>
+                    className="textarea text-sm/5 border-none focus:outline-none focus:ring-0 w-full bg-neutral"
+                    rows="1" 
+                    value={comment.text ?? ''}
+                    onChange={(e)=> setComment({...comment, text: e.target.value})}
+                /> 
+                
+                <div className="flex justify-end w-full px-4 mb-2">
+                    <button className="btn btn-sm bg-transparent border-transparent" onClick={isVisible}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </button>  
+                    
+                    <button className="btn btn-sm bg-transparent border-transparent" onClick={updateComment}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </button>
                 </div>
-            </div>
+                
+                
 
-            <div className={`transition-all duration-300 ease-in-out transform ${infoVisible ? "opacity-100 scale-100 max-h-40 my-2" : "opacity-0 scale-95 max-h-0 my-2"}`}>
-                <div className="alert alert-info" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{infoMessage}</span>
-                </div>
-            </div>
-            
-            
-            
 
+            </label>
+            
+        </div>
         </>
     )
+
 }

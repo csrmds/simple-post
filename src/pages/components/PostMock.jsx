@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Comment from './Comment'
-import CommentEdit from './CommentEdit'
+import CommentNew from './CommentNew'
 
 
 export default function postMock(props) {
@@ -66,7 +66,7 @@ export default function postMock(props) {
 
             <div className={isVisible ? "flex justify-center mt-4" : "hidden"}>
                 <div className='w-96'>
-                    <CommentEdit cancelar={commentEdit} ></CommentEdit>
+                    <CommentNew cancelar={commentEdit} ></CommentNew>
                 </div>
             </div>
             

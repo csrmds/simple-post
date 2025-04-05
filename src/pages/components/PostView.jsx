@@ -3,9 +3,9 @@ import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useSession } from 'next-auth/react'
 import Slider from "react-slick";
-import CommentEdit from './CommentEdit'
+import CommentNew from './CommentNew'
 import CommentList from './CommentList'
-import CommentListNew from './CommentListNew'
+import CommentEdit from './CommentEdit'
 import path from 'path'
 import {format, compareAsc} from 'date-fns'
 import axios from 'axios'
@@ -19,6 +19,7 @@ export default function postView(props) {
     //const [comments, setComments]= useState(props.comments)
     const [newCommentVisible, setNewCommentVisible]= useState(false)
     const [viewCommentList, setViewCommentList]= useState(false)
+    const [editCommentVisible, setEditCommentVisible]= useState(false)
     const [images, setImages]= useState( props.images )
     //const [likes, setLikes]= useState( props.likes )
     const [liked, setLiked] = useState()
@@ -26,6 +27,7 @@ export default function postView(props) {
     const callRefreshPostList = props.refreshPostList
     const observerRef = useRef(null);
     const [itemView, setItemView] = useState(false)
+    const [commentEdit, setCommentEdit] = useState("")
 
     const sliderSettins = {
         dots: true,
@@ -50,6 +52,11 @@ export default function postView(props) {
         const post = state.postListReducer.currentPostList.docs.find(post => post._id === props.postId)
         return post ? post.comments : []
     })
+
+    const callCommentEdit = (comment) => {
+        setEditCommentVisible(true)
+        setCommentEdit(comment)
+    }
 
     useEffect(()=> {
         checkLike()
@@ -193,6 +200,10 @@ export default function postView(props) {
         viewCommentList ? setViewCommentList(false) : setViewCommentList(true)
     }
 
+    function showEditComment() {
+        editCommentVisible ? setEditCommentVisible(false) : setEditCommentVisible(true)
+    }
+
     
 
 
@@ -308,8 +319,6 @@ export default function postView(props) {
                                     
                                 </button>
 
-                                <button className="btn btn-sm" onClick={refreshComments}>RefreshComments</button>
-                                <button className="btn btn-sm" onClick={postComments}>postComments</button>
                             </div>
 
                             {
@@ -324,21 +333,32 @@ export default function postView(props) {
                                 )
                             } 
                             
-                            
-                            
-                            
+                        </div>
+
+                        
+                        <div className={`transition-all duration-300 ease-in-out transform ${editCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
+                            <div className="flex justify-center">
+                                <CommentEdit comment={commentEdit} refreshComments={refreshComments} isVisible={showEditComment} ></CommentEdit>
+                            </div>
                         </div>
                         
+
+                        
                         <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
-                            <div className='w-120'>
-                                <CommentEdit postId={props.postId} cancelar={newComment} refreshComments={refreshComments} ></CommentEdit>
+                            <div className='w-140'>
+                                <CommentNew postId={props.postId} cancelar={newComment} refreshComments={refreshComments} ></CommentNew>
                             </div>
                         </div>
 
                         <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
                             <div className='w-140'>
                                 {/* <CommentList comments={comments} refreshComments={refreshComments}></CommentList> */}
-                                <CommentListNew comments={comments} postId={props.postId} refreshComments={refreshComments}></CommentListNew>
+                                <CommentList 
+                                    comments={comments} 
+                                    postId={props.postId} 
+                                    refreshComments={refreshComments}
+                                    callCommentEdit={callCommentEdit}>
+                                </CommentList>
                             </div>
                         </div>
                     </div>
