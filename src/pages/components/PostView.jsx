@@ -227,8 +227,6 @@ export default function postView(props) {
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
                         </div>
-
-                        <h2 className="card-title">{ props.title }</h2>
                         
                         <div className="flex-none">
                             { formatData(props.createdAt)  }

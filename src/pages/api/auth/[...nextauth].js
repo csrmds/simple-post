@@ -30,8 +30,8 @@ export default NextAuth({
                 const user= await axios.post(`${url}/api/useraccount/one`, {email: credentials.email})
                 console.log('\n-----NextAuth-----\n', user.data)
                 if (!user.data.userAccount || Object.keys(user.data.userAccount).length== 0) {
-                    console.log("Error: ",user.data.resp.message)
-                    throw new Error(user.data.resp.message)
+                    console.log("Error: ",user.data.resp)
+                    throw new Error(user.data.resp)
                 }
                 
                 //console.log("Dados senha: \n", credentials.password, "\n", user.data.userAccount.password)

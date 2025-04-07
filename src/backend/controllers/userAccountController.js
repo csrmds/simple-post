@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose')
 const UserAccount= require('../models/userAccount')
 const bcrypt= require('bcrypt')
 
@@ -105,8 +106,26 @@ const verifyGoogleAccountRegister = async (req, res) => {
         console.log("Erro ao verificar a conta do google: ", err)
         res.status(500).json({ message: "Erro ao verificar a conta do google." });
     }
+}
 
+const passwordUpdate = async (req, res) => {
+    console.log('\n----CONTROLLER passwordUpdate----\n')
 
+    console.log("req.bodyL: ", req.body)
+
+    const userId = new mongoose.Types.ObjectId(req.body.userId) 
+    const salt = await bcrypt.genSalt(10)
+    const newPassword = await bcrypt.hash("PostProject!", salt)
+    const options = { returnDocument: 'after' }
+
+    try {
+        const response = await UserAccount.findOneAndUpdate(userId, { password: newPassword }, options)
+
+        res.status(200).json(response.data)
+    } catch(err) {
+        console.error("Erro ao atualizar senha do usuário: ", err)
+        res.status(500).json("Erro ao atualizar senha do usuário: ", err)
+    }
 }
 
 
@@ -116,5 +135,6 @@ module.exports= {
     getUserAccounts,
     getOneUserAccount,
     verifyCredentials,
-    verifyGoogleAccountRegister
+    verifyGoogleAccountRegister,
+    passwordUpdate
 }

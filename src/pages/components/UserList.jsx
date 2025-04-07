@@ -3,7 +3,6 @@ import { useSession } from 'next-auth/react'
 import { signIn } from 'next-auth/react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import UserAccount from "../../backend/models/userAccount"
 import axios from "axios"
 
 
@@ -23,9 +22,15 @@ export default function UserAdmin() {
         }
     }
 
-    const userPasswordUpdate = (userId) => {
+    const userPasswordUpdate = async (user) => {
         console.log("----userPasswordUpdate----")
 
+        try {
+            const response = await axios.post(`${url}/api/useraccount/password-update`, {userId: user._id})
+            console.log("respone: ", response.data)
+        } catch(err) {
+            console.error("Erro ao atualizar password do usuário: ", err)
+        }
         
     }
 
@@ -73,7 +78,7 @@ export default function UserAdmin() {
                                         <td>{user.lastName}</td>
                                         <td>{format(user.createdAt, "dd/mm/yyyy - HH:mm:ss") }</td>
                                         <td>
-                                            <button className="btn btn-sm" onClick={()=> userPasswordUpdate(user._id)}>Alterar Senha</button><br/>
+                                            <button className="btn btn-sm" onClick={()=> userPasswordUpdate(user)}>Alterar Senha</button><br/>
                                             <input type="text" className="input input-sm w-full bg-neutral" />
                                         </td>
                                     </tr>

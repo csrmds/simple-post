@@ -6,7 +6,7 @@ export default function login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const router= useRouter()
     const [email, setEmail] = useState("janaina.alves@example.com")
-    const [password, setPassword] = useState("123456")
+    const [password, setPassword] = useState("PostProject!")
     const [error, setError] = useState(false)
     const [message, setMessage] = useState("")
 
@@ -22,7 +22,7 @@ export default function login() {
     useEffect(()=> {
         //console.log(userEmail[randomEmail])
         setEmail(userEmail[randomEmail])
-    }, [randomEmail])
+    }, [])
 
     const credentialLogin= async (e)=> {
         //console.log("credentialLogin prevent: ",e)

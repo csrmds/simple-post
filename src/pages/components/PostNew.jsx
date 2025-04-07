@@ -105,11 +105,6 @@ export default function PostNew(props) {
                         <form onSubmit={insertPost} method="POST" encType="multipart/form-data">
                             <div className="navbar rounded-t-xl flex justify-center
                                 bg-gradient-to-br from-violet-700 from-10% to-violet-950 to-100%">
-                                <strong>
-                                    <input type="text" placeholder="Título do post" className="input input-ghost w-full max-w-xs text-center"
-                                        value={title} onChange={(e) => setTitle(e.target.value)}
-                                    />
-                                </strong>
                             </div>
                             <div className="card-body">
 
