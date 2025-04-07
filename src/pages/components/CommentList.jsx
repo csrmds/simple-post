@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useSession } from 'next-auth/react'
 import { useDispatch, useSelector } from "react-redux"
+import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import axios from "axios"
 
 
@@ -91,12 +93,22 @@ export default function commentList(props) {
         console.log("\n----EditComment----\n")
     }
 
+    const teste = (updateAt) => {
+        const result= formatDistanceToNowStrict(updateAt, {addSuffix: true, locale: ptBR})
+        const interval= intervalToDuration({start: updateAt, end: Date.now()} )
+        if (interval.days > 1) {
+            return format(updateAt, "dd MMMM - HH:mm", {locale: ptBR})
+        } else {
+            return result
+        }
+    }
+
 
 
     return (
         <>
         <div className="flex justify-center overflow-y-auto mb-4">
-            <div className="flex flex-col max-h-80 w-full">
+            <div className="flex flex-col max-h-120 w-full">
                 {
                     comments.length > 0 && (
                         comments.map((comment, i) => (
@@ -107,8 +119,13 @@ export default function commentList(props) {
                                             <img src={comment.user?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                                         </div>
                                     </div>
-                                    <div className="chat-header">
-                                        {comment.user?.firstName}
+                                    <div className="chat-header w-full flex justify-between px-3">
+                                        <div>
+                                            {comment.user?.firstName}
+                                        </div>
+                                        <div>
+                                            <time className="text-xs opacity-50" >{teste(comment.updatedAt)}</time>    
+                                        </div>
                                     </div>
                                     <div className="chat-bubble w-full max-w-full">
                                         {comment.text}

@@ -7,7 +7,8 @@ import CommentNew from './CommentNew'
 import CommentList from './CommentList'
 import CommentEdit from './CommentEdit'
 import path from 'path'
-import {format, compareAsc} from 'date-fns'
+import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import axios from 'axios'
 
 
@@ -101,10 +102,6 @@ export default function postView(props) {
         }
     }
 
-    const postComments = () => {
-        console.log("PostComments: ", commentsState)
-    }
-
     const refreshComments= async ()=> {
         console.log("\n----RefreshComments----\n", props.postId)
         const postId= props.postId
@@ -182,18 +179,19 @@ export default function postView(props) {
         }
     }
 
-    
+    const editPost = async() => {
+        console.log("deletePost request:")
+        
+        try {
 
-    const teste= ()=> {
-        console.log("Sessão.user: ", session?.user)
+        } catch(err) {
+
+        }
     }
 
+
     function newComment() {
-        if (newCommentVisible) {
-            setNewCommentVisible(false)
-        } else {
-            setNewCommentVisible(true)
-        }
+        newCommentVisible ? setNewCommentVisible(false) : setNewCommentVisible(true)
     }
 
     function showCommentList() {
@@ -202,6 +200,16 @@ export default function postView(props) {
 
     function showEditComment() {
         editCommentVisible ? setEditCommentVisible(false) : setEditCommentVisible(true)
+    }
+
+    function formatData(updatedAt) {
+        const interval = intervalToDuration({start: updatedAt, end: Date.now()})
+        const formatada= formatDistanceToNowStrict(updatedAt, {addSuffix: true, locale: ptBR})
+        if (interval.days > 1) {
+            return format(updatedAt, "dd MMMM - HH:mm", {locale: ptBR})
+        } else {
+            return formatada
+        }
     }
 
     
@@ -223,7 +231,7 @@ export default function postView(props) {
                         <h2 className="card-title">{ props.title }</h2>
                         
                         <div className="flex-none">
-                            { format(props.createdAt, "dd/MM/yy - HH:mm")  }
+                            { formatData(props.createdAt)  }
                         </div>
                     </div>
 
@@ -269,16 +277,16 @@ export default function postView(props) {
                         <div className="card-actions justify-between">
                             <div>
                                 <div className='indicator'>
-                                    <div className="indicator-item badge badge-default badge-sm">{likes[0]?._id && likes.length}</div>
+                                    <div className="indicator-item badge bg-violet-900 border-transparent badge-sm">{likes[0]?._id && likes.length}</div>
                                     {
                                         likes.length > 0 && likes.find(like => like.user?._id == session?.user?.id) ? (
-                                            <button className="btn btn-sm" onClick={()=> unLike(likes.find(like => like.user?._id == session?.user?.id))}>
+                                            <button className="btn btn-sm bg-transparent border-transparent" onClick={()=> unLike(likes.find(like => like.user?._id == session?.user?.id))}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                                     <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                                                 </svg>
                                             </button>
                                         ) : (
-                                            <button className="btn btn-sm" onClick={likeAdd}>
+                                            <button className="btn btn-sm bg-transparent border-transparent" onClick={likeAdd}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                                 </svg>
@@ -288,23 +296,26 @@ export default function postView(props) {
                                 </div>
                                 
                                 <div className='indicator'>
-                                    <div className="indicator-item badge badge-default badge-sm">{comments[0]?._id && comments.length}</div>
-                                    <button className="btn btn-sm" onClick={showCommentList}>
+                                    <div className="indicator-item badge bg-violet-900 border-transparent badge-sm">{comments[0]?._id && comments.length}</div>
+                                    <button className="btn btn-sm bg-transparent border-transparent" onClick={showCommentList}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                                         </svg>
                                     </button>
                                 </div>
 
+                                <div className="indicator">
+                                    <div className="indicator-item badge bg-violet-900 border-transparent badge-sm">Add</div>
+                                    <button className="btn btn-sm bg-transparent border-transparent" onClick={newComment} >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                                        </svg>
+                                    </button>
+                                </div>
                                 
-                                <button className="btn btn-sm" onClick={newComment} >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
-                                    </svg>
-                                </button>
 
-                                <button className="btn btn-sm" ref={observerRef}>
-                                    {
+                                {/* <button className="btn btn-sm" ref={observerRef}>
+                                    { //item de visualização do post
                                         itemView ? (
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -317,13 +328,19 @@ export default function postView(props) {
                                         )
                                     }
                                     
-                                </button>
+                                </button> */}
 
                             </div>
 
                             {
                                 author?._id == session?.user.id && (
                                     <div>
+                                        <button className="btn btn-sm" onClick={editPost}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                            </svg>
+                                        </button>
+
                                         <button className="btn btn-sm" onClick={deletePost}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -341,7 +358,6 @@ export default function postView(props) {
                                 <CommentEdit comment={commentEdit} refreshComments={refreshComments} isVisible={showEditComment} ></CommentEdit>
                             </div>
                         </div>
-                        
 
                         
                         <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>

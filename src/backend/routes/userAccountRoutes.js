@@ -4,7 +4,7 @@ const { insertUserAccount, userLoginAttempt, getUserAccounts, getOneUserAccount,
 
 const router= express.Router()
 
-router.get('/', getUserAccounts)
+router.use('/', getUserAccounts)
 router.use('/one', getOneUserAccount)
 router.use('/password', verifyCredentials)
 router.use('/verifygoogleaccount', verifyGoogleAccountRegister)

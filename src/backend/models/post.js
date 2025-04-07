@@ -5,7 +5,7 @@ const { Schema, model } = mongoose;
 
 
 const postSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String },
     content: { type: String, required: true },
     userAccountId: Schema.Types.ObjectId,
 }, { timestamps: true }

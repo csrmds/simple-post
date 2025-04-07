@@ -17,7 +17,7 @@ export default function commetnEdit(props) {
 
     const updateComment = async() => {
         console.log("----updateComment----")
-        setComment({...comment, text: text})
+        //setComment({...comment, text: text})
         console.log("comment antes do update: ", comment)
         try {
             const response = await axios.post(`${url}/comment/update`, {comment})
@@ -43,22 +43,11 @@ export default function commetnEdit(props) {
                     onChange={(e)=> setComment({...comment, text: e.target.value})}
                 /> 
                 
-                <div className="flex justify-end w-full px-4 mb-2">
-                    <button className="btn btn-sm bg-transparent border-transparent" onClick={isVisible}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </button>  
+                <div className="flex justify-end w-full px-4 mb-2 gap-2">
+                    <button className="btn btn-sm btn-outline btn-error" onClick={isVisible}>Cancelar</button>  
                     
-                    <button className="btn btn-sm bg-transparent border-transparent" onClick={updateComment}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </button>
+                    <button className="btn btn-sm btn-outline" onClick={updateComment}>Salvar</button>
                 </div>
-                
-                
-
 
             </label>
             

@@ -25,7 +25,7 @@ export default function commentNew(props) {
         setText("")
         setTimeout(() => {
             props.cancelar(false)    
-        }, 2000);
+        }, 600000);
     }
 
 
@@ -36,7 +36,7 @@ export default function commentNew(props) {
             console.log(response.data)
             setInfoMessage("Comentario salvo com sucesso!")
             setInfoVisible(true)
-            setTimeout(() => setInfoVisible(false), 2000);
+            setTimeout(() => setInfoVisible(false), 600000);
             cleanFields()
             setTimeout(() => callRefreshComments(), 1000)
         } catch (error) {
@@ -48,38 +48,48 @@ export default function commentNew(props) {
 
     return (
         <>
-            <div>
+            <label className="textarea flex flex-col items-center gap-2 p-0 bg-neutral">
                 <textarea 
-                    className="textarea bg-slate-800 text-sm/5 w-full py-1 px-4" 
-                    placeholder="Seu comentário..."
+                    className="textarea text-sm/5 border-none focus:outline-none focus:ring-0 w-full bg-neutral" 
+                    placeholder="Seu comentário aqui..."
                     onChange={(e)=> setText(e.target.value)} 
                     value={text} 
                 />
-            </div>
             
-            <div className="flex justify-evenly mt-1">
-                <button className="btn btn-sm btn-outline" onClick={saveComment}>Comentar</button>
+            
+            <div className="flex justify-end w-full px-4 mb-2 gap-2">
                 <button className="btn btn-sm btn-outline btn-error" onClick={()=> props.cancelar(false)} >Cancelar</button>
+                <button className="btn btn-sm btn-outline" onClick={saveComment}>Comentar</button>
                 {/* <button className="btn btn-sm btn-outline" onClick={()=> setText("")}>teste</button> */}
             </div>
 
-            <div className={`transition-all duration-300 ease-in-out transform ${errorVisible ? "opacity-100 scale-100 max-h-40 my-2" : "opacity-0 scale-95 max-h-0 my-2"}`}>
-                <div className="alert alert-error" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 shrink-0 stroke-current">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{errorMessage}</span>
+
+            </label>
+
+
+            <div className="">
+                <div className={`transition-all duration-300 ease-in-out transform ${errorVisible ? "opacity-100 scale-100 max-h-40 mt-2 mb-4" : "opacity-0 scale-95 max-h-0 my-2"}`}>
+                    <div className="alert alert-error" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 shrink-0 stroke-current">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{errorMessage}</span>
+                    </div>
+                </div>
+
+                <div className={`transition-all duration-300 ease-in-out transform ${infoVisible ? "opacity-100 scale-100 max-h-40 mt-2 mb-4" : "opacity-0 scale-95 max-h-0 my-2"}`}>
+                    <div className="alert alert-info" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{infoMessage}</span>
+                    </div>
                 </div>
             </div>
 
-            <div className={`transition-all duration-300 ease-in-out transform ${infoVisible ? "opacity-100 scale-100 max-h-40 my-2" : "opacity-0 scale-95 max-h-0 my-2"}`}>
-                <div className="alert alert-info" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>{infoMessage}</span>
-                </div>
-            </div>
+            
+
+            
             
             
             

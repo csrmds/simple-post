@@ -150,7 +150,6 @@ export default function PostNew(props) {
                                         onChange={(e) => handleFileChange(e) } />
                                     <button className="btn btn-primary" onClick={(e)=> cleanPostForm(e)}>Cancelar</button>
                                     <button className="btn btn-success" onClick={insertPost}>Postar</button>
-                                    <button className="btn btn-success" onClick={(e)=> callUpdatePayload(e)}>teste</button>
                                 </div>
                         </form>
                     </div>
