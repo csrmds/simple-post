@@ -151,6 +151,7 @@ export default function Feed() {
                                 content= {post.content}
                                 title= {post.title}
                                 createdAt= {post.createdAt}
+                                updatedAt= {post.updatedAt}
                                 images= {post.images}
                                 comments= {post.comments}
                                 author= {post.author[0]}

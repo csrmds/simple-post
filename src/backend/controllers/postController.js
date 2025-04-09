@@ -75,7 +75,6 @@ const getPostsFilter = async (req, res) => {
         var order = req.body.order || 1
         var limit = req.body.limit || 15
 
-
         const posts = await Post.find()
             .sort({createdAt: order})
             .limit(limit)
@@ -87,14 +86,121 @@ const getPostsFilter = async (req, res) => {
 }
 
 const getPostById = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id)
-        //console.log("Post encontrado com sucesso: ", post)
-        res.status(200).json(post)
-    } catch (error) {
-        console.log("Erro ao buscar post: ", error)
-        res.status(500).json({ message: "Erro ao buscar post" })
+    console.log("\n\n----getPostById Controller----")
+    console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
+
+    let pipeLine= []
+    let postId= ""
+
+    if (req.body.postId || req.query.postId || req.params.postId) {
+        postId= new mongoose.Types.ObjectId(req.body.postId || req.query.postId || req.params.postId)
     }
+
+    try {
+        pipeLine.push(
+            {
+                $match: { _id: postId}
+            },            
+            {
+                $lookup: {
+                    from: "postimages",
+                    localField: "_id",
+                    foreignField: "postId",
+                    as: "images"
+                }
+            },
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "userAccountId",
+                    foreignField: "_id",
+                    as: "author"
+                }
+            },
+            {
+                $lookup: {
+                    from: "likes",
+                    localField: "_id",
+                    foreignField: "foreignId",
+                    as: "likes"
+                }
+            },
+            {
+                $lookup: {
+                    from: "useraccounts",
+                    localField: "likes.userAccountId",
+                    foreignField: "_id",
+                    as: "likeUser"
+                }
+            },
+            {
+                $addFields: {
+                    likes: {
+                        $map: {
+                            input: "$likes",
+                            as: "likes",
+                            in: {
+                                _id: "$$likes._id",
+                                createdAt: "$$likes.createdAt",
+                                user: {
+                                    $arrayElemAt: [{
+                                        $filter: {
+                                            input: "$likeUser",
+                                            as: "user",
+                                            cond: { $eq: ["$$user._id", "$$likes.userAccountId"] }
+                                        }
+                                    }, 0]
+                                }
+                            }
+                        }
+                    },
+                    author: {
+                        $arrayElemAt: [{
+                            $filter: {
+                                input: "$author",
+                                as: "author",
+                                cond: { $eq: ["$$author._id", "$userAccountId"] }
+                            }
+                        }, 0]
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    content: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    author: {
+                        _id: 1,
+                        email: 1,
+                        firstName: 1,
+                        lastName: 1,
+                        avatarImage: 1
+                    },
+                    likes: {
+                        _id: 1,
+                        createdAt: 1,
+                        user: {
+                            _id: 1,
+                            email: 1,
+                            firstName: 1,
+                            lastName: 1,
+                            avatarImage: 1
+                        }
+                    },
+                }
+            }
+        )
+
+        const post= await Post.aggregate(pipeLine)
+        console.log(post[0])
+        res.status(200).json(post[0])
+    } catch(err) {
+        console.error("Erro ao buscar post por Id: ", err)
+        res.status(500).json({ message: "Erro ao buscar post por Id", erro: err })
+    }
+
 }
 
 const getPostsPaginate = async (req, res) => {
@@ -295,6 +401,7 @@ const getPostsPaginate = async (req, res) => {
                             foreignId: 1,
                             user: {
                                 _id: 1,
+                                firstName: 1,
                                 userName: 1,
                                 email: 1,
                             }
@@ -302,13 +409,18 @@ const getPostsPaginate = async (req, res) => {
                         user: { 
                             _id: 1, 
                             avatarImage: 1, 
-                            firstName: 1, 
+                            firstName: 1,
                             lastName: 1 
                         },
                         createdAt: 1,
                         updatedAt: 1,
                     },
-                    author: { _id: 1, "avatarImage": 1, "firstName": 1, "lastName": 1 },
+                    author: { 
+                        _id: 1, 
+                        avatarImage: 1, 
+                        firstName: 1, 
+                        lastName: 1 
+                    },
                     likes: { 
                         _id: 1,
                         foreignId: 1,
@@ -318,8 +430,10 @@ const getPostsPaginate = async (req, res) => {
                             firstName: 1, 
                             lastName: 1,
                         },
-                        createdAt: 1 },
+                        createdAt: 1 
+                    },
                     createdAt: 1,
+                    updatedAt: 1
                 } 
             },
             { $sort: { createdAt: order } },
@@ -422,11 +536,10 @@ const updatePost = async (req, res) => {
     console.log("\n\nupdatePost body:\n", req.body)
 
     try {
-        console.log('req body: ', req.body)
-        const post = req.body
-        const postUpdate= await Post.findByIdAndUpdate(post.postId, {title: post.title, content: post.content}, {new: true})
-        console.log("Post atualizado com sucesso:", postUpdate)
-        res.status(200).json(postUpdate)
+        const post = req.body.post
+        const response= await Post.findByIdAndUpdate(post._id, {content: post.content}, {new: true})
+        console.log("Post atualizado com sucesso:", response)
+        res.status(200).json(response)
     } catch (error) {
         console.log("Erro ao atualizar post: ", error)
         res.status(500).json({ message: "Erro ao atualizar post" })

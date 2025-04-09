@@ -2,27 +2,26 @@ import React from "react";
 import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useSession } from 'next-auth/react'
-import Slider from "react-slick";
-import CommentNew from './CommentNew'
-import CommentList from './CommentList'
-import CommentEdit from './CommentEdit'
 import path from 'path'
 import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import axios from 'axios'
+import Slider from "react-slick";
 
+import CommentNew from './CommentNew'
+import CommentList from './CommentList'
+import CommentEdit from './CommentEdit'
+import PostEdit from "./PostEdit";
 
 
 
 export default function postView(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const {data: session} = useSession()
-    //const [comments, setComments]= useState(props.comments)
     const [newCommentVisible, setNewCommentVisible]= useState(false)
     const [viewCommentList, setViewCommentList]= useState(false)
     const [editCommentVisible, setEditCommentVisible]= useState(false)
     const [images, setImages]= useState( props.images )
-    //const [likes, setLikes]= useState( props.likes )
     const [liked, setLiked] = useState()
     const author = props.author
     const callRefreshPostList = props.refreshPostList
@@ -62,7 +61,7 @@ export default function postView(props) {
     useEffect(()=> {
         checkLike()
         //setComments(props.comments)
-        //console.log("useEffect images: ", images)
+        console.log("useEffect PostView: ", props)
         // console.log("lenght: ", images.length)
 
 
@@ -179,15 +178,6 @@ export default function postView(props) {
         }
     }
 
-    const editPost = async() => {
-        console.log("deletePost request:")
-        
-        try {
-
-        } catch(err) {
-
-        }
-    }
 
 
     function newComment() {
@@ -229,7 +219,7 @@ export default function postView(props) {
                         </div>
                         
                         <div className="flex-none">
-                            { formatData(props.createdAt)  }
+                            {  formatData(props.updatedAt) }
                         </div>
                     </div>
 
@@ -332,8 +322,8 @@ export default function postView(props) {
 
                             {
                                 author?._id == session?.user.id && (
-                                    <div>
-                                        <button className="btn btn-sm" onClick={editPost}>
+                                    <div className="">
+                                        <button className="btn btn-sm" onClick={() => document.getElementById(`postEdit_${props.postId}`).showModal()}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                                             </svg>
@@ -344,6 +334,12 @@ export default function postView(props) {
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                             </svg>
                                         </button>
+
+                                        <dialog id={`postEdit_${props.postId}`} className="modal">
+                                            <div className="modal-box max-w-3xl">
+                                                <PostEdit postId={props.postId}></PostEdit>
+                                            </div>
+                                        </dialog>
                                     </div>
                                 )
                             } 

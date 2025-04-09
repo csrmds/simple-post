@@ -19,13 +19,13 @@ export default function commentNew(props) {
     
     useEffect(()=> {
         
-    })
+    },[])
 
     function cleanFields() {
         setText("")
         setTimeout(() => {
             props.cancelar(false)    
-        }, 600000);
+        }, 2000);
     }
 
 
@@ -36,9 +36,9 @@ export default function commentNew(props) {
             console.log(response.data)
             setInfoMessage("Comentario salvo com sucesso!")
             setInfoVisible(true)
-            setTimeout(() => setInfoVisible(false), 600000);
+            setTimeout(() => setInfoVisible(false), 2000);
             cleanFields()
-            setTimeout(() => callRefreshComments(), 1000)
+            setTimeout(() => callRefreshComments(), 2000)
         } catch (error) {
             console.log("Erro ao tentar salvar o comentario", error)
             setErrorMessage(error)

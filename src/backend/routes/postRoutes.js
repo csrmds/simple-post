@@ -25,7 +25,7 @@ router.post('/', getPostsFilter )
 router.use('/aggregate', getPostsAggregate)
 router.use('/list', getPostsPaginate)
 //router.get('/', getPosts )
-router.get('/:id', getPostById )
+router.use('/id/', getPostById )
 router.post('/update', updatePost )
 router.post('/delete', deletePost)
 
