@@ -40,14 +40,14 @@ const getUserAccounts = async (req, res) => {
 }
 
 const getOneUserAccount = async (req, res) => {
-    console.log('\n\n----CONTROLLER getOneUserAccount----\n')
+    //console.log('\n\n----CONTROLLER getOneUserAccount----\n')
     var resp= { error: false, message: "" }
     var search= {}
     if (Object.keys(req.body).length > 0) var search= req.body
 
     try {
         const userAccount= await UserAccount.findOne(search)
-        console.log('userAccount: ', userAccount)
+        //console.log('userAccount: ', userAccount)
         if (!userAccount || Object.keys(userAccount).length== 0) {
             resp.error= true
             resp.message= "Não foi encontrado nenhum usuário"

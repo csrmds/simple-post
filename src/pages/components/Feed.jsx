@@ -27,17 +27,17 @@ export default function Feed() {
     
 
     const getPostList =  useCallback(async () => {
-        //console.log("chamou getPostList..")
+        console.log("chamou getPostList..")
         try {
             const response = await axios.post(`${url}/post/list`, paginateOptions)
             // console.log('paginateOptions: ', paginateOptions)
-            //console.log('response.data: ', response.data)
+            console.log('response.data: ', response.data)
             dispatch({
                 type: "postList/get", 
                 payload: response.data 
             })
         } catch(err) {
-            console.error("erro ao listar posts com useDispatch...", err)
+            console.error("Erro ao listar posts.", err)
         }
     }, [dispatch, url, paginateOptions])
     
@@ -110,8 +110,7 @@ export default function Feed() {
 
     return (
         <>
-        <div className="space-x-2">
-            {/* <button className="btn btn-default" onClick={updatePostList}>updatePostList</button> */}
+        {/* <div className="space-x-2">
             <button className="btn btn-success" onClick={getPostList}>getPostList</button>
         </div>
         
@@ -133,11 +132,13 @@ export default function Feed() {
                     
                 </tbody>
             </table>
+        </div> */}
+
+        <div className="flex justify-center mb-6">
+            <div className="flex flex-col w-192">
+                <PostNew getPostList={getPostList} updatePaginateOptions={()=> setPaginateOptions({order: -1, limit: 5, page: 1})}></PostNew>
+            </div>
         </div>
-
-        
-
-        <PostNew getPostList={getPostList} updatePaginateOptions={()=> setPaginateOptions({order: -1, limit: 5, page: 1})} />
 
 
         <div className="flex flex-col items-center mb-6">

@@ -60,8 +60,11 @@ export default function postView(props) {
 
     useEffect(()=> {
         checkLike()
+        console.log("carregou/atualizou postView.", props.postId)
+        setImages([])
+        setImages(props.images)
         //setComments(props.comments)
-        console.log("useEffect PostView: ", props)
+        //console.log("useEffect PostView: ", props)
         // console.log("lenght: ", images.length)
 
 
@@ -83,7 +86,7 @@ export default function postView(props) {
                 observer.unobserve(observerRef.current)
             }
         }
-    }, [])
+    }, [props.images])
 
 
     const refreshLikes = async () => {
@@ -178,6 +181,45 @@ export default function postView(props) {
         }
     }
 
+    function fecharModal(postId) {
+        let modal= document.getElementById("postEdit_"+postId)
+        console.log(modal)
+        modal.close()
+    }
+
+    const testFile = async() => {
+        console.log("=====testeFile=====")
+
+        try {
+            const response = await axios.post(`${url}/post/teste`, {postId: props.postId})
+            console.log("response testeFile: ", response.data)
+        } catch(err) {
+            console.error(err)
+        }
+    }
+
+    const testeGenerico = async() => {
+        console.log("=====testeFile=====")
+
+        try {
+            const response = await axios.post(`${url}/post/teste/generico`, {postId: props.postId})
+            console.log("response testeFile: ", response.data)
+        } catch(err) {
+            console.error(err)
+        }
+    }
+
+    const testeInsertOrder = async() => {
+        console.log("=====insertOrder=====")
+
+        try {
+            const response = await axios.post(`${url}/post/teste/insertorder`, {postId: props.postId})
+            console.log("response insertOrder: ", response.data)
+        } catch(err) {
+            console.error(err)
+        }
+    }
+
 
 
     function newComment() {
@@ -217,24 +259,33 @@ export default function postView(props) {
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
                         </div>
+
+                        
+                        {/* <div className="gap-2">
+                            <button className="btn btn-sm" onClick={testFile}>testeFile</button>
+                            <button className="btn btn-sm" onClick={testeGenerico}>testeGenerico</button>
+                            <button className="btn btn-sm" onClick={testeInsertOrder}>insertOrder</button>
+                        </div>  */}
+                       
                         
                         <div className="flex-none">
                             {  formatData(props.updatedAt) }
-                        </div>
+                        </div> 
                     </div>
+                    
 
                     
                         
                     
                     { images.length > 1 ? (
                         <>
-                            <Slider {...sliderSettins} className='bg-slate-700 max-h-160'>
+                            <Slider {...sliderSettins} className=' max-h-160'>
                                 {
                                     images.map((image, i) => (
                                         <figure key={i} className='flex-none grid content-center max-h-160'>
                                             <img
                                                 src={
-                                                    image.source== "local" ? ( url + "/images/" + path.basename(image.address))
+                                                    image.source== "local" ? ( url + "/images/"+ props.postId+"/"+ path.basename(image.address))
                                                     : ( image.address )
                                                 }
                                                 alt={image.description}
@@ -247,10 +298,10 @@ export default function postView(props) {
                         </>
                     ) : images.length == 1 && (
                         <>
-                            <figure className='flex-none grid content-center max-h-160 bg-slate-800'>
+                            <figure className='flex-none grid content-center max-h-160'>
                                 <img
                                     src={
-                                        images[0].source== "local" ? ( url + "/images/" + path.basename(images[0].address) )
+                                        images[0].source== "local" ? ( url + "/images/"+ props.postId+"/" + path.basename(images[0].address) )
                                         : ( images[0].address )
                                     }
                                     alt={images[0].description}
@@ -261,20 +312,20 @@ export default function postView(props) {
                     )}   
                     
                     <div className="card-body">
-                        <p className='my-2'>{props.content}</p>
+                        <p className='my-2 text-lg'>{props.content}</p>
                         <div className="card-actions justify-between">
-                            <div>
+                            <div className="flex w-3/4 gap-2">
                                 <div className='indicator'>
                                     <div className="indicator-item badge bg-violet-900 border-transparent badge-sm">{likes[0]?._id && likes.length}</div>
                                     {
                                         likes.length > 0 && likes.find(like => like.user?._id == session?.user?.id) ? (
-                                            <button className="btn btn-sm bg-transparent border-transparent" onClick={()=> unLike(likes.find(like => like.user?._id == session?.user?.id))}>
+                                            <button className="btn btn-sm border-transparent" onClick={()=> unLike(likes.find(like => like.user?._id == session?.user?.id))}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                                     <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                                                 </svg>
                                             </button>
                                         ) : (
-                                            <button className="btn btn-sm bg-transparent border-transparent" onClick={likeAdd}>
+                                            <button className="btn btn-sm border-transparent" onClick={likeAdd}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                                                 </svg>
@@ -285,7 +336,7 @@ export default function postView(props) {
                                 
                                 <div className='indicator'>
                                     <div className="indicator-item badge bg-violet-900 border-transparent badge-sm">{comments[0]?._id && comments.length}</div>
-                                    <button className="btn btn-sm bg-transparent border-transparent" onClick={showCommentList}>
+                                    <button className="btn btn-sm border-transparent" onClick={showCommentList}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                                         </svg>
@@ -293,36 +344,23 @@ export default function postView(props) {
                                 </div>
 
                                 <div className="indicator">
-                                    <div className="indicator-item badge bg-violet-900 border-transparent badge-sm">Add</div>
-                                    <button className="btn btn-sm bg-transparent border-transparent" onClick={newComment} >
+                                    <div className="indicator-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clipRule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <button className="btn btn-sm border-transparent" onClick={newComment} >
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                                         </svg>
                                     </button>
                                 </div>
-                                
-
-                                {/* <button className="btn btn-sm" ref={observerRef}>
-                                    { //item de visualização do post
-                                        itemView ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                            </svg>
-                                        ) : (
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                                            </svg>
-                                        )
-                                    }
-                                    
-                                </button> */}
 
                             </div>
 
                             {
                                 author?._id == session?.user.id && (
-                                    <div className="">
+                                    <div className="flex gap-2">
                                         <button className="btn btn-sm" onClick={() => document.getElementById(`postEdit_${props.postId}`).showModal()}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
@@ -337,7 +375,10 @@ export default function postView(props) {
 
                                         <dialog id={`postEdit_${props.postId}`} className="modal">
                                             <div className="modal-box max-w-3xl">
-                                                <PostEdit postId={props.postId}></PostEdit>
+                                                <form method="dialog" className="modal-backdrop">
+                                                    <button className="btn btn-sm btn-circle absolute right-2 top-4">✕</button>
+                                                </form>
+                                                <PostEdit postId={props.postId} refreshPostList={callRefreshPostList} ></PostEdit>
                                             </div>
                                         </dialog>
                                     </div>
@@ -362,7 +403,6 @@ export default function postView(props) {
 
                         <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
                             <div className='w-140'>
-                                {/* <CommentList comments={comments} refreshComments={refreshComments}></CommentList> */}
                                 <CommentList 
                                     comments={comments} 
                                     postId={props.postId} 

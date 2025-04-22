@@ -1,10 +1,11 @@
 const { default: mongoose } = require('mongoose')
+const fs= require('fs/promises')
+const path= require('path')
 const Post= require('../models/post.js')
 const PostImage= require('../models/postImage.js')
 const Like = require('../models/like.js')
 const Comment = require ('../models/comment.js')
-const fs= require('fs/promises')
-const path= require('path')
+const { getPathInfo, fileListRenameOrder, lastImageOrder } = require ('../utils/commonFunctions.js')
 
 
 const insertPost = async (req, res) => {
@@ -12,43 +13,41 @@ const insertPost = async (req, res) => {
         console.log("\n\n=======CONTROLLER insertPost=======\n")
         const files = req.files
         const newPost = new Post(req.body)
-        console.log('req.files: ', req.files, '\n')
         const savedPost = await newPost.save()
         console.log("Post criado com sucesso: ", savedPost)
 
 
         if (files) {
-            //const pathImages= './src/backend/files/postImages/'
             const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
-            
-            console.log('process path images: ', pathImages)
-            console.log('files array: ')
-            files.forEach((value, key) => {
-                console.log(`${key}: ${value}`)
-            })
 
             try {
-                files.map(async (file, i) => {
-                    
+                //cria a pasta com postId para salvar as fotos
+                await fs.mkdir(pathImages+savedPost._id)
+                let order= 0
+                
+                for (const [i, file] of files.entries()) {
+                    console.log("for file: ", i)
                     const extension = path.extname(pathImages+file.filename)
-                    const newFileName= `${savedPost._id}_${i}${extension}`
-                    await fs.rename(pathImages+file.filename, pathImages+`${newFileName}`)
-
+                    const newFileName= `image_${i}${extension}`
+                    const fileOrigin= pathImages+file.filename
+                    const fileDestination= `${pathImages}${savedPost._id}/${newFileName}`
+                    await fs.rename(fileOrigin, fileDestination)
 
                     const newPostImage = new PostImage({
                         postId: savedPost._id,
-                        address: pathImages+newFileName,
+                        address: fileDestination,
                         description: file.filename,
+                        order: i,
+                        source: "local",
                         mimetype: file.mimetype,
                         size: file.size,
-                        source: "local"
                     })
                     const savedPostImage = await newPostImage.save()
                     console.log(`Imagem salva order[${i}]`, savedPostImage)
-                })
-            } catch (error) {
-                console.log("Erro ao salvar imagem: ", error)
-                res.status(500).json({ message: "Erro ao salvar imagem" })
+                }
+            } catch (err) {
+                console.log("Erro ao salvar imagem: ", err)
+                res.status(500).json({ message: "Erro ao salvar imagem", error: err })
             }
         }
         
@@ -87,7 +86,7 @@ const getPostsFilter = async (req, res) => {
 
 const getPostById = async (req, res) => {
     console.log("\n\n----getPostById Controller----")
-    console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
+    //console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
 
     let pipeLine= []
     let postId= ""
@@ -194,7 +193,7 @@ const getPostById = async (req, res) => {
         )
 
         const post= await Post.aggregate(pipeLine)
-        console.log(post[0])
+        //console.log(post[0])
         res.status(200).json(post[0])
     } catch(err) {
         console.error("Erro ao buscar post por Id: ", err)
@@ -205,7 +204,7 @@ const getPostById = async (req, res) => {
 
 const getPostsPaginate = async (req, res) => {
     console.log("\n\n------Controller getPostsAggregate------")
-    console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
+    //console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params)
     let pipeLine= []
     let postId= null
 
@@ -532,14 +531,53 @@ const getPostsAggregate = async (req, res) => {
 }
 
 const updatePost = async (req, res) => {
-
-    console.log("\n\nupdatePost body:\n", req.body)
+    console.log("-----updatePost Controller-----")
+    //console.log("body: ",req.body, "\nQuery: ", req.query, "\nParams:", req.params, "\nFiles: ", req.files)
 
     try {
-        const post = req.body.post
-        const response= await Post.findByIdAndUpdate(post._id, {content: post.content}, {new: true})
-        console.log("Post atualizado com sucesso:", response)
-        res.status(200).json(response)
+        const {postId, content} = req.body
+        const files = req.files
+        const updatedPost= await Post.findByIdAndUpdate(postId, {content: content}, {new: true})
+        console.log("Post atualizado com sucesso.", postId)
+
+        if (files) {
+            const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
+            let order= await lastImageOrder(postId)
+            
+            
+            try {
+                for (const file of files) {
+                    console.log("FileMapOrder iteration: ", order)
+                    const extension = path.extname(pathImages+file.filename)
+                    const newFileName= `image_${order}${extension}`
+                    const tempAddress= pathImages+file.filename
+                    const newAddress= `${pathImages}${postId}/${newFileName}`
+                    
+                    await fs.rename(tempAddress, newAddress)
+
+                    const newPostImage = new PostImage({
+                        postId: updatedPost._id,
+                        address: newAddress,
+                        description: file.filename,
+                        order: order,
+                        source: "local",
+                        mimetype: file.mimetype,
+                        size: file.size,
+                    })
+
+                    const savedPostImage = await newPostImage.save()
+                    console.log(`Imagem salva order[${order}]`, savedPostImage.address)
+                    order++
+                    console.log("NextOrder: ", order)
+                }
+            } catch(err) {
+                console.error("Erro ao salvar imagem: ", err)
+                res.status(500).json({message: "Erro ao salvar imagem", error: err})
+            }
+
+        }
+
+        res.status(200).json(updatedPost)
     } catch (error) {
         console.log("Erro ao atualizar post: ", error)
         res.status(500).json({ message: "Erro ao atualizar post" })
@@ -592,18 +630,164 @@ const deletePost = async (req, res) => {
 }
 
 const testFile = async (req, res) => {
+    console.log("\n\n=====TesteFile=====")
+    const postId= req.body.postId
+
     try {
-        const pathImages= './src/backend/files/postImages/'
+        const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
         const listFiles = await fs.readdir(pathImages)
         const file = await fs.stat(pathImages + listFiles[0])
-        const response = await fs.rename(pathImages + listFiles[0], pathImages + 'renomeado.jpg')
+        //const response = await fs.rename(pathImages + listFiles[0], pathImages + 'renomeado.jpg')
+        //const extension = path.extname(listFiles[0])
+        //const fileName= `${postId}_${0}${extension}`
+
+        let listFile= []
+        let listNewFileName= []
+
+        const images= await PostImage.find({postId: postId}).sort({_id: 1})
+        //renomeia os arquivos do post para um nome temporario
+        images.map(async (image) => {
+            let fileName= path.basename(image.address, path.extname(image.address))
+            let extension= path.extname(image.address)
+            let tempFileName= `${pathImages}${fileName}_temp${extension}`
+            listFile.push({
+                address: tempFileName, 
+                id: image._id.toString()
+            })
+            let rename= await fs.rename(image.address, tempFileName)
+            console.log("renameTemp: ", rename )
+        })
+        console.log("ListFileTemp: ", listFile)
 
 
-        res.status(200).json({ message: "Arquivo lido com sucesso", response})
+        //renomeia os arquivos para um nome correto e atualiza no banco de dados
+        listFile.map(async (filePath, i) => {
+            console.log("chamou listFile.map")
+            let extension= path.extname(filePath.address)
+            let fileNewName= `${pathImages}${postId}_${i}${extension}`
+            let rename= await fs.rename(filePath.address, fileNewName)
+            console.log("rename: ", rename)
+            const imageUpdated= await PostImage.findByIdAndUpdate(filePath.id, {address: fileNewName}, {new: true})
+            listNewFileName.push({address: fileNewName, id: filePath.id})
+            console.log("ImageUpdated: ", imageUpdated)
+        })
+        console.log("listNewFileName: ", listNewFileName)
+      
+        
+        res.status(200).json({ message: "Arquivo lido com sucesso", listFiles, images, listFile, listNewFileName})
+        
     } catch (error) {
         console.log("Erro ao testar arquivo: ", error)
         res.status(500).json({ message: "Erro ao testar arquivo" })
     }
+}
+
+async function getLastAddressByPostId (postId) {
+
+    try {
+        const id = new mongoose.Types.ObjectId(postId)
+        const imageList = await PostImage.find({ postId: id }).sort({ _id: 1 })
+        let imageAddressList = []
+
+        imageList.map(image => {
+            imageAddressList.push(image.address)
+        })
+        imageAddressList.sort()
+
+        const last= imageAddressList[imageAddressList.length - 1]
+
+        return last
+
+    } catch(err) {
+        console.log(err)
+        return false
+    }
+    
+}
+
+
+const testeGenerico = async (req, res) => {
+    console.log("\n\n=====TesteFile=====")
+    const postId= new mongoose.Types.ObjectId(req.body.postId) 
+    console.log(postId)
+
+    try {
+
+        const lastOrder= await lastImageOrder(postId)
+
+        console.log("Last Order: ", lastOrder)
+
+        // const lastFile= await getLastAddressByPostId(req.body.postId)
+
+        // const lastFileExtension= path.extname(lastFile)
+        // const lastFileName= path.basename(lastFile, lastFileExtension)
+        // const order= parseInt(lastFileName.replace(`${postId}_`, ""))
+ 
+        // console.log("ultimo address: ", {lastFile, lastFileExtension, lastFileName, order})
+    } catch(err) {
+        console.log("Erro ao testar arquivo: ", err)
+        res.status(500).json({ message: "Erro ao testar arquivo" })
+    }
+
+}
+
+const testeInsertOrderImages = async (req, res) => {
+    console.log("\n\n=====TesteInsertOrder=====")
+
+    //const postId= new mongoose.Types.ObjectId(req.body.postId)
+    const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
+
+    try {
+        const posts= await Post.find()
+        //console.log("Post: ", post._id)
+
+        posts.map(async post => {
+            
+            try {
+                //console.log("PostId: ", post._id)
+                const images= await PostImage.find({postId: post._id})
+        
+                if (!images || images.length=== 0) {
+                    console.log("PostID: ", post._id, "\nnenhuma imagem para ser atualizada")
+                    return
+                }
+
+                images.map(async (image, i) => {
+                    let extension = path.extname(image.address)
+                    let newFileName= pathImages+post._id+"/image_"+i+extension
+
+                    console.log("new Address: ", newFileName)
+                    
+                    if (image.source== "local") {
+                        image.address= newFileName
+                        image.save()
+                    } else {
+                        console.log("web image")
+                    }
+                    
+                })
+        
+                // images.map(async (image, i) => {
+                //     image.order= i
+                //     //await image.save()
+                //     console.log("updateOrder: ", {postId: image.postId, order: image.order, address: image.address})
+                // })
+        
+                //res.status(200).json(images)
+            } catch(err) {
+                console.log("Erro ao inserir order em postImages: ", err)
+                res.status(500).json({ message: "Erro ao inserir order em postImages", error: err })
+            }
+
+        })
+
+
+    } catch(err) {
+        console.log("Erro ao buscar posts: ", err)
+        res.status(500).json({ message: "Erro ao buscar posts", error: err })
+    }
+
+    
 }
 
 
@@ -616,5 +800,7 @@ module.exports= {
     getPostsAggregate, 
     updatePost, 
     testFile,
+    testeGenerico,
+    testeInsertOrderImages,
     deletePost
 }
