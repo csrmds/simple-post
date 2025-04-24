@@ -31,11 +31,11 @@ app.use(allowCors)
 
 app.use('/api/useraccount', userAccountRoutes)
 app.use('/post', postRoutes)
+app.use('/image', imagesRoutes)
 app.use("/images", express.static(path.join(__dirname, "files", "postImages")));
 app.use("/images/avatar", express.static(path.join(__dirname, "files", "userAvatar")));
 app.use('/comment', commentRoutes)
 app.use('/like', likeRoutes)
-app.use('/image', imagesRoutes)
 
 
 const PORT= process.env.PORT

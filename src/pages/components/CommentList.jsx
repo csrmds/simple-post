@@ -40,7 +40,7 @@ export default function commentList(props) {
 
         try {
             const response = await axios.post(`${url}/like/insert`, {like})
-                .finally( setTimeout(() => refreshCommentById(commentId), 500) )
+                .finally( setTimeout(() => refreshCommentById(commentId), 0) )
             // console.log("Like: ", like)
             // console.log("Response: ", response.data)
         } catch (err) {
@@ -54,7 +54,7 @@ export default function commentList(props) {
         try {
             const response = await axios.post(`${url}/like/remove`, {likeId: like._id})
                 .finally(
-                    setTimeout(() => refreshCommentById(like.foreignId), 500)
+                    setTimeout(() => refreshCommentById(like.foreignId), 0)
                 )
             console.log("response unLike: ", response.data)
             console.log("Like param: ", like)
@@ -73,7 +73,7 @@ export default function commentList(props) {
                     type: 'postList/updateCommentById',
                     payload: {commentId, comment: response.data[0]}
                 })
-            }, 500)
+            }, 0)
         } catch (err) {
             console.error("\nErro ao atualizar comentário: ", err)
         }
@@ -83,7 +83,7 @@ export default function commentList(props) {
         console.log("\n----DeleteComment----\n")
         try {
             const response = await axios.post(`${url}/comment/delete`, {commentId: commentId})
-                .finally( setTimeout(() => callRefreshComments(), 500) )
+                .finally( setTimeout(() => callRefreshComments(), 0) )
         } catch (err) {
             console.error("\nErro ao deletar comentário: ", err)
         }

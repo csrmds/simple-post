@@ -7,9 +7,23 @@ const {fileListRenameOrder} = require('../utils/commonFunctions')
 
 const insertPostImage = async (req, res) => {
     console.log("-----insertPostImage Controller-----")
+    console.log(req.body)
+    const postImage= {
+        postId: new mongoose.Types.ObjectId(req.body.postId),
+        address: req.body.address,
+        source: req.body.source,
+        public_id: req.body.public_id,
+        url: req.body.url,
+        description: req.body.description,
+        order: req.body.order
+    }
+
+    
 
     try {
-
+        const image= new PostImage(postImage)
+        const savedImage= await image.save()
+        res.status(200).json(image)
     } catch(err) {
         console.error("Não foi possível inserir as imagens do post.", err)
         res.status(500).json({message: "Não foi possível inserir as imagens do post.", error: err})

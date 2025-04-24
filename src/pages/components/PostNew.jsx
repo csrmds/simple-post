@@ -33,18 +33,24 @@ export default function PostNew(props) {
         try {
             //ADICIONA CONTEUDO DO POST AO formPost
             const formPost= new FormData()
+            const imagesData= new FormData()
+
             formPost.append('content', content)
             formPost.append('userAccountId', session?.user?.id)
+
             Array.from(uploadImages).forEach((file)=> {
-                formPost.append('post-image', file)
+                imagesData.append('post-image', file)
             })
 
             //ENVIA REQUISIÇÃO
             const response = await axios.post(`${url}/post/insert`, formPost, {
                 headers: {'Content-Type': 'multipart/form-data'}
             }).then((response) => {
-                console.log('then response..')
-                console.log(response.data)
+                console.log('InserPost response PostId:')
+                console.log(response.data.postId)
+                //const postId= String(response.data._id) 
+                imagesData.append('postId', response.data.postId)
+                cloudinaryUpload(imagesData)
                 setResponseError(response.data.error)
                 setResponseData(response.data.postId)
                 setResponseMsg(response.data.message)
@@ -59,6 +65,43 @@ export default function PostNew(props) {
             setResponseMsg(err.message)
             console.error("Erro ao salvar o post...", err)
         }
+    }
+
+    const cloudinaryUpload = async (images) => {
+        
+        if (!images.has("postId") || !images.has('post-image')) return
+        
+        try {
+            const response = await axios.post(`${url}/image/upload`, images, {
+                headers: {'Content-Type': 'multipart/form-data'}
+            })
+        
+
+            if (response.data.length > 0 ) {
+                let i=0
+                for (const imageCloudi of response.data) {
+                    console.log("entrou no laço...")
+                    const image= {
+                        postId: images.get("postId"),
+                        address: imageCloudi.url,
+                        source: "cloudinary",
+                        public_id: imageCloudi.public_id,
+                        url: imageCloudi.url,
+                        description: imageCloudi.display_name,
+                        order: i
+                    }
+                    i++
+
+                    const resp= await axios.post(`${url}/image/insert`, image)
+                    console.log("Imagem salva... ", resp.data)
+                }
+
+            }
+            
+        } catch(err) {
+            console.log("cloudinaryUpload error: ", err) 
+        }
+        
     }
 
     const cleanPostForm = (e) => {

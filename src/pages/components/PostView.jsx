@@ -60,7 +60,7 @@ export default function postView(props) {
 
     useEffect(()=> {
         checkLike()
-        console.log("carregou/atualizou postView.", props.postId)
+        //console.log("carregou/atualizou postView.", props.postId)
         setImages([])
         setImages(props.images)
         //setComments(props.comments)

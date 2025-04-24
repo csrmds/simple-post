@@ -27,7 +27,7 @@ export default function Feed() {
     
 
     const getPostList =  useCallback(async () => {
-        console.log("chamou getPostList..")
+        //console.log("chamou getPostList..")
         try {
             const response = await axios.post(`${url}/post/list`, paginateOptions)
             // console.log('paginateOptions: ', paginateOptions)

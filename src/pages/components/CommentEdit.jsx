@@ -24,7 +24,7 @@ export default function commetnEdit(props) {
                 .finally(setTimeout(()=> {
                     callRefreshComments(),
                     isVisible()
-                }, 500))
+                }, 0))
             //console.log(response.data)
         } catch(err) {
             console.log("Erro ao atualizar o comentário: ", err)

@@ -389,7 +389,8 @@ const getPostsPaginate = async (req, res) => {
                     _id: 1,
                     title: 1,
                     content: 1,
-                    images: { address: 1, description: 1, source: 1 },
+                    //images: { address: 1, description: 1, source: 1 },
+                    images: 1,
                     comments: { 
                         _id: 1,
                         foreignId: 1,
