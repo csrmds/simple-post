@@ -2,12 +2,18 @@ const { default: mongoose } = require('mongoose')
 const PostImage = require('../models/postImage')
 const fs = require('fs/promises')
 const path = require('path')
-const {fileListRenameOrder} = require('../utils/commonFunctions')
+const {fileListRenameOrder, cloudinaryRenameOrderFiles, lastImageOrder} = require('../utils/commonFunctions')
+const dotenv= require('dotenv')
+const axios = require('axios')
+
+dotenv.config()
+
+const url = process.env.BACKEND_URL
 
 
 const insertPostImage = async (req, res) => {
     console.log("-----insertPostImage Controller-----")
-    console.log(req.body)
+    //console.log(req.body)
     const postImage= {
         postId: new mongoose.Types.ObjectId(req.body.postId),
         address: req.body.address,
@@ -15,12 +21,14 @@ const insertPostImage = async (req, res) => {
         public_id: req.body.public_id,
         url: req.body.url,
         description: req.body.description,
-        order: req.body.order
+        order: req.body.order,
+        asset_id: req.body.asset_id
     }
 
     
 
     try {
+        //console.log("obejto antes de salvar: ", postImage)
         const image= new PostImage(postImage)
         const savedImage= await image.save()
         res.status(200).json(image)
@@ -45,7 +53,15 @@ const deletePostImage = async (req, res) => {
 
     try {
         image= await PostImage.findById(imageId)
-        fs.unlink(image.address)
+        if (image.source== "cloudinary") {
+            console.log("chamada cloudinaryDelete")
+            //console.log(image)
+            const resp= await axios.post(`${url}/image/cloudinary/delete`, {publicId: image.public_id})
+            console.log("resp do cloudinaryDelete: ", resp.data)
+            cloudinaryRenameOrderFiles(image.postId.toString())
+        } else {
+            fs.unlink(image.address)
+        }
     } catch(err) {
         console.error("Não foi possível deletar o arquivo da imagem.", err, "\nEndereço: ", image.address)
     }
@@ -119,6 +135,38 @@ const getImageById = async (req, res) => {
 
 }
 
+const getLastImageOrder = async (req, res) => {
+    console.log("-----lastImageOrder postImageController-----")
+    const postId= req.body.postId
+
+    
+    try {
+        const response = await lastImageOrder(postId)
+        //console.log("response: ", response)
+        res.status(200).json(response) 
+    } catch(err) {
+        res.status(500).json({message: "Erro ao buscar a ultima ordem.", error: err})
+    }
+
+
+    
+
+    
+
+    // try {
+    //     const lastImageOrder= lastImageOrder(postId)
+    //     return lastImageOrder
+    // } catch(err) {
+    //     console.error("Erro ao buscar a ultima ordem.", err)
+    //     res.status(500).json({message: "Erro ao buscar a ultima ordem.", error: err})        
+    // }
+        
+    
+
+    
+    
+}
+
 
 
 module.exports = {
@@ -126,5 +174,6 @@ module.exports = {
     deletePostImage,
     updatePostImage,
     getPostImage,
-    getImageById
+    getImageById,
+    getLastImageOrder
 }

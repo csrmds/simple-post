@@ -259,6 +259,8 @@ export default function postView(props) {
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
                         </div>
+                        
+                        <div>{props.postId}</div>
 
                         
                         {/* <div className="gap-2">

@@ -13,6 +13,8 @@ const postImageSchema = new Schema({
     height: Number,
     order: Number,
     source: String,
+    public_id: String,
+    asset_id: String,
 }, { timestamps: true }
 )
 

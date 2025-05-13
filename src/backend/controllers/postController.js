@@ -6,6 +6,12 @@ const PostImage= require('../models/postImage.js')
 const Like = require('../models/like.js')
 const Comment = require ('../models/comment.js')
 const { getPathInfo, fileListRenameOrder, lastImageOrder } = require ('../utils/commonFunctions.js')
+const dotenv= require('dotenv')
+const axios = require('axios')
+
+dotenv.config()
+
+const url = process.env.BACKEND_URL
 
 
 const insertPost = async (req, res) => {
@@ -542,8 +548,10 @@ const updatePost = async (req, res) => {
         console.log("Post atualizado com sucesso.", postId)
 
         if (files) {
+            console.log("files...")
             const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
             let order= await lastImageOrder(postId)
+            console.log("Last Order: ", order)
             
             
             try {
@@ -608,14 +616,23 @@ const deletePost = async (req, res) => {
 
         console.log("\n\nDeletando imagens do post:")
         const postImages = await PostImage.find({ postId: postId })
-        postImages.map((image)=> {
-            //console.log(image.address)
-            try {
+        for (const image of postImages) {
+            if (image.source== "cloudinary") {
+                console.log("chamada cloudinaryDelete")
+                const resp= await axios.post(`${url}/image/cloudinary/delete`, {publicId: image.public_id})
+                console.log(resp.data)
+            } else {
                 fs.unlink(image.address)
-            } catch (err) {
-                console.log("erro ao deletar arquivo: ", image.address, "\n", err)
             }
-        })
+        }
+        // postImages.map((image)=> {
+        //     //console.log(image.address)
+        //     try {
+        //         fs.unlink(image.address)
+        //     } catch (err) {
+        //         console.log("erro ao deletar arquivo: ", image.address, "\n", err)
+        //     }
+        // })
         const deletedImages = await PostImage.deleteMany({ postId: postId }) 
         console.log("deletedImagesDB: ", deletedImages)
 

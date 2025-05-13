@@ -28,7 +28,7 @@ export default NextAuth({
             async authorize(credentials) {
                 const url= process.env.NEXT_PUBLIC_BACKEND_URL
                 const user= await axios.post(`${url}/api/useraccount/one`, {email: credentials.email})
-                console.log('\n-----NextAuth-----\n', user.data)
+                console.log('\n-----NextAuth-----')
                 if (!user.data.userAccount || Object.keys(user.data.userAccount).length== 0) {
                     console.log("Error: ",user.data.resp)
                     throw new Error(user.data.resp)
@@ -57,7 +57,7 @@ export default NextAuth({
         async signIn({ account, profile }) {
             //cadastrar conta do google no banco se ainda ñ for cadastrada
             const url= process.env.NEXT_PUBLIC_BACKEND_URL
-            console.log("\n\n------Callback signIn------")
+            console.log("\n------Callback signIn------")
             //console.log("account: ",account, "\nprofile: ", profile)
             if (account.provider== "google") {
                 const googleAccount= {

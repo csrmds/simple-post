@@ -309,6 +309,8 @@
 
 
 
+
+
 0: IntersectionObserverEntry
 boundingClientRect: DOMRectReadOnly {x: 576, y: 546, width: 768, height: 48, top: 546, …}
 intersectionRatio: 1
@@ -318,3 +320,11 @@ isVisible: false
 rootBounds: DOMRectReadOnly {x: 0, y: 0, width: 1920, height: 911, top: 0, …}
 target: div.my-2
 time: 4646.399999976158
+
+
+
+
+
+
+
+

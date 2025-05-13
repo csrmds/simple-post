@@ -72,9 +72,10 @@ export default function PostNew(props) {
         if (!images.has("postId") || !images.has('post-image')) return
         
         try {
-            const response = await axios.post(`${url}/image/upload`, images, {
+            const response = await axios.post(`${url}/image/cloudinary/upload`, images, {
                 headers: {'Content-Type': 'multipart/form-data'}
             })
+            console.log("cloudinaryResponse: ", response)
         
 
             if (response.data.length > 0 ) {
@@ -86,11 +87,12 @@ export default function PostNew(props) {
                         address: imageCloudi.url,
                         source: "cloudinary",
                         public_id: imageCloudi.public_id,
-                        url: imageCloudi.url,
                         description: imageCloudi.display_name,
-                        order: i
+                        order: i,
+                        asset_id: imageCloudi.asset_id
                     }
                     i++
+                    console.log("image: ", image)
 
                     const resp= await axios.post(`${url}/image/insert`, image)
                     console.log("Imagem salva... ", resp.data)

@@ -49,31 +49,27 @@ export default function PostEdit(props) {
         e.preventDefault()
         console.log("-----updatePost-----")
 
-        // let teste= document.getElementById('postEdit_'+props.postId)
-        // console.log("teste: ", teste)
-        // teste.close()
-
-        // return
-
-        // let post= {
-        //     postId: props.postId,
-        //     content: content
-        // }
 
         try {
             const formUpdate= new FormData()
+            const imagesData= new FormData()
+            
             formUpdate.append('postId', props.postId)
             formUpdate.append('content', content)
+            
             Array.from(uploadImages).forEach((file)=> {
-                formUpdate.append('post-image', file)
+                imagesData.append('post-image', file)
             })
-
-            console.log("FormUpdate: ", formUpdate)
 
 
             const response = await axios.post(`${url}/post/update`, formUpdate, 
                 {headers: {'Content-Type': 'multipart/form-data'}}
-            )
+            ).then((response)=> {
+                console.log('UpdatePost response.data:')
+                console.log(response.data)
+                imagesData.append('postId', response.data._id)
+                cloudinaryUpload(imagesData)
+            })
             //console.log(response.data)
             document.getElementById('postEdit_'+props.postId).close()
             setTimeout(()=> callRefrehsPostList(), 1000)
@@ -81,6 +77,50 @@ export default function PostEdit(props) {
         } catch(err) {
             console.error("Erro ao atualizar post.", err)
         }
+    }
+
+
+    const cloudinaryUpload = async (images) => {
+        
+        if (!images.has("postId") || !images.has('post-image')) return
+        console.log("-----cloudinaryUpload-----")
+
+        try {
+            const response = await axios.post(`${url}/image/cloudinary/upload`, images, {
+                headers: {'Content-Type': 'multipart/form-data'}
+            })
+        
+
+            if (response.data.length > 0 ) {
+                console.log("entrou no if do response:", response.data, "length: ", response.data.length)
+                const orderResponse= await axios.post(`${url}/image/lastOrder`, {postId: images.get("postId")})
+                let order= orderResponse.data
+                //console.log("cloudinaryUpload lastOrder:", order)
+
+                for (const imageCloudi of response.data) {
+                    console.log("entrou no laço...")
+                    const image= {
+                        postId: images.get("postId"),
+                        address: imageCloudi.url,
+                        source: "cloudinary",
+                        public_id: imageCloudi.public_id,
+                        description: imageCloudi.display_name,
+                        order: order
+                    }
+                    order++
+
+                    const resp= await axios.post(`${url}/image/insert`, image)
+                    console.log("Imagem salva... ", resp.data)
+                }
+
+            } else {
+                console.log("Nenhuma imagem foi enviada.", response)
+            }
+            
+        } catch(err) {
+            console.log("cloudinaryUpload error: ", err) 
+        }
+        
     }
 
 
@@ -139,6 +179,15 @@ export default function PostEdit(props) {
         }
     }
 
+
+
+    const cloudinaryTeste  = async () => {
+
+        const response= await axios.post(`${url}/image/cloudinary/teste`, {postId: props.postId})
+
+        console.log(response)
+    }
+
     
 
 
@@ -156,6 +205,11 @@ export default function PostEdit(props) {
                         <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
                     </div>
                 </div>
+
+                <div>
+                    <button className='btn btn-sm btn-outline' onClick={cloudinaryTeste} >cloudinaryRenameTemp</button>
+                </div>
+
                 <div className='mr-6'>
                     {formatData(updatedAt) ?? ""}
                 </div>
