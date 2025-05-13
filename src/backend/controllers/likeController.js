@@ -10,14 +10,14 @@ const insertLike= async (req, res) => {
 
     try {
         console.log("\n\n=======LIKE CONTROLLER insert=======\n")
-        console.log(like)
-        console.log(req.body)
+        // console.log(like)
+        // console.log(req.body)
         const newLike= new Like(like)
         const savedLike= await newLike.save()
 
         res.status(200).json(savedLike)
     } catch (err) {
-        console.log("Erro ao inserir like: ", err)
+        console.error("Erro ao inserir like: ", err)
         res.status(500).json({ message: "Erro ao inserir like" });
     }
 }
@@ -41,7 +41,7 @@ const checkLike= async (req, res) => {
         res.status(200).json(response)
 
     } catch (err) {
-        console.log("Erro ao verificar like: ", err)
+        console.error("Erro ao verificar like: ", err)
         res.status(500).json({ message: "Erro ao verificar like" });
     }
 }
@@ -136,7 +136,7 @@ const listLikesByPost = async (req, res) => {
         )
 
         const likes= await Like.aggregate(pipeLine)
-        console.log("Likes response: ", likes)
+        //console.log("Likes response: ", likes)
         res.status(200).json(likes)
         
     } catch (err) {
@@ -149,7 +149,7 @@ const listLikesByComment= async (req, res) => {
     try {
         console.log("\n\n=======LIKE CONTROLLER listLikesByComment=======\n")
         const commentId= new mongoose.Types.ObjectId(req.body.commentId)
-        console.log("req.body: ", req.body)
+        //console.log("req.body: ", req.body)
 
         const response= await Like.find({
             from: "comment",

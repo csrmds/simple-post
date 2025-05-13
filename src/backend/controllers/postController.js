@@ -597,6 +597,7 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
     console.log("\n\n------Controller Delete Post------\nPostId: ",req.body.postId)
     const postId = new mongoose.Types.ObjectId(req.body.postId)
+    const imageFolderAddress= `${process.env.NEXT_PUBLIC_POST_IMAGE_PATH}${postId}`
     let deletedLikes= ""
 
     try {
@@ -625,19 +626,18 @@ const deletePost = async (req, res) => {
                 fs.unlink(image.address)
             }
         }
-        // postImages.map((image)=> {
-        //     //console.log(image.address)
-        //     try {
-        //         fs.unlink(image.address)
-        //     } catch (err) {
-        //         console.log("erro ao deletar arquivo: ", image.address, "\n", err)
-        //     }
-        // })
+        
         const deletedImages = await PostImage.deleteMany({ postId: postId }) 
         console.log("deletedImagesDB: ", deletedImages)
 
         const deletedPost = await Post.findByIdAndDelete(postId)
         console.log("\n\nDeleted post:", deletedPost)
+
+        console.log("\ndeletedPostFolder..")
+        await fs.rm(imageFolderAddress, {recursive: true, force: false})
+        fs.access(imageFolderAddress)
+            .then(() => console.log("Diretório ainda existe"))
+            .catch(() => console.log("Diretório deletado com sucesso"))
         //console.log("post deletado: ", response)
         res.status(200).json({ deletedLikes, deletedComments, deletedLikesPost, deletedImages, deletedPost })
     } catch(err) {
@@ -655,9 +655,6 @@ const testFile = async (req, res) => {
         const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
         const listFiles = await fs.readdir(pathImages)
         const file = await fs.stat(pathImages + listFiles[0])
-        //const response = await fs.rename(pathImages + listFiles[0], pathImages + 'renomeado.jpg')
-        //const extension = path.extname(listFiles[0])
-        //const fileName= `${postId}_${0}${extension}`
 
         let listFile= []
         let listNewFileName= []
@@ -730,18 +727,8 @@ const testeGenerico = async (req, res) => {
     console.log(postId)
 
     try {
-
         const lastOrder= await lastImageOrder(postId)
-
         console.log("Last Order: ", lastOrder)
-
-        // const lastFile= await getLastAddressByPostId(req.body.postId)
-
-        // const lastFileExtension= path.extname(lastFile)
-        // const lastFileName= path.basename(lastFile, lastFileExtension)
-        // const order= parseInt(lastFileName.replace(`${postId}_`, ""))
- 
-        // console.log("ultimo address: ", {lastFile, lastFileExtension, lastFileName, order})
     } catch(err) {
         console.log("Erro ao testar arquivo: ", err)
         res.status(500).json({ message: "Erro ao testar arquivo" })

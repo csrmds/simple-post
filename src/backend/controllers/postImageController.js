@@ -139,7 +139,6 @@ const getLastImageOrder = async (req, res) => {
     console.log("-----lastImageOrder postImageController-----")
     const postId= req.body.postId
 
-    
     try {
         const response = await lastImageOrder(postId)
         //console.log("response: ", response)
@@ -147,24 +146,7 @@ const getLastImageOrder = async (req, res) => {
     } catch(err) {
         res.status(500).json({message: "Erro ao buscar a ultima ordem.", error: err})
     }
-
-
-    
-
-    
-
-    // try {
-    //     const lastImageOrder= lastImageOrder(postId)
-    //     return lastImageOrder
-    // } catch(err) {
-    //     console.error("Erro ao buscar a ultima ordem.", err)
-    //     res.status(500).json({message: "Erro ao buscar a ultima ordem.", error: err})        
-    // }
-        
-    
-
-    
-    
+   
 }
 
 

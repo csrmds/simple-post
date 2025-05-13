@@ -12,6 +12,7 @@ export default function PostEdit(props) {
     const url= process.env.NEXT_PUBLIC_BACKEND_URL
     const [content, setContent] = useState("")
     const [images, setImages] = useState([])
+    const [author, setAuthor] = useState("")
     const [uploadImages, setUploadImages] = useState([])
     const [selectedImages, setSelectedImages] = useState([])
     const [updatedAt, setUpdatedAt] = useState(Date())
@@ -143,7 +144,8 @@ export default function PostEdit(props) {
             const response = await axios.post(`${url}/post/id/`, {postId: postId})
             setContent(response.data.content)
             setUpdatedAt(response.data.updatedAt)
-            //console.log("response.data: ", response.data)
+            setAuthor(response.data.author)
+            console.log("PostEdit response.data: ", response.data)
         } catch(err) {
             console.error("Erro ao buscar post por ID: ", err)
         }
@@ -173,7 +175,10 @@ export default function PostEdit(props) {
             const response= await axios.post(`${url}/image/delete`, {imageId: imageId})
             console.log("resposta delete image:", response.data)
             setImages([])
-            setTimeout(()=> getPostImages(), 200) 
+            setTimeout(()=> getPostImages(), 200)
+            
+            document.getElementById('postEdit_'+props.postId).close()
+            setTimeout(()=> callRefrehsPostList(), 1000)
         } catch(err) {
             console.error("Erro ao deletar imangem do post.", err)
         }
@@ -202,7 +207,7 @@ export default function PostEdit(props) {
             <div className='flex justify-between mb-2'>
                 <div className="avatar">
                     <div className="w-12 rounded-full">
-                        <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                        <img src={author?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                     </div>
                 </div>
 
