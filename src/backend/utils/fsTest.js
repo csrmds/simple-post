@@ -9,7 +9,7 @@ dotenv.config({
 
 const url = process.env.BACKEND_URL
 
-const postId= "6806d6432bd2053ed7b83a76"
+const postId= "6823efc10e7f8ac2964b9a40"
 
 const folderAddress= path.join(__dirname, `../files/postImages/${postId}`)
 //const folderAddress=  path.join(`${process.env.NEXT_PUBLIC_POST_IMAGE_PATH}${postId}`) 

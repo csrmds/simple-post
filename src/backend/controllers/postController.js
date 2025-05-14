@@ -17,45 +17,44 @@ const url = process.env.BACKEND_URL
 const insertPost = async (req, res) => {
     try {
         console.log("\n\n=======CONTROLLER insertPost=======\n")
-        const files = req.files
         const newPost = new Post(req.body)
         const savedPost = await newPost.save()
         console.log("Post criado com sucesso: ", savedPost)
 
 
-        if (files) {
-            const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
+        // if (files) {
+        //     const pathImages= process.env.NEXT_PUBLIC_POST_IMAGE_PATH
 
-            try {
-                //cria a pasta com postId para salvar as fotos
-                await fs.mkdir(pathImages+savedPost._id)
-                let order= 0
+        //     try {
+        //         //cria a pasta com postId para salvar as fotos
+        //         await fs.mkdir(pathImages+savedPost._id)
+        //         let order= 0
                 
-                for (const [i, file] of files.entries()) {
-                    console.log("for file: ", i)
-                    const extension = path.extname(pathImages+file.filename)
-                    const newFileName= `image_${i}${extension}`
-                    const fileOrigin= pathImages+file.filename
-                    const fileDestination= `${pathImages}${savedPost._id}/${newFileName}`
-                    await fs.rename(fileOrigin, fileDestination)
+        //         for (const [i, file] of files.entries()) {
+        //             console.log("for file: ", i)
+        //             const extension = path.extname(pathImages+file.filename)
+        //             const newFileName= `image_${i}${extension}`
+        //             const fileOrigin= pathImages+file.filename
+        //             const fileDestination= `${pathImages}${savedPost._id}/${newFileName}`
+        //             await fs.rename(fileOrigin, fileDestination)
 
-                    const newPostImage = new PostImage({
-                        postId: savedPost._id,
-                        address: fileDestination,
-                        description: file.filename,
-                        order: i,
-                        source: "local",
-                        mimetype: file.mimetype,
-                        size: file.size,
-                    })
-                    const savedPostImage = await newPostImage.save()
-                    console.log(`Imagem salva order[${i}]`, savedPostImage)
-                }
-            } catch (err) {
-                console.log("Erro ao salvar imagem: ", err)
-                res.status(500).json({ message: "Erro ao salvar imagem", error: err })
-            }
-        }
+        //             const newPostImage = new PostImage({
+        //                 postId: savedPost._id,
+        //                 address: fileDestination,
+        //                 description: file.filename,
+        //                 order: i,
+        //                 source: "local",
+        //                 mimetype: file.mimetype,
+        //                 size: file.size,
+        //             })
+        //             const savedPostImage = await newPostImage.save()
+        //             console.log(`Imagem salva order[${i}]`, savedPostImage)
+        //         }
+        //     } catch (err) {
+        //         console.log("Erro ao salvar imagem: ", err)
+        //         res.status(500).json({ message: "Erro ao salvar imagem", error: err })
+        //     }
+        // }
         
 
         res.status(200).json({error: false, message: "Post criado com sucesso.", postId: savedPost._id})
@@ -634,11 +633,13 @@ const deletePost = async (req, res) => {
         console.log("\n\nDeleted post:", deletedPost)
 
         console.log("\ndeletedPostFolder..")
-        await fs.rm(imageFolderAddress, {recursive: true, force: false})
         fs.access(imageFolderAddress)
-            .then(() => console.log("Diretório ainda existe"))
-            .catch(() => console.log("Diretório deletado com sucesso"))
-        //console.log("post deletado: ", response)
+            .then(() => {
+                fs.rm(imageFolderAddress, {recursive: true, force: true})
+                console.log("Diretório deletado")
+            })
+            .catch(() => console.log("Diretório não existe"))
+        
         res.status(200).json({ deletedLikes, deletedComments, deletedLikesPost, deletedImages, deletedPost })
     } catch(err) {
         console.log("Erro ao deletar post: ", err)

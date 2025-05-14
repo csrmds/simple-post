@@ -31,11 +31,11 @@ export default function postView(props) {
 
     const sliderSettins = {
         dots: true,
-        infinite: true,
+        infinite: false,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        adaptiveHeight: true,
+        //adaptiveHeight: true,
         //centerMode: true,
         //centerPadding: '50px'
     }
@@ -281,10 +281,10 @@ export default function postView(props) {
                     
                     { images.length > 1 ? (
                         <>
-                            <Slider {...sliderSettins} className=' max-h-160'>
+                            <Slider {...sliderSettins} className=' max-h-192'>
                                 {
                                     images.map((image, i) => (
-                                        <figure key={i} className='flex-none grid content-center max-h-160'>
+                                        <figure key={i} className='flex-none grid content-center'>
                                             <img
                                                 src={
                                                     image.source== "local" ? ( url + "/images/"+ props.postId+"/"+ path.basename(image.address))
@@ -300,7 +300,7 @@ export default function postView(props) {
                         </>
                     ) : images.length == 1 && (
                         <>
-                            <figure className='flex-none grid content-center max-h-160'>
+                            <figure className='flex-none grid content-center h-160'>
                                 <img
                                     src={
                                         images[0].source== "local" ? ( url + "/images/"+ props.postId+"/" + path.basename(images[0].address) )

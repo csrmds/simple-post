@@ -20,7 +20,6 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "fs": "^0.0.1-security",
     "mongodb": "^6.16.0",
     "mongoose": "^8.9.2",
     "mongoose-aggregate-paginate-v2": "^1.1.4",

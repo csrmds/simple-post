@@ -163,6 +163,19 @@ export default function admin(props) {
         <>
             <Provider store={store}>
                 <Body titulo="Admin page">
+
+                <div className='h-160 bg-amber-800'>
+                    <figure className='flex-none grid w-192 h-160 bg-slate-500 content-center'>
+                        <img src="http://res.cloudinary.com/dufaejhwh/image/upload/v1747191069/68240519d12ab53c66dcd79d_3.jpg" className=' '>
+
+                        </img>
+                    </figure>
+                </div>
+                
+
+
+
+                    {/*                     
                     <div className='flex gap-2 mb-4'>
                         <input type="text" className='input input-secondary' placeholder='postId aqui...' onChange={(e)=> setPostId(e.target.value) } value={postId} />
                         <button className='btn btn-accent' onClick={teste} >Teste</button>
@@ -248,7 +261,7 @@ export default function admin(props) {
                             </>
                         )
                     }
-                    </div>
+                    </div> */}
 
 
                     

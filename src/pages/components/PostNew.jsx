@@ -13,6 +13,7 @@ export default function PostNew(props) {
     const [responseData, setResponseData] = useState([])
     const { data: session, status } = useSession()
     const [user, setUser] = useState()
+    const [loading, setLoading] = useState(false)
     const callRefreshPostList = props.getPostList
     const callUpdatePaginateOptions = props.updatePaginateOptions
 
@@ -29,59 +30,51 @@ export default function PostNew(props) {
 
     const insertPost = async(e) => {
         e.preventDefault()
+        setLoading(true)
+
+        //ADICIONA CONTEUDO DO POST AO formPost
+        const formPost= new FormData()
+        formPost.append('content', content)
+        formPost.append('userAccountId', session?.user?.id)
+
+        const imagesData= new FormData()
+        Array.from(uploadImages).forEach((file)=> {
+            imagesData.append('post-image', file)
+        })
 
         try {
-            //ADICIONA CONTEUDO DO POST AO formPost
-            const formPost= new FormData()
-            const imagesData= new FormData()
-
-            formPost.append('content', content)
-            formPost.append('userAccountId', session?.user?.id)
-
-            Array.from(uploadImages).forEach((file)=> {
-                imagesData.append('post-image', file)
-            })
-
-            //ENVIA REQUISIÇÃO
             const response = await axios.post(`${url}/post/insert`, formPost, {
                 headers: {'Content-Type': 'multipart/form-data'}
-            }).then((response) => {
-                console.log('InserPost response PostId:')
-                console.log(response.data.postId)
-                //const postId= String(response.data._id) 
-                imagesData.append('postId', response.data.postId)
-                cloudinaryUpload(imagesData)
-                setResponseError(response.data.error)
-                setResponseData(response.data.postId)
-                setResponseMsg(response.data.message)
-                callUpdatePaginateOptions((e)=> e.preventDefault())
-            }).finally(()=> {
-                setTimeout(() => callRefreshPostList(), 1000)
-                setTimeout(() => cleanPostForm(), 1000)
-            }) 
+            })
+            imagesData.append('postId', response.data.postId)
+
+            await cloudinaryUpload(imagesData)
+
+            callUpdatePaginateOptions((e)=> e.preventDefault())
 
         } catch(err) {
             setResponseError(true)
             setResponseMsg(err.message)
             console.error("Erro ao salvar o post...", err)
+        } finally {
+            setLoading(false)
+            setTimeout(() => callRefreshPostList(), 1000)
+            setTimeout(() => cleanPostForm(), 1000)
         }
     }
 
     const cloudinaryUpload = async (images) => {
         
         if (!images.has("postId") || !images.has('post-image')) return
-        
+
         try {
             const response = await axios.post(`${url}/image/cloudinary/upload`, images, {
                 headers: {'Content-Type': 'multipart/form-data'}
             })
-            console.log("cloudinaryResponse: ", response)
         
-
             if (response.data.length > 0 ) {
                 let i=0
                 for (const imageCloudi of response.data) {
-                    console.log("entrou no laço...")
                     const image= {
                         postId: images.get("postId"),
                         address: imageCloudi.url,
@@ -92,12 +85,10 @@ export default function PostNew(props) {
                         asset_id: imageCloudi.asset_id
                     }
                     i++
-                    console.log("image: ", image)
 
                     const resp= await axios.post(`${url}/image/insert`, image)
-                    console.log("Imagem salva... ", resp.data)
+                    //console.log("Imagem salva... ", resp.data)
                 }
-
             }
             
         } catch(err) {
@@ -137,20 +128,13 @@ export default function PostNew(props) {
     }
 
 
-    
-    function teste01() {
-        let elem= document.getElementById("collapseCheckBox")
-        console.log(elem.checked)
-    }
-
-
 
 
     return (
         <>
             <div className="collapse bg-base-200" >
                 
-                <input type="checkbox" id="collapseCheckBox" checked={newPostCollapse} />
+                <input type="checkbox" id="collapseCheckBox" checked={newPostCollapse} readOnly />
                 
                 <div className="collapse-title text-lg font-medium flex align-middle">
                         
@@ -196,20 +180,31 @@ export default function PostNew(props) {
                         onChange={(e)=> handleImageChange(e)}
                     />
 
-                    {/* Botões de ações */}
-                    <div className="flex justify-end py-2 gap-2">
-                        <button className="btn btn-md btn-outline" onClick={cleanPostForm}>
-                            Cancelar
-                        </button>
-                        <button className="btn btn-md btn-success" onClick={addImageButton}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                            </svg>
-                        </button>
-                        <button className="btn btn-md btn-success" onClick={insertPost}>
-                            Postar
-                        </button>
-                    </div>
+                    {
+                        loading ? (
+                            //loading
+                            <div className="flex justify-center py-2 gap-2">
+                                <span className="loading loading-spinner loading-lg"></span>
+                            </div>
+                        ) : (
+                            //Botões de ações
+                            <div className="flex justify-end py-2 gap-2">
+                                <button className="btn btn-md btn-outline" onClick={cleanPostForm}>
+                                    Cancelar
+                                </button>
+                                <button className="btn btn-md btn-success" onClick={addImageButton}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                    </svg>
+                                </button>
+                                <button className="btn btn-md btn-success" onClick={insertPost}>
+                                    Postar
+                                </button>
+                            </div>
+                        )
+                    }
+                    
+                    
                     </form>
                 </div>
                 
