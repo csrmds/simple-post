@@ -77,7 +77,7 @@ export default function PostView(props) {
     }
 
     const refreshComments= async ()=> {
-        console.log("\n----RefreshComments----\n", props.postId)
+        console.log("\n----RefreshComments----\n")
         const postId= props.postId
         try {
             const response = await axios.post(`${url}/comment`, {postId})

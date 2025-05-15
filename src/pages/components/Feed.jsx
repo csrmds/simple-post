@@ -23,7 +23,7 @@ export default function Feed() {
         try {
             const response = await axios.post(`${url}/post/list`, paginateOptions)
             // console.log('paginateOptions: ', paginateOptions)
-            console.log('response.data: ', response.data)
+            // console.log('response.data: ', response.data)
             dispatch({
                 type: "postList/get", 
                 payload: response.data 
@@ -34,7 +34,7 @@ export default function Feed() {
     }, [dispatch, url, paginateOptions])
     
     const updatePostList = async () => {
-        console.log("chamou updatePostList")
+        //console.log("chamou updatePostList")
         try {
             if (currentPostList.hasNextPage) {
                 const response = await axios.post(`${url}/post/list`, {
@@ -54,20 +54,8 @@ export default function Feed() {
     }
 
  
-    useEffect(()=> {
-        // if (status === 'unauthenticated') setTesteView("usuario não autenticado...")
-        // if (status=== "loading") setTesteView("carregando...")
-        // if (status === 'authenticated') setUserGoogle(session?.user)
-        
+    useEffect(()=> {        
         getPostList()
-        //console.log("useEffect currentpostList: ", currentPostList)
-
-        // setPaginateOptions({
-        //     order: currentPostList.order,
-        //     limit: currentPostList.limit,
-        //     page: currentPostList.page
-        // })
-
     }, [])
 
 

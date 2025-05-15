@@ -21,7 +21,7 @@ export default function Login() {
     const randomEmail = Math.floor(Math.random() * userEmail.length)
 
     useEffect(()=> {
-        //console.log(userEmail[randomEmail])
+        //console.log("NEXTAUTH_URL: ", urlFrontend)
         setEmail(userEmail[randomEmail])
     }, [])
 

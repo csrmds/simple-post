@@ -14,7 +14,7 @@ export default function Home() {
 
     useEffect(() => {
         console.log("-----INDEX COMPONENT-----")
-        console.log("Session: ", session)
+        console.log("Session expires: ", session?.expires)
         console.log("Status: ", status)
     }, [])
 

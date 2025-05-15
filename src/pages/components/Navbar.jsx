@@ -10,7 +10,7 @@ export default function Navbar() {
 
 
     useEffect(()=> {
-        console.log("Session on navbar: ", session, "\nstatus: ", status)
+        //console.log("Session on navbar: ", session, "\nstatus: ", status)
         if(session?.user) {
             const userJson= JSON.parse(JSON.stringify(session?.user))
             if (status== "authenticated") setUser(userJson)

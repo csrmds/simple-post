@@ -26,7 +26,9 @@ export default NextAuth({
             },
             
             async authorize(credentials) {
+                console.log("-----CredentialsProvider-----")
                 const url= process.env.NEXT_PUBLIC_BACKEND_URL
+                console.log(`API Address: ${url}/api/useraccount/one`)
                 const user= await axios.post(`${url}/api/useraccount/one`, {email: credentials.email})
                 console.log('\n-----NextAuth-----')
                 if (!user.data.userAccount || Object.keys(user.data.userAccount).length== 0) {
@@ -55,9 +57,9 @@ export default NextAuth({
     ],
     callbacks: {
         async signIn({ account, profile }) {
-            //cadastrar conta do google no banco se ainda ñ for cadastrada
-            const url= process.env.NEXT_PUBLIC_BACKEND_URL
+            //cria registro de conta do google no banco se ainda ñ for cadastrada
             console.log("\n------Callback signIn------")
+            const url= process.env.NEXT_PUBLIC_BACKEND_URL
             //console.log("account: ",account, "\nprofile: ", profile)
             if (account.provider== "google") {
                 const googleAccount= {
@@ -86,7 +88,7 @@ export default NextAuth({
         async jwt({ token, user, account }) {
             const url= process.env.NEXT_PUBLIC_BACKEND_URL
             if (user) {
-                console.log("------jwt------ \nAccount provider: ",account.provider)
+                console.log("------jwt------")
                 if (account.provider=="google") {
                     const response = await axios.post(`${url}/api/useraccount/one`, {googleId: user.id})
                     //console.log("consulta conta google: ", response.data.userAccount)
@@ -108,5 +110,6 @@ export default NextAuth({
             return session
         }
     },
-    pages: { signIn: "/auth/signin" }
+    pages: { signIn: "/auth/signin" },
+    secret: process.env.NEXTAUTH_SECRET
 });
