@@ -6,10 +6,6 @@ import store from '../redux/store'
 
 import Feed from './components/Feed'
 import Body from './components/layout/Body'
-import PostMock from './components/PostMock'
-import PostNew from './components/PostNew'
-import Login from './components/Login'
-import Carousel from './components/Carousel'
 
 
 export default function home(props) {
