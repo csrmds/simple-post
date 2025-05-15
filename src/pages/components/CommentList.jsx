@@ -15,7 +15,7 @@ export default function CommentList(props) {
     
     const comments = useSelector((state) => {
         const post = state.postListReducer.currentPostList.docs.find(post => post._id === postId)
-        return post ? post.comments : []
+        return post?.comments ?? []
     })
     //const testeComments= useSelector((state) => state.postListReducer.currentPostList.docs.map(post => post._id == postId && post.comments))
 
