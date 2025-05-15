@@ -13,7 +13,7 @@
 # arquivos
 /src/pages/teste.jsx
 /src/pages/admin.jsx
-/src/pages/index_default.jsx
+/src/pages/index_default.tsx
 /src/pages/components/PostMock.jsx
 /src/pages/components/ButtonTest.jsx
 
