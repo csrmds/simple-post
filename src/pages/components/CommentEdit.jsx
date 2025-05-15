@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 
-export default function commetnEdit(props) {
+export default function CommentEdit(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const [comment, setComment] = useState(props.comment)
     const callRefreshComments = props.refreshComments
@@ -20,7 +20,7 @@ export default function commetnEdit(props) {
         //setComment({...comment, text: text})
         console.log("comment antes do update: ", comment)
         try {
-            const response = await axios.post(`${url}/comment/update`, {comment})
+            await axios.post(`${url}/comment/update`, {comment})
                 .finally(setTimeout(()=> {
                     callRefreshComments(),
                     isVisible()
