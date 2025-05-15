@@ -144,10 +144,12 @@ export default function PostView(props) {
     }
 
     function formatData(updatedAt) {
-        const interval = intervalToDuration({start: updatedAt, end: Date.now()})
-        const formatada= formatDistanceToNowStrict(updatedAt, {addSuffix: true, locale: ptBR})
+        if (!updatedAt || isNaN(new Date(updatedAt))) return ''
+
+        const interval = intervalToDuration({start: new Date(updatedAt), end: Date.now()})
+        const formatada= formatDistanceToNowStrict(new Date(updatedAt), {addSuffix: true, locale: ptBR})
         if (interval.days > 1) {
-            return format(updatedAt, "dd MMMM - HH:mm", {locale: ptBR})
+            return format(new Date(updatedAt), "dd MMMM - HH:mm", {locale: ptBR})
         } else {
             return formatada
         }

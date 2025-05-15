@@ -124,11 +124,13 @@ export default function PostEdit(props) {
 
 
     
-    function formatData(dataMod) {
-        const interval = intervalToDuration({ start: dataMod, end: Date.now() })
-        const formatada = formatDistanceToNowStrict(dataMod, { addSuffix: true, locale: ptBR })
+    function formatData(updatedAt) {
+        if (!updatedAt || isNaN(new Date(updatedAt))) return ''
+
+        const interval = intervalToDuration({start: new Date(updatedAt), end: Date.now()})
+        const formatada= formatDistanceToNowStrict(new Date(updatedAt), {addSuffix: true, locale: ptBR})
         if (interval.days > 1) {
-            return format(dataMod, "dd MMMM - HH:mm", { locale: ptBR })
+            return format(new Date(updatedAt), "dd MMMM - HH:mm", {locale: ptBR})
         } else {
             return formatada
         }
