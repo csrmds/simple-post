@@ -11,7 +11,6 @@ export default function CommentEdit(props) {
 
     useEffect(()=> {
         //console.log("useEffect CommentEdit\nProps.Comment: ", props.comment )
-        //setText(comment.text || '')
         setComment(props.comment)
     },[props.comment])
 
@@ -36,7 +35,7 @@ export default function CommentEdit(props) {
                 <textarea 
                     className="textarea text-sm/5 border-none focus:outline-none focus:ring-0 w-full bg-neutral"
                     rows="1" 
-                    value={comment.text ?? ''}
+                    value={comment?.text ?? ''}
                     onChange={(e)=> setComment({...comment, text: e.target.value})}
                 /> 
                 
