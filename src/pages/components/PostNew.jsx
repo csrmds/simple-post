@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react"
-import { useSession, signOut } from 'next-auth/react'
-import { useDispatch, useSelector } from "react-redux"
+import { useSession } from 'next-auth/react'
 import axios from "axios"
 
 export default function PostNew(props) {
@@ -8,9 +7,9 @@ export default function PostNew(props) {
     const [content, setContent] = useState('')
     const [selectedImages, setSelectedImages] = useState([])
     const [uploadImages, setUploadImages] = useState([])
-    const [responseError, setResponseError] = useState(false)
-    const [responseMsg, setResponseMsg] = useState('')
-    const [responseData, setResponseData] = useState([])
+    // const [responseError, setResponseError] = useState(false)
+    // const [responseMsg, setResponseMsg] = useState('')
+    // const [responseData, setResponseData] = useState([])
     const { data: session, status } = useSession()
     const [user, setUser] = useState()
     const [loading, setLoading] = useState(false)
@@ -53,8 +52,8 @@ export default function PostNew(props) {
             callUpdatePaginateOptions((e)=> e.preventDefault())
 
         } catch(err) {
-            setResponseError(true)
-            setResponseMsg(err.message)
+            //setResponseError(true)
+            //setResponseMsg(err.message)
             console.error("Erro ao salvar o post...", err)
         } finally {
             setLoading(false)
@@ -86,8 +85,7 @@ export default function PostNew(props) {
                     }
                     i++
 
-                    const resp= await axios.post(`${url}/image/insert`, image)
-                    //console.log("Imagem salva... ", resp.data)
+                    await axios.post(`${url}/image/insert`, image)
                 }
             }
             
@@ -102,8 +100,8 @@ export default function PostNew(props) {
         setContent('')
         setUploadImages([])
         setSelectedImages([])
-        setResponseError(false)
-        setResponseMsg(false)
+        //setResponseError(false)
+        //setResponseMsg(false)
         setNewPostCollapse(false)
     }
 
@@ -161,7 +159,7 @@ export default function PostNew(props) {
                     <div className='flex w-1/2'>
                         {selectedImages?.length > 0 && (
                             <div className='avatar-group -space-x-5 rtl:space-x-reverse'>
-                                {selectedImages?.map(({image, preview}, i) => (
+                                {selectedImages?.map(({preview}, i) => (
                                     <div key={i} className='avatar !rounded-xl'>
                                         <div className='w-16'>
                                             <img src={preview} />

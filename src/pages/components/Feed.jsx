@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
-import { useSession } from 'next-auth/react'
 import { useDispatch, useSelector } from "react-redux"
 import axios from "axios"
 import PostView from '../components/PostView'
@@ -7,20 +6,13 @@ import PostNew from '../components/PostNew'
 
 export default function Feed() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
-    const [postList, setPostList] = useState([])
-    const { data: session, status } = useSession()
-    const [testeView, setTesteView] = useState("")
-    const [userGoogle, setUserGoogle] = useState({})
-    const [registro, setRegistro] = useState()
-
-    const [postsByPage, setPostsByPage] = useState([])
-    const [page, setPage] = useState(1)
-    const [nextPage, setNextPage] = useState(1)
-    const [loading, setLoading] = useState(false)
-    const [hasMore, setHasMore] = useState(true)
     const observerRef = useRef(null)
-    const [itemView, setItemView] = useState(false)
     const [paginateOptions, setPaginateOptions] = useState({order: -1, limit: 5, page: 1})
+    
+    //const { data: session, status } = useSession()
+    // const [postList, setPostList] = useState([])
+    // const [testeView, setTesteView] = useState("")
+    // const [userGoogle, setUserGoogle] = useState({})
 
     const dispatch= useDispatch()
     const currentPostList = useSelector((state) => state.postListReducer.currentPostList)
@@ -63,9 +55,9 @@ export default function Feed() {
 
  
     useEffect(()=> {
-        if (status === 'unauthenticated') setTesteView("usuario não autenticado...")
-        if (status=== "loading") setTesteView("carregando...")
-        if (status === 'authenticated') setUserGoogle(session?.user)
+        // if (status === 'unauthenticated') setTesteView("usuario não autenticado...")
+        // if (status=== "loading") setTesteView("carregando...")
+        // if (status === 'authenticated') setUserGoogle(session?.user)
         
         getPostList()
         //console.log("useEffect currentpostList: ", currentPostList)
@@ -76,7 +68,7 @@ export default function Feed() {
         //     page: currentPostList.page
         // })
 
-    }, [status])
+    }, [])
 
 
     useEffect(()=> {
@@ -110,29 +102,6 @@ export default function Feed() {
 
     return (
         <>
-        {/* <div className="space-x-2">
-            <button className="btn btn-success" onClick={getPostList}>getPostList</button>
-        </div>
-        
-        <div className="flex flex-col items-center mb-6 overflow-x-auto">
-            <table className="table">
-                <tbody>
-                    {
-                        registro?.docs.length > 0 && (
-                            registro.docs.map((reg, i) => (
-                                <tr key={i}>
-                                    <td>{ reg._id }</td>
-                                    <td>{ reg.title }</td>
-                                    <td>{ reg.content }</td>
-                                </tr>
-                            ))
-                            
-                        )
-                    }
-                    
-                </tbody>
-            </table>
-        </div> */}
 
         <div className="flex justify-center mb-6">
             <div className="flex flex-col w-192">

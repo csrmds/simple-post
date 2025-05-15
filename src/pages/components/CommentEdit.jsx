@@ -17,14 +17,11 @@ export default function CommentEdit(props) {
 
     const updateComment = async() => {
         console.log("----updateComment----")
-        //setComment({...comment, text: text})
-        console.log("comment antes do update: ", comment)
+
         try {
-            await axios.post(`${url}/comment/update`, {comment})
-                .finally(setTimeout(()=> {
-                    callRefreshComments(),
-                    isVisible()
-                }, 0))
+            await axios.post(`${url}/comment/update`, {comment})    
+            callRefreshComments()
+            isVisible()                
             //console.log(response.data)
         } catch(err) {
             console.log("Erro ao atualizar o comentário: ", err)

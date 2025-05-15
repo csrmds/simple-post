@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useSession } from 'next-auth/react'
 import axios from "axios"
 
-export default function commentNew(props) {
+export default function CommentNew(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const {data: session} = useSession()
     const foreignId = props.postId

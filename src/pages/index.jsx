@@ -6,11 +6,18 @@ import store from '../redux/store'
 
 import Feed from './components/Feed'
 import Body from './components/layout/Body'
+import { useEffect } from 'react'
 
 
-export default function home(props) {
+export default function Home() {
     const { data: session, status } = useSession()
     const router = useRouter()
+
+    useEffect(() => {
+        console.log("-----INDEX COMPONENT-----")
+        console.log("Session: ", session)
+        console.log("Status: ", status)
+    }, [])
 
     return (
         <>

@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 
 
 
-export default function postListRedux(props) {
+export default function PostListRedux() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const dispatch= useDispatch()
     const currentPostList = useSelector((state) => state.postListReducer.currentPostList)

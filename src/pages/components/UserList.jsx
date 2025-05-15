@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react"
-import { useSession } from 'next-auth/react'
-import { signIn } from 'next-auth/react'
 import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 import axios from "axios"
 
 
@@ -16,7 +13,7 @@ export default function UserAdmin() {
 
         try {
             const response = await axios.post(`${url}/api/useraccount/`)
-            response?.data.length > 0 && setUserList(response.data)
+            setUserList(response.data)
         } catch(err) {
             console.error("Erro ao listar usuários: ", err)
         }

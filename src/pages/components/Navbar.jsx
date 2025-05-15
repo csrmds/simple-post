@@ -2,34 +2,21 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-import { useSelector, useDispatch } from 'react-redux'
-//import rootReducer from '../../redux/reducers'
 
-
-export default function navbar() {
+export default function Navbar() {
     const { data: session, status } = useSession()
     const router = useRouter()
     const [user, setUser] = useState()
 
 
-
-
-
     useEffect(()=> {
-        //console.log("Session on navbar: ", session, "\nstatus: ", status)
+        console.log("Session on navbar: ", session, "\nstatus: ", status)
         if(session?.user) {
             const userJson= JSON.parse(JSON.stringify(session?.user))
             if (status== "authenticated") setUser(userJson)
-            //console.log("User: ", user)
-
         } 
 
     }, [status])
-
-    const userView = ()=> {
-        console.log("Session: ",session)
-        console.log("Status: ",status)
-    }
 
     const logout = () => {
         signOut()
@@ -42,14 +29,6 @@ export default function navbar() {
                     <a className="btn btn-ghost text-xl">PostApp</a>
                 </div>
                 <div className="flex-none gap-2">
-                    {/* <div className="form-control form-inline">
-                        <div className='form-group'>
-                            <input type="text" placeholder="" className="input input-bordered w-24 md:w-auto" readOnly />
-                            {
-                                status === "unauthenticated" ? ( <button className='btn btn-md' onClick={()=> router.push("/login")} >Login</button> ) : ( <span></span> )
-                            }
-                        </div>
-                    </div> */}
 
                     <div>
                         <button className='btn btn-square btn-ghost'>

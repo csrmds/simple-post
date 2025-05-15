@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { signIn } from 'next-auth/react'
 import { useRouter } from "next/router"
 
-export default function login() {
+export default function Login() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
+    const urlFrontend = process.env.NEXT_PUBLIC_FRONTEND_URL
     const router= useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("PostProject!")
@@ -47,7 +48,7 @@ export default function login() {
 
     const googleLogin= async (e)=> {
         e.preventDefault()
-        signIn('google', {callbackUrl: 'localhost:3000'})
+        signIn('google', {callbackUrl: urlFrontend})
     }
 
 

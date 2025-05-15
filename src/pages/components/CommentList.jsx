@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useSession } from 'next-auth/react'
 import { useDispatch, useSelector } from "react-redux"
 import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
@@ -6,10 +6,10 @@ import { ptBR } from 'date-fns/locale'
 import axios from "axios"
 
 
-export default function commentList(props) {
+export default function CommentList(props) {
     const url= process.env.NEXT_PUBLIC_BACKEND_URL
     const {data: session} = useSession()
-    const [postId, setPostId] = useState(props.postId)
+    const postId= props.postId
     const callRefreshComments = props.refreshComments
     const callCommentEdit = props.callCommentEdit
     
@@ -39,12 +39,15 @@ export default function commentList(props) {
         }
 
         try {
-            const response = await axios.post(`${url}/like/insert`, {like})
-                .finally( setTimeout(() => refreshCommentById(commentId), 0) )
+            await axios.post(`${url}/like/insert`, {like})
+            //.finally( setTimeout(() => refreshCommentById(commentId), 0) )
             // console.log("Like: ", like)
             // console.log("Response: ", response.data)
         } catch (err) {
             console.error("\nErro ao inserir Like: ", err)
+        } finally {
+            refreshCommentById(commentId)
+            //console.log("chamou finally refreshComments")
         }
     }
 
@@ -52,15 +55,14 @@ export default function commentList(props) {
         console.log("\n------unLike------\n")
         
         try {
-            const response = await axios.post(`${url}/like/remove`, {likeId: like._id})
-                .finally(
-                    setTimeout(() => refreshCommentById(like.foreignId), 0)
-                )
-            console.log("response unLike: ", response.data)
-            console.log("Like param: ", like)
+            await axios.post(`${url}/like/remove`, {likeId: like._id})
+            //console.log("response unLike: ", response.data)
+            //console.log("Like param: ", like)
             //console.log(response.data)
         } catch (err) {
             console.error("\nErro ao remover Like: ", err)
+        } finally {
+            refreshCommentById(like.foreignId)
         }
     }
 
@@ -68,12 +70,10 @@ export default function commentList(props) {
         console.log("\n----RefreshComment----\n")
         try {
             const response = await axios.post(`${url}/comment`, {commentId: commentId})
-            setTimeout(()=> {
-                dispatch({
-                    type: 'postList/updateCommentById',
-                    payload: {commentId, comment: response.data[0]}
-                })
-            }, 0)
+            dispatch({
+                type: 'postList/updateCommentById',
+                payload: {commentId, comment: response.data[0]}
+            })
         } catch (err) {
             console.error("\nErro ao atualizar comentário: ", err)
         }
@@ -82,15 +82,11 @@ export default function commentList(props) {
     const deleteComment = async (commentId) => {
         console.log("\n----DeleteComment----\n")
         try {
-            const response = await axios.post(`${url}/comment/delete`, {commentId: commentId})
+            await axios.post(`${url}/comment/delete`, {commentId: commentId})
                 .finally( setTimeout(() => callRefreshComments(), 0) )
         } catch (err) {
             console.error("\nErro ao deletar comentário: ", err)
         }
-    }
-
-    const editComment = async (commentId) => {
-        console.log("\n----EditComment----\n")
     }
 
     const teste = (updateAt) => {

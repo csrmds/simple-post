@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useSession } from 'next-auth/react'
 import path from 'path'
@@ -15,19 +15,18 @@ import PostEdit from "./PostEdit";
 
 
 
-export default function postView(props) {
+export default function PostView(props) {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
     const {data: session} = useSession()
     const [newCommentVisible, setNewCommentVisible]= useState(false)
     const [viewCommentList, setViewCommentList]= useState(false)
     const [editCommentVisible, setEditCommentVisible]= useState(false)
     const [images, setImages]= useState( props.images )
-    // const [liked, setLiked] = useState()
     const author = props.author
     const callRefreshPostList = props.refreshPostList
-    const observerRef = useRef(null);
-    const [itemView, setItemView] = useState(false)
     const [commentEdit, setCommentEdit] = useState("")
+    // const observerRef = useRef(null);
+    // const [itemView, setItemView] = useState(false)
 
     const sliderSettins = {
         dots: true,
@@ -36,8 +35,6 @@ export default function postView(props) {
         slidesToShow: 1,
         slidesToScroll: 1,
         //adaptiveHeight: true,
-        //centerMode: true,
-        //centerPadding: '50px'
     }
 
     const dispatch = useDispatch()
@@ -59,33 +56,9 @@ export default function postView(props) {
     }
 
     useEffect(()=> {
-        //checkLike()
-        //console.log("carregou/atualizou postView.", props.postId)
         setImages([])
         setImages(props.images)
-        //setComments(props.comments)
-        //console.log("useEffect PostView: ", props)
-        // console.log("lenght: ", images.length)
 
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setTimeout(()=> setItemView(true), 1000)
-                }
-            },
-            { threshold: 1.0 }
-        )
-
-        if (observerRef.current) {
-            observer.observe(observerRef.current)
-        }
-
-        return () => {
-            if (observerRef.current) {
-                observer.unobserve(observerRef.current)
-            }
-        }
     }, [props.images])
 
 
@@ -94,7 +67,6 @@ export default function postView(props) {
 
         try {
             const response = await axios.post(`${url}/like/post`, {postId: props.postId})
-            console.log("response: ", response.data)
             dispatch({
                 type: 'postList/updatePostLikes',
                 payload: {likes: response.data, postId: props.postId}
@@ -109,12 +81,10 @@ export default function postView(props) {
         const postId= props.postId
         try {
             const response = await axios.post(`${url}/comment`, {postId})
-            console.log(response.data)
             dispatch({
                 type: 'postList/updatePostComments',
                 payload: { comments: response.data, postId }
             })
-            //setComments(response.data)
         } catch (err) {
             console.log("\nErro ao buscar comentarios: ", err)
         }
@@ -129,9 +99,7 @@ export default function postView(props) {
         }
 
         try {
-            //console.log("\ntry/catch - like: ", like)
-            const response = await axios.post(`${url}/like/insert`, {like})
-            //console.log(response.data)
+            await axios.post(`${url}/like/insert`, {like})
             refreshLikes()
         } catch (err) {
             console.log("\nErro ao inserir Like: ", err)
@@ -143,32 +111,13 @@ export default function postView(props) {
         const likeId= like._id
 
         try {
-            const response = await axios.post(`${url}/like/remove`, {likeId})
-            console.log(response.data)
+            await axios.post(`${url}/like/remove`, {likeId})
             refreshLikes()
         } catch (err) {
             console.log("\nErro ao remover Like: ", err)
         }
     }
 
-    // const checkLike = async () => {
-    //     //console.log("\n------checkLike------\n")
-    //     const like= {
-    //         from: "post",
-    //         foreignId: props.postId,
-    //         userAccountId: session?.user?.id
-    //     }
-
-    //     try {
-    //         //const response = await likes.find(check => check.from== "post" && check.foreignId== props.postId && check.userAccountId== session?.user?.id )
-    //         const response = await axios.post(`${url}/like/check`, {like})
-    //         //console.log("check response: ",response)
-    //         setLiked(response.data)
-    //     } catch (err) {
-    //         console.log("Erro ao verificar o like: ", err)
-    //     }
-
-    // }
 
     const deletePost = async() => {
         console.log("deletePost request:")
@@ -181,57 +130,17 @@ export default function postView(props) {
         }
     }
 
-    function fecharModal(postId) {
-        let modal= document.getElementById("postEdit_"+postId)
-        console.log(modal)
-        modal.close()
-    }
-
-    const testFile = async() => {
-        console.log("=====testeFile=====")
-
-        try {
-            const response = await axios.post(`${url}/post/teste`, {postId: props.postId})
-            console.log("response testeFile: ", response.data)
-        } catch(err) {
-            console.error(err)
-        }
-    }
-
-    const testeGenerico = async() => {
-        console.log("=====testeFile=====")
-
-        try {
-            const response = await axios.post(`${url}/post/teste/generico`, {postId: props.postId})
-            console.log("response testeFile: ", response.data)
-        } catch(err) {
-            console.error(err)
-        }
-    }
-
-    const testeInsertOrder = async() => {
-        console.log("=====insertOrder=====")
-
-        try {
-            const response = await axios.post(`${url}/post/teste/insertorder`, {postId: props.postId})
-            console.log("response insertOrder: ", response.data)
-        } catch(err) {
-            console.error(err)
-        }
-    }
-
-
 
     function newComment() {
-        newCommentVisible ? setNewCommentVisible(false) : setNewCommentVisible(true)
+        setNewCommentVisible(!newCommentVisible)
     }
 
     function showCommentList() {
-        viewCommentList ? setViewCommentList(false) : setViewCommentList(true)
+        setViewCommentList(!viewCommentList)
     }
 
     function showEditComment() {
-        editCommentVisible ? setEditCommentVisible(false) : setEditCommentVisible(true)
+        setEditCommentVisible(!editCommentVisible)
     }
 
     function formatData(updatedAt) {
@@ -261,14 +170,6 @@ export default function postView(props) {
                         </div>
                         
                         <div>{props.postId}</div>
-
-                        
-                        {/* <div className="gap-2">
-                            <button className="btn btn-sm" onClick={testFile}>testeFile</button>
-                            <button className="btn btn-sm" onClick={testeGenerico}>testeGenerico</button>
-                            <button className="btn btn-sm" onClick={testeInsertOrder}>insertOrder</button>
-                        </div>  */}
-                       
                         
                         <div className="flex-none">
                             {  formatData(props.updatedAt) }

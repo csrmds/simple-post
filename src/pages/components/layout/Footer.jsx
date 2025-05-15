@@ -1,4 +1,4 @@
-export default function footer(props) {
+export default function footer() {
     return (
         <>
             <footer className="footer bg-base-300 text-base-content p-10">

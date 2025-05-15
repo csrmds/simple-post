@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Provider } from 'react-redux'
 import { format, intervalToDuration, formatDistanceToNowStrict } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import axios from 'axios'
@@ -63,15 +62,14 @@ export default function PostEdit(props) {
             })
 
 
-            const response = await axios.post(`${url}/post/update`, formUpdate, 
+            await axios.post(`${url}/post/update`, formUpdate, 
                 {headers: {'Content-Type': 'multipart/form-data'}}
             ).then((response)=> {
-                console.log('UpdatePost response.data:')
-                console.log(response.data)
+                //adicionar um loader aqui para aguardar resposta do cloudinaryUpload
                 imagesData.append('postId', response.data._id)
                 cloudinaryUpload(imagesData)
             })
-            //console.log(response.data)
+            
             document.getElementById('postEdit_'+props.postId).close()
             setTimeout(()=> callRefrehsPostList(), 1000)
             
@@ -145,7 +143,7 @@ export default function PostEdit(props) {
             setContent(response.data.content)
             setUpdatedAt(response.data.updatedAt)
             setAuthor(response.data.author)
-            console.log("PostEdit response.data: ", response.data)
+            //console.log("PostEdit response.data: ", response.data)
         } catch(err) {
             console.error("Erro ao buscar post por ID: ", err)
         }
@@ -274,7 +272,7 @@ export default function PostEdit(props) {
                         <div className='flex w-1/4'>
                             {selectedImages?.length > 0 && (
                                 <div className='avatar-group -space-x-10 rtl:space-x-reverse'>
-                                    {selectedImages?.map(({image, preview}, i) => (
+                                    {selectedImages?.map(({preview}, i) => (
                                         <div key={i} className='avatar !rounded-xl'>
                                             <div className='w-16'>
                                                 <img src={preview} />
