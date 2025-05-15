@@ -14,8 +14,9 @@ export default function CommentList(props) {
     const callCommentEdit = props.callCommentEdit
     
     const comments = useSelector((state) => {
-        const post = state.postListReducer.currentPostList.docs.find(post => post._id === postId)
-        return post && post.comments ? post.comments : []
+        const docs = state.postListReducer?.currentPostList?.docs ?? []
+        const post = docs.find(post => post._id === postId)
+        return post ? post.comments : []
     })
     //const testeComments= useSelector((state) => state.postListReducer.currentPostList.docs.map(post => post._id == postId && post.comments))
 

@@ -7,7 +7,7 @@ export default function CommentNew(props) {
     const {data: session} = useSession()
     const foreignId = props.postId
     const type = "post"
-    const userAccountId = session.user?.id
+    const userAccountId = session?.user?.id
     const responseId = props.commentId
     const [text, setText] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
