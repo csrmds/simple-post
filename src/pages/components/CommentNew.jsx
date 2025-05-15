@@ -32,7 +32,7 @@ export default function CommentNew(props) {
     const saveComment= async()=> {
 
         try {
-            const response = await axios.post(`${url}/comment/insert`, {foreignId, text, type, responseId, userAccountId})
+            await axios.post(`${url}/comment/insert`, {foreignId, text, type, responseId, userAccountId})
             //console.log(response.data)
             setInfoMessage("Comentario salvo com sucesso!")
             setInfoVisible(true)
