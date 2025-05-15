@@ -16,6 +16,7 @@
 /src/pages/index_default.tsx
 /src/pages/components/PostMock.jsx
 /src/pages/components/ButtonTest.jsx
+/src/pages/routes.js
 
 # testing
 /coverage
