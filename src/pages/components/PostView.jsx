@@ -162,7 +162,7 @@ export default function PostView(props) {
         <>
             
             <div className="flex justify-center">
-                <div className="card card-compact bg-base-100 w-160 shadow-xl">
+                <div className="card card-compact bg-base-100 shadow-xl w-96 md:w-160">
                     <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6 ">
                         <div className="avatar">
                             <div className="w-16 rounded-full">
@@ -203,7 +203,7 @@ export default function PostView(props) {
                         </>
                     ) : images?.length == 1 && (
                         <>
-                            <figure className='flex-none grid content-center h-160'>
+                            <figure className='flex-none grid content-center max-h-160'>
                                 <img
                                     src={
                                         images[0].source== "local" ? ( url + "/images/"+ props.postId+"/" + path.basename(images[0].address) )

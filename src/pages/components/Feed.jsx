@@ -9,11 +9,6 @@ export default function Feed() {
     const observerRef = useRef(null)
     const [paginateOptions, setPaginateOptions] = useState({order: -1, limit: 5, page: 1})
     
-    //const { data: session, status } = useSession()
-    // const [postList, setPostList] = useState([])
-    // const [testeView, setTesteView] = useState("")
-    // const [userGoogle, setUserGoogle] = useState({})
-
     const dispatch= useDispatch()
     const currentPostList = useSelector((state) => state.postListReducer.currentPostList)
     
@@ -22,8 +17,6 @@ export default function Feed() {
         //console.log("chamou getPostList..")
         try {
             const response = await axios.post(`${url}/post/list`, paginateOptions)
-            // console.log('paginateOptions: ', paginateOptions)
-            // console.log('response.data: ', response.data)
             dispatch({
                 type: "postList/get", 
                 payload: response.data 
@@ -99,7 +92,7 @@ export default function Feed() {
 
 
         <div className="flex flex-col items-center mb-6">
-            <div className="flex flex-col w-192">
+            <div className="w-160">
 
                 {
                     currentPostList.docs?.map((post) => (

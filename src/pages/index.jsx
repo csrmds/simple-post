@@ -28,8 +28,8 @@ export default function Home() {
                             <Feed></Feed>
                         </>
                     ) : (
-                        <div className="flex flex-col items-center h-160">
-                            <div className="card bg-violet-950 w-140 shadow-xl">
+                        <div className="flex flex-col items-center">
+                            <div className="card bg-violet-950 w-96 md:w-140 shadow-xl">
                                 <div className="card-body">
                                     <h2 className="card-title text-white">Usuário não autenticado</h2>
                                     <p>É necessario fazer autenticação de usuário para acessar essa página.</p>

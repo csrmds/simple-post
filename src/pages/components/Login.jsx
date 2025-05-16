@@ -57,9 +57,9 @@ export default function Login() {
         <>
             {/* <div className="card card-side bg-violet-950 shadow-xl"> */}
             <div className="card card-side bg-gradient-to-tr from-sky-300 from-30% to-violet-950 to-95%  shadow-2xl">
-                <figure>
+                <figure className="hidden lg:w-96 lg:flex">
                     <img
-                        className="w-96"
+                        className="hidden lg:w-96 lg:flex"
                         src={url+"/images/login.jpg"}
                         alt="Login" />
                 </figure>
