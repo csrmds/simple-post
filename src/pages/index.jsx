@@ -21,7 +21,7 @@ export default function Home() {
     return (
         <>
             
-            <Body titulo="Home PostApp">
+            <Body titulo="Feed">
                 {
                     status== "authenticated" ? (
                         <>

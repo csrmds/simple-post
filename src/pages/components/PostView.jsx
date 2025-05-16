@@ -171,7 +171,7 @@ export default function PostView(props) {
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
                         </div>
                         
-                        <div>{props.postId}</div>
+                        {/* <div>{props.postId}</div> */}
                         
                         <div className="flex-none">
                             {  formatData(props.updatedAt) }

@@ -28,9 +28,7 @@ export default NextAuth({
             async authorize(credentials) {
                 console.log("-----CredentialsProvider-----")
                 const url= process.env.NEXT_PUBLIC_BACKEND_URL
-                console.log(`API Address: ${url}/api/useraccount/one`)
                 const user= await axios.post(`${url}/api/useraccount/one`, {email: credentials.email})
-                console.log('\n-----NextAuth-----')
                 if (!user.data.userAccount || Object.keys(user.data.userAccount).length== 0) {
                     console.log("Error: ",user.data.resp)
                     throw new Error(user.data.resp)
