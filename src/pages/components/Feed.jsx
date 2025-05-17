@@ -84,19 +84,19 @@ export default function Feed() {
     return (
         <>
 
-        <div className="flex justify-center mb-6">
-            <div className="flex flex-col w-192">
-                <PostNew getPostList={getPostList} updatePaginateOptions={()=> setPaginateOptions({order: -1, limit: 5, page: 1})}></PostNew>
-            </div>
+        <div className="flex justify-center mb-6 w-full mx-auto lg:w-192">
+            <PostNew 
+                getPostList={getPostList} 
+                updatePaginateOptions={()=> setPaginateOptions({order: -1, limit: 5, page: 1})} 
+            />
         </div>
 
 
-        <div className="flex flex-col items-center mb-6">
-            <div className="w-160">
+        <div className="flex flex-col items-center gap-10">            
 
                 {
-                    currentPostList.docs?.map((post) => (
-                        <div className="mb-8" key={post._id}>
+                    currentPostList.docs?.map((post, i) => (
+                        <div key={i}>
                             <PostView
                                 postId= {post._id}
                                 content= {post.content}
@@ -111,26 +111,17 @@ export default function Feed() {
                             />
                         </div>
                     ))
-                    
                 }
 
+                
                 {
+                    // LOADER DOS PROXIMOS POSTS
                     currentPostList.hasNextPage && (
                         <div className="flex justify-center my-2" ref={observerRef} id="spinnerLoadding">
                             <span className="loading loading-spinner loading-xl"></span>
                         </div>
-
                     )
-                    
                 }
-
-                {/* { loading && (
-                    <div className="flex justify-center my-2">
-                        <span className="loading loading-spinner loading-xl"></span>
-                    </div>
-                ) } */}
-
-            </div>
             
         </div>
         </>

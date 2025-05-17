@@ -11,11 +11,13 @@ const Feed = dynamic(()=> import('./components/Feed'), {ssr: false})
 export default function Home() {
     const { data: session, status } = useSession()
     const router = useRouter()
+    const ambiente= process.env.NEXT_PUBLIC_BRANCH_NAME
 
     useEffect(() => {
         console.log("-----INDEX COMPONENT-----")
         console.log("Session expires: ", session?.expires)
         console.log("Status: ", status)
+        console.log("ambiente: ", ambiente)
     }, [])
 
     return (
