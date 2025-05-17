@@ -164,7 +164,7 @@ export default function PostView(props) {
             <div className="flex justify-center w-full">
                 
                 {/* CARD DO POST */}
-                <div className="card card-compact bg-base-100 shadow-xl w-64 sm:w-120 md:w-160">
+                <div className="card card-compact bg-base-100 shadow-xl w-80 sm:w-120 md:w-160">
                     
                     <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6 ">
                         <div className="avatar">
