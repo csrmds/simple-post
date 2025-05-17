@@ -1,34 +1,34 @@
 import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from "react-redux"
-import { useSession } from 'next-auth/react'
+//import { useDispatch, useSelector } from "react-redux"
+//import { useSession } from 'next-auth/react'
 import path from 'path'
 import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import axios from 'axios'
-import Slider from "react-slick";
+// import axios from 'axios'
+// import Slider from "react-slick";
 
 
 
 export default function PostViewNew(props) {const url = process.env.NEXT_PUBLIC_BACKEND_URL
-    const {data: session} = useSession()
+    //const {data: session} = useSession()
     const [images, setImages]= useState( props.images )
     const author = props.author
-    const callRefreshPostList = props.refreshPostList
-    const [commentEdit, setCommentEdit] = useState("")
-    const [newCommentVisible, setNewCommentVisible]= useState(false)
-    const [viewCommentList, setViewCommentList]= useState(false)
-    const [editCommentVisible, setEditCommentVisible]= useState(false)
+    // const callRefreshPostList = props.refreshPostList
+    // const [commentEdit, setCommentEdit] = useState("")
+    // const [newCommentVisible, setNewCommentVisible]= useState(false)
+    // const [viewCommentList, setViewCommentList]= useState(false)
+    // const [editCommentVisible, setEditCommentVisible]= useState(false)
 
-    const sliderSettins = {
-        dots: true,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        //adaptiveHeight: true,
-    }
+    // const sliderSettins = {
+    //     dots: true,
+    //     infinite: false,
+    //     speed: 500,
+    //     slidesToShow: 1,
+    //     slidesToScroll: 1,
+    //     //adaptiveHeight: true,
+    // }
 
-    const dispatch = useDispatch()
+    //const dispatch = useDispatch()
 
     useEffect(()=> {
         setImages([])
