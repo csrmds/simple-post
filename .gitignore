@@ -9,6 +9,8 @@
 # local env files
 .env
 .env*.local
+.env.development
+.env.production
 
 # arquivos
 /src/pages/teste.jsx
@@ -17,6 +19,7 @@
 /src/pages/components/PostMock.jsx
 /src/pages/components/ButtonTest.jsx
 /src/pages/routes.js
+/src/pages/components/dev
 
 # testing
 /coverage

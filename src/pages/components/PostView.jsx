@@ -161,8 +161,11 @@ export default function PostView(props) {
     return (
         <>
             
-            <div className="flex justify-center">
-                <div className="card card-compact bg-base-100 shadow-xl w-96 md:w-160">
+            <div className="flex justify-center w-full">
+                
+                {/* CARD DO POST */}
+                <div className="card card-compact bg-base-100 shadow-xl w-96 sm:w-120 md:w-160">
+                    
                     <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6 ">
                         <div className="avatar">
                             <div className="w-16 rounded-full">
@@ -170,8 +173,6 @@ export default function PostView(props) {
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
                         </div>
-                        
-                        {/* <div>{props.postId}</div> */}
                         
                         <div className="flex-none">
                             {  formatData(props.updatedAt) }
@@ -181,10 +182,10 @@ export default function PostView(props) {
 
                     
                         
-                    
+                    {/* SLIDER DE FOTOS DO POST */}
                     { images?.length > 1 ? (
                         <>
-                            <Slider {...sliderSettins} className=' max-h-192'>
+                            <Slider {...sliderSettins} className=' '>
                                 {
                                     images.map((image, i) => (
                                         <figure key={i} className='flex-none grid content-center'>
@@ -194,7 +195,7 @@ export default function PostView(props) {
                                                     : ( image.address )
                                                 }
                                                 alt={image.description}
-                                                className="w-full h-auto max-h-160 object-contain"
+                                                className="w-full h-auto object-contain"
                                             />
                                         </figure>
                                     ))      
@@ -203,21 +204,27 @@ export default function PostView(props) {
                         </>
                     ) : images?.length == 1 && (
                         <>
-                            <figure className='flex-none grid content-center max-h-160'>
+                            <figure className='flex-none grid content-center'>
                                 <img
                                     src={
                                         images[0].source== "local" ? ( url + "/images/"+ props.postId+"/" + path.basename(images[0].address) )
                                         : ( images[0].address )
                                     }
                                     alt={images[0].description}
-                                    className="w-full h-auto max-h-160 object-contain"
+                                    className="w-full h-auto object-contain"
                                 />
                             </figure>
                         </>
                     )}   
                     
+
+
+                    {/* BODY E DESCRICAO DO POST */}
                     <div className="card-body">
                         <p className='my-2 text-lg'>{props.content}</p>
+                        
+                        
+                        {/* ACTIONS DO POST, LIKES, COMMENTS */}
                         <div className="card-actions justify-between mt-2">
                             
                             <div className="flex w-3/4 gap-2">
@@ -325,13 +332,13 @@ export default function PostView(props) {
 
                         
                         <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
-                            <div className='w-140'>
+                            <div className=''>
                                 <CommentNew postId={props.postId} cancelar={newComment} refreshComments={refreshComments} ></CommentNew>
                             </div>
                         </div>
 
                         <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
-                            <div className='w-140'>
+                            <div className=''>
                                 <CommentList 
                                     comments={comments} 
                                     postId={props.postId} 

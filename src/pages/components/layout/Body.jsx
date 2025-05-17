@@ -7,12 +7,12 @@ export default function body(props) {
     return (
         <>
             <Top></Top>
-            <div className='m-4'>
+            <div className='m-4' name="body-div-titulo">
                 <h1>{props.titulo}</h1>
             </div>
             <div className="divider"></div>
             
-            <div className='container p-4 mx-auto'>
+            <div className='container p-4 mx-auto' name={props.name}>
                 {props.children}
             </div>
             
