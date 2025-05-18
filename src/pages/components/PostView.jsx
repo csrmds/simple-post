@@ -320,9 +320,9 @@ export default function PostView(props) {
                                         </button>
 
                                         <dialog id={`postEdit_${props.postId}`} className="modal">
-                                            <div className="modal-box max-w-3xl">
+                                            <div className="modal-box p-3 max-w-3xl">
                                                 <form method="dialog" className="modal-backdrop">
-                                                    <button className="btn btn-sm btn-circle absolute right-2 top-4">✕</button>
+                                                    <button className="btn btn-sm btn-circle w-9 absolute right-2 top-3">✕</button>
                                                 </form>
                                                 <PostEdit postId={props.postId} refreshPostList={callRefreshPostList} ></PostEdit>
                                             </div>

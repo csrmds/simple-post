@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { format, intervalToDuration, formatDistanceToNowStrict } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 import axios from 'axios'
 import mongoose from 'mongoose'
 import path from 'path'
@@ -14,7 +12,6 @@ export default function PostEdit(props) {
     const [author, setAuthor] = useState("")
     const [uploadImages, setUploadImages] = useState([])
     const [selectedImages, setSelectedImages] = useState([])
-    const [updatedAt, setUpdatedAt] = useState(Date())
     const callRefrehsPostList= props.refreshPostList
 
     const sliderSettins = {
@@ -23,6 +20,7 @@ export default function PostEdit(props) {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
+        arrows: false
     }
 
     //referencia do input do type="file" - verdadeiro botão de anexar (oculto)
@@ -123,19 +121,6 @@ export default function PostEdit(props) {
     }
 
 
-    
-    function formatData(updatedAt) {
-        if (!updatedAt || isNaN(new Date(updatedAt))) return ''
-
-        const interval = intervalToDuration({start: new Date(updatedAt), end: Date.now()})
-        const formatada= formatDistanceToNowStrict(new Date(updatedAt), {addSuffix: true, locale: ptBR})
-        if (interval.days > 1) {
-            return format(new Date(updatedAt), "dd MMMM - HH:mm", {locale: ptBR})
-        } else {
-            return formatada
-        }
-    }
-
     const getPost = async (postId) => {
         //console.log("-----getPost-----")
         //console.log("postId: ", postId)
@@ -143,7 +128,7 @@ export default function PostEdit(props) {
         try {
             const response = await axios.post(`${url}/post/id/`, {postId: postId})
             setContent(response.data.content)
-            setUpdatedAt(response.data.updatedAt)
+            //setUpdatedAt(response.data.updatedAt)
             setAuthor(response.data.author)
             //console.log("PostEdit response.data: ", response.data)
         } catch(err) {
@@ -184,18 +169,6 @@ export default function PostEdit(props) {
         }
     }
 
-
-
-    const cloudinaryTeste  = async () => {
-
-        const response= await axios.post(`${url}/image/cloudinary/teste`, {postId: props.postId})
-
-        console.log(response)
-    }
-
-    
-
-
     useEffect(()=> {
         getPost(props.postId)
         getPostImages()
@@ -206,17 +179,9 @@ export default function PostEdit(props) {
         <>
             <div className='flex justify-between mb-2'>
                 <div className="avatar">
-                    <div className="w-12 rounded-full">
+                    <div className="w-10 md:w-16 rounded-full">
                         <img src={author?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                     </div>
-                </div>
-
-                <div>
-                    <button className='btn btn-sm btn-outline' onClick={cloudinaryTeste} >cloudinaryRenameTemp</button>
-                </div>
-
-                <div className='mr-6'>
-                    {formatData(updatedAt) ?? ""}
                 </div>
             </div>
 

@@ -44,7 +44,7 @@ export default function CommentEdit(props) {
                     <div className="my-auto">
                         <div className="avatar">
                             <div className="w-8 rounded-full mr-2">
-                                <img src={comment.user?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
+                                <img src={comment?.user?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                             </div>
                             <span className="opacity-60">Editando...</span>
                         </div>
