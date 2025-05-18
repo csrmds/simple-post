@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import axios from "axios"
-//import PostView from '../components/PostView'
+import PostView from '../components/PostView'
 import PostNew from '../components/PostNew'
-import PostViewNew from '../components/PostViewNew'
+//import PostViewNew from '../components/PostViewNew'
 
 export default function Feed() {
     const url = process.env.NEXT_PUBLIC_BACKEND_URL
@@ -99,7 +99,7 @@ export default function Feed() {
                 {
                     currentPostList.docs?.map((post, i) => (
                         <div key={i}>
-                            <PostViewNew
+                            <PostView
                                 postId= {post._id}
                                 content= {post.content}
                                 title= {post.title}

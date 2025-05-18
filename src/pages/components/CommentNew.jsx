@@ -8,12 +8,13 @@ export default function CommentNew(props) {
     const foreignId = props.postId
     const type = "post"
     const userAccountId = session?.user?.id
+    const userAccount= props.userAccount
     const responseId = props.commentId
     const [text, setText] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
-    const [errorVisible, setErrorVisible] = useState("")
-    const [infoMessage, setInfoMessage] = useState("")
-    const [infoVisible, setInfoVisible] = useState(false)
+    // const [errorMessage, setErrorMessage] = useState("")
+    // const [errorVisible, setErrorVisible] = useState("")
+    // const [infoMessage, setInfoMessage] = useState("")
+    // const [infoVisible, setInfoVisible] = useState(false)
     const callRefreshComments= props.refreshComments
     
     
@@ -34,21 +35,21 @@ export default function CommentNew(props) {
         try {
             await axios.post(`${url}/comment/insert`, {foreignId, text, type, responseId, userAccountId})
             //console.log(response.data)
-            setInfoMessage("Comentario salvo com sucesso!")
-            setInfoVisible(true)
-            setTimeout(() => setInfoVisible(false), 2000);
+            //setInfoMessage("Comentario salvo com sucesso!")
+            //setInfoVisible(true)
+            //setTimeout(() => setInfoVisible(false), 2000);
             cleanFields()
             setTimeout(() => callRefreshComments(), 2000)
         } catch (error) {
             console.log("Erro ao tentar salvar o comentario", error)
-            setErrorMessage(error)
-            setErrorVisible(true)
+            //setErrorMessage(error)
+            //setErrorVisible(true)
         }
     }
 
     return (
         <>
-            <label className="textarea flex flex-col items-center gap-2 p-0 bg-neutral">
+            <label className="textarea flex flex-col items-center w-full gap-2 p-0 bg-neutral">
                 <textarea 
                     className="textarea text-sm/5 border-none focus:outline-none focus:ring-0 w-full bg-neutral" 
                     placeholder="Seu comentário aqui..."
@@ -56,18 +57,28 @@ export default function CommentNew(props) {
                     value={text} 
                 />
             
-            
-            <div className="flex justify-end w-full px-4 mb-2 gap-2">
-                <button className="btn btn-sm btn-outline btn-error" onClick={()=> props.cancelar(false)} >Cancelar</button>
-                <button className="btn btn-sm btn-outline" onClick={saveComment}>Comentar</button>
-                {/* <button className="btn btn-sm btn-outline" onClick={()=> setText("")}>teste</button> */}
+            {/* DIV DE ACOES NO TEXTAREA */}
+            <div className="flex justify-between w-full px-4 mb-2 gap-2">
+                <div className="my-auto">
+                    <div className="avatar">
+                        <div className="w-8 rounded-full mr-2">
+                            <img src={userAccount?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                    <button className="btn btn-sm btn-outline btn-error" onClick={()=> props.cancelar(false)} >Cancelar</button>
+                    <button className="btn btn-sm btn-outline" onClick={saveComment}>Comentar</button>
+                </div>
+                
             </div>
 
 
             </label>
 
 
-            <div className="">
+            {/* <div className="">
                 <div className={`transition-all duration-300 ease-in-out transform ${errorVisible ? "opacity-100 scale-100 max-h-40 mt-2 mb-4" : "opacity-0 scale-95 max-h-0 my-2"}`}>
                     <div className="alert alert-error" role="alert">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="h-6 w-6 shrink-0 stroke-current">
@@ -85,7 +96,7 @@ export default function CommentNew(props) {
                         <span>{infoMessage}</span>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             
 

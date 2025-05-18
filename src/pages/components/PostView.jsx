@@ -35,6 +35,7 @@ export default function PostView(props) {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
+        arrows: false
         //adaptiveHeight: true,
     }
 
@@ -185,7 +186,8 @@ export default function PostView(props) {
                     
                         
                     {/* SLIDER DE FOTOS DO POST */}
-                    { images?.length > 1 ? (
+                    { 
+                    images?.length > 1 ? (
                         <>
                             <Slider {...sliderSettins} className='w-96 md:w-120 lg:w-140 xl:w-160'>
                                 {
@@ -206,7 +208,9 @@ export default function PostView(props) {
                                 }
                             </Slider>
                         </>
-                    ) : images?.length == 1 && (
+                    ) : 
+                    
+                    images?.length == 1 && (
                         <>
                             <figure className='flex-none grid content-center'>
                                 <Image
@@ -233,7 +237,7 @@ export default function PostView(props) {
                         {/* ACTIONS DO POST, LIKES, COMMENTS */}
                         <div className="card-actions justify-between mt-2">
                             
-                            <div className="flex w-3/4 gap-2">
+                            <div className="flex w-2/4 lg:w-3/4 gap-2">
                                     
                                 {
                                     //BOTÃO DE LIKE
@@ -331,27 +335,21 @@ export default function PostView(props) {
 
                         
                         <div className={`transition-all duration-300 ease-in-out transform ${editCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
-                            <div className="flex justify-center">
-                                <CommentEdit comment={commentEdit} refreshComments={refreshComments} isVisible={showEditComment} ></CommentEdit>
-                            </div>
+                            <CommentEdit comment={commentEdit} refreshComments={refreshComments} isVisible={showEditComment} ></CommentEdit>
                         </div>
 
                         
                         <div className={`transition-all duration-300 ease-in-out transform ${newCommentVisible ? "flex justify-center opacity-100 scale-100 max-h-40" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
-                            <div className=''>
-                                <CommentNew postId={props.postId} cancelar={newComment} refreshComments={refreshComments} ></CommentNew>
-                            </div>
+                            <CommentNew postId={props.postId} userAccount={author} cancelar={newComment} refreshComments={refreshComments} ></CommentNew>
                         </div>
 
                         <div className={`transition-all duration-300 ease-in-out transform ${viewCommentList ? "flex justify-center opacity-100 scale-100 max-h-192" : "flex justify-center opacity-0 scale-80 max-h-0"}`}>
-                            <div className=''>
-                                <CommentList 
-                                    comments={comments} 
-                                    postId={props.postId} 
-                                    refreshComments={refreshComments}
-                                    callCommentEdit={callCommentEdit}>
-                                </CommentList>
-                            </div>
+                            <CommentList 
+                                comments={comments} 
+                                postId={props.postId} 
+                                refreshComments={refreshComments}
+                                callCommentEdit={callCommentEdit}>
+                            </CommentList>
                         </div>
                     </div>
                 </div>
