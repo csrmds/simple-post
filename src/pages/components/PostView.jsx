@@ -2,10 +2,11 @@ import React from "react";
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { useSession } from 'next-auth/react'
-import path from 'path'
 import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import path from 'path'
 import axios from 'axios'
+import Image from 'next/image'
 import Slider from "react-slick";
 
 import CommentNew from './CommentNew'
@@ -164,11 +165,12 @@ export default function PostView(props) {
             <div className="flex justify-center w-full">
                 
                 {/* CARD DO POST */}
-                <div className="card card-compact bg-base-100 shadow-xl w-80 sm:w-120 md:w-160">
+                <div className="card card-compact bg-base-100 shadow-xl w-96 md:w-120 lg:w-140 xl:w-160">
                     
+                    {/* NAVBAR DO POST */}
                     <div className="navbar bg-violet-800 rounded-t-xl flex justify-between px-6 ">
                         <div className="avatar">
-                            <div className="w-16 rounded-full">
+                            <div className="w-10 md:w-16 rounded-full">
                                 <img src={author?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
@@ -185,16 +187,18 @@ export default function PostView(props) {
                     {/* SLIDER DE FOTOS DO POST */}
                     { images?.length > 1 ? (
                         <>
-                            <Slider {...sliderSettins} className=' '>
+                            <Slider {...sliderSettins} className='w-96 md:w-120 lg:w-140 xl:w-160'>
                                 {
                                     images.map((image, i) => (
                                         <figure key={i} className='flex-none grid content-center'>
-                                            <img
+                                            <Image
                                                 src={
                                                     image.source== "local" ? ( url + "/images/"+ props.postId+"/"+ path.basename(image.address))
                                                     : ( image.address )
                                                 }
                                                 alt={image.description}
+                                                width={1080}
+                                                height={1350}
                                                 className="w-full h-auto object-contain"
                                             />
                                         </figure>
@@ -205,12 +209,14 @@ export default function PostView(props) {
                     ) : images?.length == 1 && (
                         <>
                             <figure className='flex-none grid content-center'>
-                                <img
+                                <Image
                                     src={
                                         images[0].source== "local" ? ( url + "/images/"+ props.postId+"/" + path.basename(images[0].address) )
                                         : ( images[0].address )
                                     }
                                     alt={images[0].description}
+                                    width={1080}
+                                    height={1350}
                                     className="w-full h-auto object-contain"
                                 />
                             </figure>

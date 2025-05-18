@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 //import { useDispatch, useSelector } from "react-redux"
 //import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import path from 'path'
 import { format, intervalToDuration, formatDistanceToNowStrict  } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 // import axios from 'axios'
-// import Slider from "react-slick";
+import Slider from "react-slick";
 
 
 
@@ -18,15 +19,20 @@ export default function PostViewNew(props) {const url = process.env.NEXT_PUBLIC_
     // const [newCommentVisible, setNewCommentVisible]= useState(false)
     // const [viewCommentList, setViewCommentList]= useState(false)
     // const [editCommentVisible, setEditCommentVisible]= useState(false)
+    
 
-    // const sliderSettins = {
-    //     dots: true,
-    //     infinite: false,
-    //     speed: 500,
-    //     slidesToShow: 1,
-    //     slidesToScroll: 1,
-    //     //adaptiveHeight: true,
-    // }
+
+
+    const sliderSettins = {
+        dots: true,
+        infinite: false,
+        lazyLoad: false,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: false
+        //adaptiveHeight: true,
+    }
 
     //const dispatch = useDispatch()
 
@@ -34,7 +40,7 @@ export default function PostViewNew(props) {const url = process.env.NEXT_PUBLIC_
         setImages([])
         setImages(props.images)
 
-    }, [props.images])
+    }, [])
 
 
     function formatData(updatedAt) {
@@ -54,13 +60,14 @@ export default function PostViewNew(props) {const url = process.env.NEXT_PUBLIC_
         <>
             <div className="flex justify-center w-full" name={props.name}>
                 
-                <div className="card card-compact bg-base-100 shadow-xl w-full xl:w-160">
+                {/* CARD DO POST */}
+                <div className="card card-compact bg-base-100 shadow-xl w-96 md:w-120 lg:w-140 xl:w-160" >
                     
                     {/* NAVBAR DO POST */}
                     <div className="navbar bg-orange-800 rounded-t-xl justify-between px-6">
                         
                         <div className="avatar">
-                            <div className="w-16 rounded-full">
+                            <div className="w-10 md:w-16 rounded-full">
                                 <img src={author?.avatarImage || "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"} />
                             </div>
                             <h1 className="pl-2 font-semibold">{author?.firstName}</h1>
@@ -73,22 +80,48 @@ export default function PostViewNew(props) {const url = process.env.NEXT_PUBLIC_
 
 
                     {/* SLIDER DE FOTOS AQUI */}
-                    {
-                        images?.length >= 1 && (
-                            <>
-                                <figure className='flex-none grid content-center'>
-                                    <img
-                                        src={
-                                            images[0].source == "local" ? (url + "/images/" + props.postId + "/" + path.basename(images[0].address))
-                                                : (images[0].address)
-                                        }
-                                        alt={images[0].description}
-                                        className="w-full h-auto object-contain"
-                                    />
-                                </figure>
-                            </>
-                        )
-                    }
+                    
+                    
+                    { 
+                    images?.length > 1 ? (
+                        <>
+                            <Slider {...sliderSettins} className='w-96 md:w-120 lg:w-140 xl:w-160'>
+                                {
+                                    images.map((image, i) => (
+                                        <figure key={i} className='flex-none grid content-center'>
+                                            <Image
+                                                src={
+                                                    image.source== "local" ? ( url + "/images/"+ props.postId+"/"+ path.basename(image.address))
+                                                    : ( image.address )
+                                                }
+                                                alt={image.description}
+                                                width={1080}
+                                                height={1350}
+                                                className="w-full h-auto object-contain"
+                                            />
+                                        </figure>
+                                    ))      
+                                }
+                            </Slider>
+                        </>
+                    ) :
+                    
+                    images?.length == 1 && (
+                        <>
+                            <figure className='flex-none grid content-center'>
+                                <Image
+                                    src={
+                                        images[0].source== "local" ? ( url + "/images/"+ props.postId+"/" + path.basename(images[0].address) )
+                                        : ( images[0].address )
+                                    }
+                                    alt={images[0].description}
+                                    width={1080}
+                                    height={1350}
+                                    className="w-full h-auto object-contain"
+                                />
+                            </figure>
+                        </>
+                    )}   
 
 
 
