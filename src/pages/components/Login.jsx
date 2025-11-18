@@ -10,6 +10,8 @@ export default function Login() {
     const [password, setPassword] = useState("PostProject!")
     const [error, setError] = useState(false)
     const [message, setMessage] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [delayMessage, setDelayMessage] = useState(false)
 
     const userEmail= [ 
         "joao.silva@example.com", 
@@ -28,22 +30,33 @@ export default function Login() {
     const credentialLogin= async (e)=> {
         //console.log("credentialLogin prevent: ",e)
         e.preventDefault()
+        setLoading(true)
+
+        const timeoutMessage = setTimeout(() => {
+            setDelayMessage(true)
+        }, 4000)
 
         const res = await signIn("credentials", {
             email: e.target.email.value,
             password: e.target.password.value,
             redirect: false,
         })
+
+        clearTimeout(timeoutMessage)
+        setLoading(false)
+
         if (res.error || res.ok== false) {
             setError(true)
             setMessage(res.error)
             console.log("erro signIn: ", res.error, "\nRes: ", res)
         }  else {
+            
             setError(false)
             setMessage("")
             //console.log('Validação teoricamenteo OK', res)
             router.push('/')
         }
+        
     }
 
     const googleLogin= async (e)=> {
@@ -64,7 +77,7 @@ export default function Login() {
                         alt="Login" />
                 </figure>
                 <div className="card-body">
-                    <h2 className="card-title text-gray-200">Login PostApp</h2>
+                    <h2 className="card-title text-gray-200">Login SimplePost</h2>
 
                     <form onSubmit={credentialLogin}>
                         <div className="h-full">
@@ -103,6 +116,21 @@ export default function Login() {
                                 </button>
 
                                 {/* <button className="btn btn-primary w-24 shadow-md" onClick={googleLogin}>Google</button> */}
+                            </div>
+
+                            <div className="flex justify-center w-full my-4">
+                                { loading && ( <div className="loading loading-spinner loading-lg text-success"></div> ) }
+                            </div>
+
+                            <div className="flex justify-center w-full my-4">
+                                { 
+                                    delayMessage && ( 
+                                        <div role="alert" className="alert alert-warning mb-4">
+                                            <p>O login está demorando mais que o noraml... <br/>
+                                            O servidor pode estar iniciando. Aguarde alguns instantes...</p> 
+                                        </div>
+                                    )
+                                }
                             </div>
 
                             {
