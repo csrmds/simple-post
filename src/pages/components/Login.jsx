@@ -7,7 +7,7 @@ export default function Login() {
     const urlFrontend = process.env.NEXT_PUBLIC_FRONTEND_URL
     const router= useRouter()
     const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("PostProject!")
+    const [password, setPassword] = useState("")
     const [error, setError] = useState(false)
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
@@ -44,6 +44,7 @@ export default function Login() {
 
         clearTimeout(timeoutMessage)
         setLoading(false)
+        setDelayMessage(false)
 
         if (res.error || res.ok== false) {
             setError(true)
@@ -70,9 +71,9 @@ export default function Login() {
         <>
             {/* <div className="card card-side bg-violet-950 shadow-xl"> */}
             <div className="card card-side bg-gradient-to-tr from-sky-300 from-30% to-violet-950 to-95%  shadow-2xl">
-                <figure className="hidden lg:w-96 lg:flex">
+                <figure className="hidden lg:w-104 lg:flex">
                     <img
-                        className="hidden lg:w-96 lg:flex"
+                        className="hidden lg:w-104 lg:flex"
                         src={url+"/images/login.jpg"}
                         alt="Login" />
                 </figure>
@@ -118,16 +119,16 @@ export default function Login() {
                                 {/* <button className="btn btn-primary w-24 shadow-md" onClick={googleLogin}>Google</button> */}
                             </div>
 
-                            <div className="flex justify-center w-full my-4">
+                            <div className="flex justify-center w-full my-2">
                                 { loading && ( <div className="loading loading-spinner loading-lg text-success"></div> ) }
                             </div>
 
-                            <div className="flex justify-center w-full my-4">
+                            <div className="flex justify-center w-full my-2 max-w-104">
                                 { 
                                     delayMessage && ( 
-                                        <div role="alert" className="alert alert-warning mb-4">
-                                            <p>O login está demorando mais que o noraml... <br/>
-                                            O servidor pode estar iniciando. Aguarde alguns instantes...</p> 
+                                        <div role="alert" className="alert alert-warning">
+                                            <p>Só um instante! Nosso servidor estava em modo de descanso e já está acordando.
+                                            O login será feito em alguns segundos!</p> 
                                         </div>
                                     )
                                 }
